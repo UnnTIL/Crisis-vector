@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#0c131f"/>
+<title>CRISIS VECTOR — Simulador de resposta mundial</title>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<div id="app" class="app">
+  <header class="masthead">
+    <div class="brand-area"><div class="brand-icon"><span class="brand-cross">✳</span></div>
+      <div><div class="brand">CRISIS <span>VECTOR</span><small> / ALPHA 0.1</small></div>
+      <div class="brand-sub">CENTRO DE GESTÃO DE CRISES GLOBAIS <span class="brand-divider">•</span> SIMULAÇÃO FICTÍCIA</div></div></div>
+    <div class="top-right"><span class="live-pill"><i></i> SITUAÇÃO EM EVOLUÇÃO</span><span class="top-split"></span>
+      <div class="date-stack"><strong id="topDate">15 MAR 2027</strong><span id="topDay">DIA 01 DA CRISE</span></div>
+      <button class="icon-button" id="helpButton" aria-label="Instruções" title="Instruções">?</button>
+    </div>
+  </header>
+
+  <section class="metrics" aria-label="Indicadores globais">
+    <div class="metric"><div class="metric-title"><span class="mini-dot red"></span> INFETADOS MUNDIALMENTE</div><div class="metric-value danger" id="metricCases">—</div><div class="metric-foot">Estimativa agregada · cenário</div></div>
+    <div class="metric"><div class="metric-title"><span class="mini-dot orange"></span> PAÍSES AFETADOS</div><div class="metric-value" id="metricAffected">—</div><div class="metric-foot">Países e territórios no mapa</div></div>
+    <div class="metric"><div class="metric-title"><span class="mini-dot slate"></span> VÍTIMAS ACUMULADAS</div><div class="metric-value" id="metricDeaths">—</div><div class="metric-foot">Projeção do motor de jogo</div></div>
+    <div class="metric"><div class="metric-title"><span class="mini-dot green"></span> ESTABILIDADE GLOBAL</div><div class="metric-value" id="metricStability">—</div><div class="metric-foot">Índice agregado de resiliência</div></div>
+    <div class="metric metric-command"><div class="metric-title"><span class="mini-dot blue"></span> FUNDO DE CRISE NACIONAL</div><div class="metric-value good" id="metricBudget">—</div><div class="metric-foot" id="metricPlayer">Portugal · País sob comando</div></div>
+  </section>
+
+  <main class="workspace">
+    <section class="board">
+      <div class="board-toolbar">
+        <div class="board-title"><span class="ticker"><i></i> INTEL // 001</span><strong id="boardHeading">TEATRO MUNDIAL</strong></div>
+        <div class="view-switch" role="group" aria-label="Escala de visualização"><button id="worldTab" class="active" data-view="world">MUNDO</button><button id="cityTab" data-view="city">CIDADE / OPERAÇÕES</button></div>
+        <div class="playback" role="group" aria-label="Tempo de simulação"><button id="stepButton" title="Avançar um dia">+1 DIA</button><button id="playButton" class="play active-start">▶ INICIAR</button><button id="speedButton" title="Alterar velocidade">1×</button></div>
+      </div>
+      <div class="map-area" id="mapArea">
+        <canvas id="worldCanvas" aria-label="Mapa-mundo interativo com a evolução da epidemia"></canvas>
+        <canvas id="cityCanvas" class="hidden" aria-label="Mapa tático esquemático com infetados e unidades"></canvas>
+        <div class="map-shade"></div><div class="map-topline"><span id="mapTopLeft">SATELLITE OVERLAY // GLOBAL THREAT</span><span id="mapTopRight">OBSERVAÇÃO ESTRATÉGICA</span></div>
+        <div class="map-tooltip hidden" id="tooltip"></div>
+        <div class="map-chip" id="mapChip"><span class="chip-dot"></span><span id="mapChipText">Clique num país para consultar o relatório</span></div>
+        <div class="map-legend" id="worldLegend"><div class="legend-title">NÍVEL DE INFEÇÃO</div><div class="legend-row"><i class="legend-nil"></i> Sem casos <i class="legend-low"></i> Controlado <i class="legend-med"></i> Elevado <i class="legend-high"></i> Crítico</div></div>
+        <div class="city-hud hidden" id="cityHud"><div class="city-title" id="cityTitle">LISBOA <span>· ÁREA URBANA</span></div><div class="city-stats" id="cityStats">—</div><div class="city-disclaimer">MAPA URBANO ESQUEMÁTICO · NÃO REPRESENTA A TOPOGRAFIA REAL</div></div>
+        <div id="cityToolbar" class="city-toolbar hidden"><span class="deploy-title">COLOCAR NO MAPA:</span><button class="deploy-btn selected" data-unit="squad">◉ Infantaria <small>0,35 B€</small></button><button class="deploy-btn" data-unit="barrier">▣ Barreira <small>0,22 B€</small></button><button class="deploy-btn" data-unit="evac">✚ Evacuação <small>0,45 B€</small></button></div>
+        <div class="map-coordinate">SIM GRID / 110M · NATURAL EARTH</div>
+      </div>
+      <div class="board-footer"><span id="mapContext">Selecione um país. O tempo permanece parado até dar início à simulação.</span><span class="latency-dot">●</span><span id="simulationStatus">SIMULAÇÃO EM PAUSA</span></div>
+    </section>
+
+    <aside class="control-panel" id="controlPanel"><div class="control-header"><div><div class="section-overline">CENTRO DE COMANDO</div><h2 id="countryName">Portugal</h2><div class="country-meta" id="countryMeta">EUROPA · PRT</div></div><div class="flag-box" id="countryCode">PRT</div></div>
+      <div class="country-numbers"><div><span>INFETADOS ATIVOS</span><strong class="red-text" id="countryCases">—</strong></div><div><span>VÍTIMAS</span><strong id="countryDeaths">—</strong></div><div><span>DEFESA / CAPACIDADE</span><strong id="countryDefense">—</strong></div><div><span>ESTABILIDADE</span><strong id="countryStability">—</strong></div></div>
+      <div class="threat-heading"><span>PRESSÃO EPIDEMIOLÓGICA</span><strong id="pressureLabel">BAIXA</strong></div><div class="threat-rail"><div id="pressureBar"></div></div>
+      <div id="countryActions" class="actions-zone"></div>
+      <div class="tactical-note"><span class="note-icon">i</span><span>Modelo experimental: índices militares e diplomáticos são <strong>abstrações de jogo</strong>, não dados oficiais atualizados.</span></div>
+    </aside>
+  </main>
+
+  <section class="lower-grid">
+    <div class="intel-feed"><div class="panel-top"><div><div class="section-overline">CANAIS DE INFORMAÇÃO</div><h3>Diário da crise <span> / Relatórios operacionais</span></h3></div><span class="feed-online"><i></i> TRANSMISSÃO ATIVA</span></div><div id="eventList" class="event-list"></div></div>
+    <div class="operations-card"><div class="section-overline">DOUTRINA DE RESPOSTA</div><h3>A crise não espera.</h3><p>Controla a propagação sem destruir a economia. A contenção nacional, a cooperação internacional e as operações urbanas afetam o mesmo cenário.</p><div class="ops-row"><span>ESCALA</span><strong>MUNDIAL ↔ URBANA</strong></div><div class="ops-row"><span>INTERAÇÃO</span><strong>PAÍS · POLÍTICAS · UNIDADES</strong></div><button class="outline-button" id="resetButton">↺ REINICIAR CENÁRIO</button></div>
+  </section>
+  <footer class="footer"><span>CRISIS VECTOR // PROTÓTIPO ORIGINAL · CENÁRIO FICTÍCIO</span><span>Fronteiras: Natural Earth (domínio público) · Indicadores e mecanismos simplificados.</span></footer>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div id="helpModal" class="modal-backdrop hidden"><div class="help-modal"><div class="modal-top"><div><div class="section-overline">MANUAL OPERACIONAL</div><h2>Como jogar esta demonstração</h2></div><button id="closeHelp" class="icon-button">×</button></div><p>O objetivo é impedir que uma infeção fictícia ultrapasse a capacidade de resposta dos Estados. Começas a comandar Portugal, mas podes assumir qualquer país.</p><ol><li><b>Mundo:</b> seleciona um país; no painel direito aplica políticas, envia ajuda ou assume o comando de outra nação.</li><li><b>Tempo:</b> usa <b>+1 dia</b> para avançar por turnos ou <b>Iniciar</b> para simular automaticamente; muda entre velocidade 1× e 4×.</li><li><b>Cidade:</b> abre a escala urbana, escolhe infantaria, barreira ou evacuação e clica no mapa para implantar unidades. Essas operações repercutem-se nos indicadores nacionais.</li><li><b>Objetivo:</b> mantém a infeção, as vítimas e a instabilidade tão baixas quanto possível, gerindo o orçamento e a cooperação.</li></ol><div class="help-warn">Esta é uma prova de conceito: não contém dados militares atuais verificados, simulação epidemiológica científica, pathfinding tático ou mapas urbanos reais.</div><button id="startHelp" class="primary-button">COMPREENDIDO</button></div></div>
+<script src="data/world-data.js"></script><script src="src/simulation.js"></script><script src="src/game.js"></script>
+</body></html>
