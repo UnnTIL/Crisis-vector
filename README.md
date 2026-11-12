@@ -60,6 +60,8 @@ A demo inspira-se na categoria de estratégia e simulação de surtos, **sem cop
 node --test tests/simulation.test.cjs
 ```
 
+O piloto de dados está isolado em `data/baseline/` e **não substitui a Alpha 0.1**. Consultar o [pipeline D0–D2 e limitações](docs/BASELINE_DATA_PIPELINE.md) e o [relatório de cobertura](data/baseline/REPORT.md). `npm test` inclui as regressões do pipeline; a geração offline pode ser validada com `node scripts/data/validate-baseline.cjs`.
+
 ## Licença
 
 Este protótipo foi gerado como ponto de partida de desenvolvimento. As fronteiras Natural Earth são de domínio público. Consultar as licenças das demais bases de dados antes de as integrar. Não há dependências de terceiros em tempo de execução.

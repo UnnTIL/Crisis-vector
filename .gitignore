@@ -3,3 +3,6 @@ node_modules/
 dist/
 coverage/
 *.log
+# Fresh third-party payloads are quarantined until per-series rights review.
+data/baseline/inputs/raw/
+data/baseline/inputs/**/raw/

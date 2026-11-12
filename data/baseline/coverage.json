@@ -1,0 +1,90 @@
+{
+  "availableCells": 0,
+  "byCountry": [
+    {
+      "available": 0,
+      "iso3": "PRT",
+      "total": 8
+    },
+    {
+      "available": 0,
+      "iso3": "DEU",
+      "total": 8
+    },
+    {
+      "available": 0,
+      "iso3": "USA",
+      "total": 8
+    },
+    {
+      "available": 0,
+      "iso3": "BRA",
+      "total": 8
+    },
+    {
+      "available": 0,
+      "iso3": "MWI",
+      "total": 8
+    }
+  ],
+  "byIndicator": [
+    {
+      "available": 0,
+      "key": "population",
+      "series": "SP.POP.TOTL",
+      "total": 5
+    },
+    {
+      "available": 0,
+      "key": "urbanization",
+      "series": "SP.URB.TOTL.IN.ZS",
+      "total": 5
+    },
+    {
+      "available": 0,
+      "key": "gdp",
+      "series": "NY.GDP.MKTP.CD",
+      "total": 5
+    },
+    {
+      "available": 0,
+      "key": "gdpPerCapita",
+      "series": "NY.GDP.PCAP.CD",
+      "total": 5
+    },
+    {
+      "available": 0,
+      "key": "taxRevenue",
+      "series": "GC.TAX.TOTL.GD.ZS",
+      "total": 5
+    },
+    {
+      "available": 0,
+      "key": "hospitalBeds",
+      "series": "SH.MED.BEDS.ZS",
+      "total": 5
+    },
+    {
+      "available": 0,
+      "key": "research",
+      "series": "GB.XPD.RSDV.GD.ZS",
+      "total": 5
+    },
+    {
+      "available": 0,
+      "key": "trade",
+      "series": "NE.TRD.GNFS.ZS",
+      "total": 5
+    }
+  ],
+  "coveragePercent": 0,
+  "imputationPercent": 0,
+  "imputedCells": 0,
+  "missingReasons": {
+    "network_access_denied": 40
+  },
+  "schemaVersion": "baseline-coverage-v1",
+  "seriesResponsesRetrieved": 0,
+  "totalCells": 40,
+  "unavailableCells": 40
+}
