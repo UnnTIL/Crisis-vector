@@ -27,6 +27,8 @@ O pacote técnico está em proposta. O Decision Log distingue os princípios já
 | [GAME_VISION](GAME_VISION.md) | Identidade, experiência, prevenção, sucesso e limites de âmbito. | Direções de produto estabelecidas + proposta de concretização. |
 | [GAMEPLAY_SCALES](GAMEPLAY_SCALES.md) | Navegação, câmara, seleção, ordens e comunicação entre escalas. | `PROPOSED`. |
 | [CRISIS_SCENARIOS](CRISIS_SCENARIOS.md) | Núcleo comum e regras específicas de cada ameaça. | Zombies primeiro estabelecido; contratos `PROPOSED`. |
+| [BASELINE_DATA_V1](BASELINE_DATA_V1.md) | Dados reais iniciais, fontes, proveniência, licenças e cinco países-piloto. | Direção factual aprovada; esquema técnico `PROPOSED`. |
+| [MASTER_ROADMAP_V2](MASTER_ROADMAP_V2.md) | Sequência integrada de produto, motor, prova urbana, dados e governação. | `PROPOSED`, com gates sem datas. |
 | [POLICY_SIMULATOR](POLICY_SIMULATOR.md) | Modelo híbrido de governação, impostos, dívida, preparação e decisões por setor. | Direção funcional aprovada; mecanismos `PROPOSED`. |
 | [GEOPOLITICS_AND_ECONOMY](GEOPOLITICS_AND_ECONOMY.md) | Países, capacidades, diplomacia, financiamento e IA. | Regras gerais estabelecidas; modelo `PROPOSED`. |
 | [POPULATION_AND_EVACUATION](POPULATION_AND_EVACUATION.md) | Estados, localização, trânsito, baixas e conservação. | Evacuação física estabelecida; modelo `PROPOSED`. |
@@ -37,6 +39,10 @@ O pacote técnico está em proposta. O Decision Log distingue os princípios já
 | [OPEN_QUESTIONS](OPEN_QUESTIONS.md) | Validações humanas por momento e impacto. | Pendentes, sem respostas presumidas. |
 | [ROUND-001-CODEX](reviews/ROUND-001-CODEX.md) | Interpretação consolidada, recomendações e discordâncias. | Revisão técnica apresentada para discussão. |
 | [ROUND-001-FEEDBACK](reviews/ROUND-001-FEEDBACK.md) | Formulário de feedback, aprovações e alterações. | Estrutura vazia; revisão conjunta ainda não registada. |
+
+## Roadmap integrado de referência
+
+O [MASTER_ROADMAP_V2](MASTER_ROADMAP_V2.md) consolida as frentes de desenvolvimento e **não substitui silenciosamente** o [DEVELOPMENT_ROADMAP](DEVELOPMENT_ROADMAP.md) anterior; comparar ambos e registar alterações no Decision Log antes de aprovar a sequência.
 
 ## Relação com a Alpha 0.1
 
