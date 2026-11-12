@@ -1,6 +1,6 @@
 # Questões para validação humana
 
-Estado: **PROPOSED**. Data: 2026-11-12. Não existem respostas presumidas nesta ronda.
+Estado: **REVIEWED / parcialmente resolvido**. Data: 2026-11-12. As decisões Q-001, Q-002 e Q-006 foram validadas ao nível funcional após a ROUND-001; parâmetros permanecem propostos.
 
 As decisões já estabelecidas — país fixo, evacuação física, regras económicas equivalentes, zombies primeiro e ausência de implementação nesta tarefa — constam do [Decision Log](DECISION_LOG.md) e não são reabertas aqui. Questões técnicas mensuráveis serão resolvidas por testes; não exigem preferências arbitrárias do diretor criativo.
 
@@ -63,3 +63,12 @@ As decisões já estabelecidas — país fixo, evacuação física, regras econ�
 Geografia urbana real em grande escala, distribuição desktop concreta, outros motores e novas ameaças podem esperar pelos gates do [roadmap](DEVELOPMENT_ROADMAP.md). Encontrar a versão e a licença de um dataset é trabalho de investigação, não uma questão de preferência a devolver ao diretor criativo.
 
 Resultados e alterações serão registados em [ROUND-001-FEEDBACK](reviews/ROUND-001-FEEDBACK.md) e depois consolidados no Decision Log. A aprovação de uma resposta não implica aprovação das restantes propostas.
+
+## Resoluções da ROUND-001 (2026-11-12)
+
+- **Q-001 — direção respondida:** `APPROVED` DEC-018. Transformação inicial após morte e neutralização sem dupla contagem. Taxas/regras detalhadas ainda em aberto.
+- **Q-002 — direção respondida:** `APPROVED` DEC-019. Prioridades financeiras e degradação progressiva, sem economia bancária detalhada. Fórmulas e proteções específicas carecem de calibração.
+- **Q-006 — direção respondida:** `APPROVED` DEC-020. Comando tático por equipas e zonas/rotas, autonomia com intervenção opcional. Detalhe de controlos a testar.
+- **Q-003/Q-004/Q-005/Q-007:** permanecem por resolver nos gates indicados, sem bloquearem a especificação ou a validação independente de entradas.
+
+Referência: [ROUND-001-FEEDBACK](reviews/ROUND-001-FEEDBACK.md) e [PR #1](https://github.com/UnnTIL/Crisis-vector/pull/1).
