@@ -145,3 +145,32 @@ Uma aprovação documental não autoriza, por si só, implementação. Estados e
 ## Atualizações posteriores
 
 Para cada alteração: conservar ID, registar data, estado anterior/novo, autor da validação, referência verificável e motivo. Se a premissa mudar substancialmente, criar decisão substituta e ligar as duas. Ainda não existem decisões `REJECTED` registadas nesta ronda.
+
+## ROUND-001 — Validação da direção criativa (2026-11-12)
+
+As orientações abaixo foram confirmadas pelo diretor criativo após análise da ROUND-001. A aprovação refere-se à **direção funcional**, não a implementação, fórmulas, parâmetros de balanceamento ou tecnologia definitiva. Referência: discussão do [PR #1](https://github.com/UnnTIL/Crisis-vector/pull/1).
+
+### DEC-018 — Transformação zombie e balanço humano
+
+- **Data / estado:** 2026-11-12 / `APPROVED` — direção funcional.
+- **Decisão:** para o primeiro cenário zombie, pessoa viva infetada → morte humana e reanimação → neutralização da ameaça. A neutralização não produz um segundo óbito humano e a ameaça mantém identidade/localização contáveis.
+- **Consequências:** conservar população e ameaça sem duplicações; comportamento de hordas territorial e reativo; parâmetros de infeção, velocidades e cura ficam por validar. Este contrato não se aplica automaticamente a outras crises.
+- **Referências:** Q-001, DEC-013, [POPULATION_AND_EVACUATION](POPULATION_AND_EVACUATION.md), [Issue #3](https://github.com/UnnTIL/Crisis-vector/issues/3).
+
+### DEC-019 — Economia simplificada e prioridades de despesa
+
+- **Data / estado:** 2026-11-12 / `APPROVED` — direção funcional.
+- **Decisão:** modelar tesouraria, receitas, despesas, reservas, dívida/atrasados e prioridades de financiamento com degradação progressiva perante insuficiência. Permitir repriorização explícita; garantir regras equivalentes para jogador e IA.
+- **Consequências:** não implementar já sistema bancário, crédito complexo nem economia integral; custos e políticas subfinanciadas devem ter consequências visíveis e verificáveis. Fórmulas, escalões e proteções específicas dos serviços essenciais continuam `PROPOSED`.
+- **Referências:** Q-002, DEC-014, [GEOPOLITICS_AND_ECONOMY](GEOPOLITICS_AND_ECONOMY.md), [Issue #2](https://github.com/UnnTIL/Crisis-vector/issues/2).
+
+### DEC-020 — Comando tático por equipas com autonomia
+
+- **Data / estado:** 2026-11-12 / `APPROVED` — direção funcional.
+- **Decisão:** o jogador governa estrategicamente, seleciona equipas e emite ordens por objetivos, zonas, rotas, proteção, contenção ou retirada. As unidades executam autonomamente; intervenção tática opcional sem microgestão de indivíduos.
+- **Consequências:** posições, rotas, perímetros e recursos precisam de efeitos reais na simulação; representação gráfica leve e benchmark antecipado no browser. A profundidade final de comando e controlo será calibrada na prova urbana.
+- **Referências:** Q-006, DEC-015, [GAMEPLAY_SCALES](GAMEPLAY_SCALES.md), [Issue #4](https://github.com/UnnTIL/Crisis-vector/issues/4).
+
+### Estado após a validação
+
+A direção global da ROUND-001 está validada **para planear a execução**, mas a seleção definitiva da tecnologia e as decisões Q-003/Q-004/Q-005/Q-007 continuam abertas. Os Issues #2, #3 e #4 são especificações de trabalho, não commits de implementação. A `main` e a demo Alpha 0.1 permanecem intocadas nesta ronda.
