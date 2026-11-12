@@ -200,3 +200,14 @@ A direção global da ROUND-001 está validada **para planear a execução**, ma
 - **Referência:** [POLICY_SIMULATOR.md](POLICY_SIMULATOR.md).
 
 **Relação com A1a:** a prioridade fixa da Alpha 0.1 é uma solução transitória de reconciliação, não o desenho aprovado da gestão orçamental. Não introduzir o simulador completo no PR #5; planear implementação incremental em tarefas independentes após revisão.
+
+
+## ROUND-003 — Base factual inicial da campanha (2026-11-12)
+
+### DEC-024 — Dados reais como condições iniciais, não como rankings de jogo
+
+- **Estado:** `APPROVED` — direção funcional; seleção final de fontes, indicadores, transformações e parâmetros continuam `PROPOSED`.
+- **Decisão:** países partem de dados demográficos, económicos, sanitários, territoriais e institucionais verificáveis, quando disponíveis; regras e decisões determinam a evolução posterior. Não atribuir capacidade operacional militar, hospitalar ou financeira diretamente a um ranking de dados brutos.
+- **Consequências:** separar `ObservedData`, `DerivedCapabilities` e `CampaignState`; guardar por campo fonte, ano, unidade, licença, versões e qualidade. Um conjunto congelado deve permitir campanha offline e reproduzível. Lacunas são identificadas, não preenchidas silenciosamente.
+- **Primeiro recorte proposto:** piloto com PRT, DEU, USA, BRA e MWI; exploração de fontes públicas e licenças por série. Os valores e a integração no motor **ainda não estão aprovados ou implementados**.
+- **Referências:** [Issue #7](https://github.com/UnnTIL/Crisis-vector/issues/7), [BASELINE_DATA_V1](BASELINE_DATA_V1.md) e [MASTER_ROADMAP_V2](MASTER_ROADMAP_V2.md).
