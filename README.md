@@ -60,6 +60,8 @@ A demo inspira-se na categoria de estratégia e simulação de surtos, **sem cop
 node --test tests/simulation.test.cjs
 ```
 
+`npm test` executa também as regressões de estabilidade e financiamento. A evolução A1a acrescenta custos comuns para IA/jogador, manutenção de unidades, atrasados e eficácia gradual conforme financiamento. Consultar [regras e notas de equilíbrio A1a](docs/FINANCING_A1A.md); são parâmetros ficcionais, não um modelo financeiro real.
+
 ## Licença
 
 Este protótipo foi gerado como ponto de partida de desenvolvimento. As fronteiras Natural Earth são de domínio público. Consultar as licenças das demais bases de dados antes de as integrar. Não há dependências de terceiros em tempo de execução.
