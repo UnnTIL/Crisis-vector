@@ -131,3 +131,10 @@ A tarefa só começa após validação dos modelos necessários e autorização 
 Cada milestone precisa de uma demonstração executável, objetivos de gameplay, testes significativos, limites conhecidos e notas de equilíbrio. Distinguir «passou», «falhou», «não executado» e «planeado». Um PR documental não transforma benchmark planeado em resultado. Não estimar capacidade de milhares de agentes a partir dos oito testes agregados.
 
 Branches próprias e PRs pequenos; nenhum merge automático. Rever decisões no [Decision Log](DECISION_LOG.md) e registar a ronda antes de atualizar os próximos marcos. A documentação anterior permanece referenciada, sem eliminar o seu histórico.
+
+
+## Nota de integração — dados reais e governação (2026-11-12)
+
+O roadmap desta ronda continua válido como histórico de dependências A–F. A [proposta integrada v2](MASTER_ROADMAP_V2.md) acrescenta a frente independente de [dados de campanha V1](BASELINE_DATA_V1.md), com investigação/licenças e piloto de cinco países (`D0–D2`) em paralelo com a prova urbana. A ligação da baseline ao estado canónico (`D3`) depende da campanha persistente e contratos de estado; **não** alterar o motor Alpha apenas para incorporar valores estatísticos. A [governação híbrida](POLICY_SIMULATOR.md) terá milestones pequenas após o fundamento financeiro, distinguindo impostos, dívida e políticas de preparação.
+
+O documento v2 é `PROPOSED` até revisão, e não altera o estado dos PRs/Issues atuais.
