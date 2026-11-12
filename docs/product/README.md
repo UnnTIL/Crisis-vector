@@ -27,6 +27,7 @@ O pacote técnico está em proposta. O Decision Log distingue os princípios já
 | [GAME_VISION](GAME_VISION.md) | Identidade, experiência, prevenção, sucesso e limites de âmbito. | Direções de produto estabelecidas + proposta de concretização. |
 | [GAMEPLAY_SCALES](GAMEPLAY_SCALES.md) | Navegação, câmara, seleção, ordens e comunicação entre escalas. | `PROPOSED`. |
 | [CRISIS_SCENARIOS](CRISIS_SCENARIOS.md) | Núcleo comum e regras específicas de cada ameaça. | Zombies primeiro estabelecido; contratos `PROPOSED`. |
+| [POLICY_SIMULATOR](POLICY_SIMULATOR.md) | Modelo híbrido de governação, impostos, dívida, preparação e decisões por setor. | Direção funcional aprovada; mecanismos `PROPOSED`. |
 | [GEOPOLITICS_AND_ECONOMY](GEOPOLITICS_AND_ECONOMY.md) | Países, capacidades, diplomacia, financiamento e IA. | Regras gerais estabelecidas; modelo `PROPOSED`. |
 | [POPULATION_AND_EVACUATION](POPULATION_AND_EVACUATION.md) | Estados, localização, trânsito, baixas e conservação. | Evacuação física estabelecida; modelo `PROPOSED`. |
 | [SIMULATION_ARCHITECTURE](SIMULATION_ARCHITECTURE.md) | Estado, comandos, relógio, sistemas, eventos e persistência. | `PROPOSED`. |
