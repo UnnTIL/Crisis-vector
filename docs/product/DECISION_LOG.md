@@ -174,3 +174,29 @@ As orientações abaixo foram confirmadas pelo diretor criativo após análise d
 ### Estado após a validação
 
 A direção global da ROUND-001 está validada **para planear a execução**, mas a seleção definitiva da tecnologia e as decisões Q-003/Q-004/Q-005/Q-007 continuam abertas. Os Issues #2, #3 e #4 são especificações de trabalho, não commits de implementação. A `main` e a demo Alpha 0.1 permanecem intocadas nesta ronda.
+
+
+## ROUND-002 — Direção do sistema de políticas nacionais (2026-11-12)
+
+### DEC-021 — Governação híbrida e controlo setorial
+
+- **Estado:** `APPROVED` — direção de produto, não implementação.
+- **Decisão:** o jogador define estratégia nacional macro, dotações e prioridades, podendo abrir setores e intervir no detalhe. A execução pode ser delegada. Modo simplificado e modo detalhado operam sobre os mesmos recursos, restrições e comandos.
+- **Consequências:** prioridades de afetação orçamental e prioridades de pagamento perante escassez são mecanismos distintos; obrigações já assumidas não podem desaparecer por reconfiguração de prioridades.
+- **Referência:** [Issue #6](https://github.com/UnnTIL/Crisis-vector/issues/6) e [POLICY_SIMULATOR.md](POLICY_SIMULATOR.md).
+
+### DEC-022 — Fiscalidade e financiamento soberano simplificados
+
+- **Estado:** `APPROVED` — direção de produto; fórmulas e parâmetros `PROPOSED`.
+- **Decisão:** receita pública proveniente de bases fiscais simplificadas (rendimentos, consumo e empresas), complementada por reservas, emissão de dívida remunerada e ajuda externa. Subscrição de títulos por população/investidores deve depender de capacidade e condições económicas. Financiamento não cria recursos arbitrários.
+- **Consequências:** contabilizar dívida, juros e vencimentos; preservar diferenças institucionais entre países (incluindo competências monetárias). Modelação detalhada de bancos e famílias não é necessária inicialmente.
+- **Referência:** [POLICY_SIMULATOR.md](POLICY_SIMULATOR.md).
+
+### DEC-023 — Políticas de Estado com preparação e efeitos causais
+
+- **Estado:** `APPROVED` — direção funcional; execução e balanceamento `PROPOSED`.
+- **Decisão:** permitir políticas de saúde, defesa, reservas militares, recrutamento, educação, investigação, indústria, logística e diplomacia. Decisões têm condições institucionais, custos, capacidade de implementação e prazos; não geram capacidades instantaneamente.
+- **Consequências:** incluir efeitos sociais e macroeconómicos cruzados, tempos de preparação realistas em termos de jogabilidade e governação autónoma por IA sob regras equivalentes.
+- **Referência:** [POLICY_SIMULATOR.md](POLICY_SIMULATOR.md).
+
+**Relação com A1a:** a prioridade fixa da Alpha 0.1 é uma solução transitória de reconciliação, não o desenho aprovado da gestão orçamental. Não introduzir o simulador completo no PR #5; planear implementação incremental em tarefas independentes após revisão.
