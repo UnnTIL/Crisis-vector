@@ -1,7 +1,7 @@
 /* Crisis Vector — browser presentation layer. World and city share one simulation state. */
 (() => {
   'use strict';
-  const { SimEngine, UNIT_TYPES, clamp, fmt } = window.CrisisSim;
+  const { SimEngine, UNIT_TYPES, POLICY_TYPES, FINANCE_RULES, clamp, fmt } = window.CrisisSim;
   const el = id => document.getElementById(id);
   const worldCanvas=el('worldCanvas'),cityCanvas=el('cityCanvas');
   const wctx=worldCanvas.getContext('2d'),cctx=cityCanvas.getContext('2d');
@@ -20,7 +20,7 @@
     if(n>=1e4)return (n/1000).toLocaleString('pt-PT',{maximumFractionDigits:1})+' mil';
     return fmt(Math.round(n));
   };
-  const money = n=>Number(n).toLocaleString('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2})+' B€';
+  const money = (n,digits=2)=>Number(n).toLocaleString('pt-PT',{minimumFractionDigits:digits,maximumFractionDigits:digits})+' B€';
   function project(p){const lon=p[0],lat=p[1]; return [(lon+180)/360*w,(81-lat)/141*h];}
   function size(){
     const r=AREA.getBoundingClientRect(); const nw=Math.max(300,r.width),nh=Math.max(260,r.height);
@@ -193,24 +193,52 @@
     el('mapContext').textContent=view==='world'?`${c.localName} selecionado · ${compact(c.cases)} infetados estimados · Estado ${c.id===sim.playerId?'sob comando':'estrangeiro'}`:`${c.city} · ${c.units.length} unidades posicionadas · a operação afeta a contenção do país`;
     el('playButton').textContent=playing?'Ⅱ PAUSAR':'▶ INICIAR';el('playButton').classList.toggle('playing',playing);
     el('speedButton').textContent=speed+'×';
+    updateFinance(c);
     updateActions(c);
+    for(const button of document.querySelectorAll('#cityToolbar [data-unit]')){
+      const info=UNIT_TYPES[button.dataset.unit];
+      button.querySelector('small').textContent=`${money(info.cost)} + ${money(info.daily,3)}/dia`;
+      button.title=`${info.name}: colocação ${money(info.cost)}; manutenção ${money(info.daily,3)} por dia`;
+    }
   }
-  function policyButton(key,title,detail,enabled){
-    return `<button class="policy-item ${enabled?'on':''}" data-policy="${key}" aria-pressed="${enabled}"><span class="policy-text"><b>${title}</b><small>${detail}</small></span><span class="switch"><i></i></span></button>`;
+  function updateFinance(c){
+    const f=sim.getFinance(c.id),last=f.lastDaily;
+    const priority=FINANCE_RULES.priority.map(key=>key==='units'?'Operações urbanas':POLICY_TYPES[key].name).join(' → ');
+    const services=FINANCE_RULES.priority.filter(key=>key==='units'?c.units.length>0:c[key]);
+    const efficacy=services.map(key=>`${key==='units'?'Operações urbanas':POLICY_TYPES[key].name}: ${Math.round(f.effectiveness[key]*100)}%`).join(' · ');
+    el('financeTreasury').textContent=money(f.treasury,3);
+    el('financeRevenue').textContent=money(f.revenue,3)+'/dia';
+    el('financeRequired').textContent=money(f.required,3)+'/dia';
+    el('financePaid').textContent=sim.day>0&&last?`${money(last.paid,3)} / ${money(last.due,3)}`:'Sem liquidação diária';
+    el('financeArrears').textContent=money(f.arrears,3);
+    el('financeEffectiveness').textContent=efficacy||'Sem medidas ou unidades ativas.';
+    el('financePriority').textContent=priority+'. O saldo restante paga atrasados.';
+    const warnings=[];
+    if(f.treasury+f.revenue+1e-9<f.required)warnings.push('A tesouraria e a receita prevista não cobrem a próxima manutenção.');
+    if(last?.unpaid>0)warnings.push(`Última liquidação: ${money(last.unpaid,3)} por financiar.`);
+    if(services.some(key=>f.effectiveness[key]<1))warnings.push('Capacidade reduzida: a eficácia depende do financiamento.');
+    if(f.arrears>0)warnings.push('Existem pagamentos em atraso.');
+    el('financeWarning').textContent=warnings.join(' ');
+    el('financeWarning').classList.toggle('hidden',warnings.length===0);
+  }
+  function policyButton(key,detail,c){
+    const info=POLICY_TYPES[key],enabled=c[key],effectiveness=sim.getFinance(c.id).effectiveness[key];
+    const state=enabled?`Eficácia ${Math.round(effectiveness*100)}% · desativação gratuita`:'Desativada';
+    return `<button class="policy-item ${enabled?'on':''}" data-policy="${key}" aria-pressed="${enabled}"><span class="policy-text"><b>${esc(info.name)}</b><small>${detail}</small><small class="policy-cost">Ativação ${money(info.activation)} · ${money(info.daily,3)}/dia</small><small>${state}</small></span><span class="switch"><i></i></span></button>`;
   }
   function updateActions(c){
     let html='';
     if(c.id===sim.playerId){
       html+=`<div class="action-heading"><span>MEDIDAS DO GOVERNO</span><small>CONTROLO DIRETO</small></div>`;
-      html+=policyButton('borders','Controlo de fronteiras','Reduz importações · prejudica comércio',c.borders);
-      html+=policyButton('emergency','Estado de emergência','Reduz transmissão · afeta economia',c.emergency);
-      html+=policyButton('mobilized','Mobilização militar','Aumenta contenção · custo contínuo',c.mobilized);
-      html+=`<p class="country-blurb">As políticas têm custos iniciais e diários. Reforça a resposta local no separador <b>Cidade / Operações</b>.</p>`;
+      html+=policyButton('borders','Reduz importações · prejudica comércio',c);
+      html+=policyButton('emergency','Reduz transmissão · afeta economia',c);
+      html+=policyButton('mobilized','Aumenta contenção · custo contínuo',c);
+      html+=`<p class="country-blurb">Cada ativação é paga; manutenção por dia, segundo a prioridade indicada acima. Reforça a resposta local no separador <b>Cidade / Operações</b>.</p>`;
       html+=`<button class="action-button secondary" data-action="city">ABRIR OPERAÇÃO EM ${esc(c.city.toUpperCase())}</button>`;
     }else{
       html+=`<div class="action-heading"><span>RELAÇÕES INTERNACIONAIS</span><small>PAÍS ESTRANGEIRO</small></div>`;
       html+=`<p class="country-blurb">Relação diplomática simulada com o teu país: <b>${Math.round(c.relations)}/100</b><br>Orçamento estimado de crise: <b>${money(c.budget)}</b><br>Colaboração humanitária: <b>${c.aidDays>0?c.aidDays+' dias ativos':'Sem apoio ativo'}</b></p>`;
-      html+=`<button class="action-button" data-action="aid">ENVIAR AJUDA HUMANITÁRIA · 0,80 B€</button>`;
+      html+=`<button class="action-button" data-action="aid">ENVIAR AJUDA HUMANITÁRIA · ${money(FINANCE_RULES.aidCost)}</button>`;
       html+=`<button class="action-button secondary" data-action="control">ASSUMIR COMANDO DE ${esc(c.localName.toUpperCase())}</button>`;
       html+=`<button class="action-button secondary" data-action="city">OBSERVAR ${esc(c.city.toUpperCase())}</button>`;
     }

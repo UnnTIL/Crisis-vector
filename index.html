@@ -41,7 +41,7 @@
         <div class="map-chip" id="mapChip"><span class="chip-dot"></span><span id="mapChipText">Clique num país para consultar o relatório</span></div>
         <div class="map-legend" id="worldLegend"><div class="legend-title">NÍVEL DE INFEÇÃO</div><div class="legend-row"><i class="legend-nil"></i> Sem casos <i class="legend-low"></i> Controlado <i class="legend-med"></i> Elevado <i class="legend-high"></i> Crítico</div></div>
         <div class="city-hud hidden" id="cityHud"><div class="city-title" id="cityTitle">LISBOA <span>· ÁREA URBANA</span></div><div class="city-stats" id="cityStats">—</div><div class="city-disclaimer">MAPA URBANO ESQUEMÁTICO · NÃO REPRESENTA A TOPOGRAFIA REAL</div></div>
-        <div id="cityToolbar" class="city-toolbar hidden"><span class="deploy-title">COLOCAR NO MAPA:</span><button class="deploy-btn selected" data-unit="squad">◉ Infantaria <small>0,35 B€</small></button><button class="deploy-btn" data-unit="barrier">▣ Barreira <small>0,22 B€</small></button><button class="deploy-btn" data-unit="evac">✚ Evacuação <small>0,45 B€</small></button></div>
+        <div id="cityToolbar" class="city-toolbar hidden"><span class="deploy-title">COLOCAR NO MAPA:</span><button class="deploy-btn selected" data-unit="squad">◉ Infantaria <small></small></button><button class="deploy-btn" data-unit="barrier">▣ Barreira <small></small></button><button class="deploy-btn" data-unit="evac">✚ Evacuação <small></small></button></div>
         <div class="map-coordinate">SIM GRID / 110M · NATURAL EARTH</div>
       </div>
       <div class="board-footer"><span id="mapContext">Selecione um país. O tempo permanece parado até dar início à simulação.</span><span class="latency-dot">●</span><span id="simulationStatus">SIMULAÇÃO EM PAUSA</span></div>
@@ -50,6 +50,19 @@
     <aside class="control-panel" id="controlPanel"><div class="control-header"><div><div class="section-overline">CENTRO DE COMANDO</div><h2 id="countryName">Portugal</h2><div class="country-meta" id="countryMeta">EUROPA · PRT</div></div><div class="flag-box" id="countryCode">PRT</div></div>
       <div class="country-numbers"><div><span>INFETADOS ATIVOS</span><strong class="red-text" id="countryCases">—</strong></div><div><span>VÍTIMAS</span><strong id="countryDeaths">—</strong></div><div><span>DEFESA / CAPACIDADE</span><strong id="countryDefense">—</strong></div><div><span>ESTABILIDADE</span><strong id="countryStability">—</strong></div></div>
       <div class="threat-heading"><span>PRESSÃO EPIDEMIOLÓGICA</span><strong id="pressureLabel">BAIXA</strong></div><div class="threat-rail"><div id="pressureBar"></div></div>
+      <section class="finance-overview" aria-labelledby="financeHeading">
+        <h3 id="financeHeading">FINANCIAMENTO DA RESPOSTA</h3>
+        <dl class="finance-numbers">
+          <div><dt>Tesouraria</dt><dd id="financeTreasury">—</dd></div>
+          <div><dt>Receita prevista</dt><dd id="financeRevenue">—</dd></div>
+          <div><dt>Manutenção prevista</dt><dd id="financeRequired">—</dd></div>
+          <div><dt>Último dia: pago / devido</dt><dd id="financePaid">—</dd></div>
+          <div><dt>Pagamentos em atraso</dt><dd id="financeArrears">—</dd></div>
+        </dl>
+        <p id="financeEffectiveness" class="finance-effectiveness"></p>
+        <p id="financeWarning" class="finance-warning hidden" role="status" aria-live="polite"></p>
+        <details class="finance-rules"><summary>Prioridade e regras de financiamento</summary><p id="financePriority"></p><p>A eficácia começa em zero e recupera ou degrada-se até 25 pontos percentuais por dia. A capacidade já mobilizada degrada-se sem manutenção; pagar atrasados não financia os serviços do dia.</p><p>Receita fiscal e custos são parâmetros fictícios de jogo, sem realismo financeiro. As mesmas regras aplicam-se ao jogador e aos outros governos.</p></details>
+      </section>
       <div id="countryActions" class="actions-zone"></div>
       <div class="tactical-note"><span class="note-icon">i</span><span>Modelo experimental: índices militares e diplomáticos são <strong>abstrações de jogo</strong>, não dados oficiais atualizados.</span></div>
     </aside>
