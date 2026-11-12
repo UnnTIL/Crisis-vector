@@ -74,3 +74,7 @@ Este jogo pretende combinar a escala geopolítica mundial com a gestão de crise
 - [Roadmap incremental](docs/ROADMAP.md)
 
 `main` deve permanecer jogável; desenvolver milestones em branches e PRs com testes.
+
+## Proposta de consolidação — em análise
+
+A [documentação de produto e arquitetura v1](docs/product/README.md) reúne a visão consolidada, propostas técnicas, decisões, questões abertas e revisões. **Encontra-se em análise**: não descreve funcionalidades já implementadas nem autoriza alterações ao jogo. Os documentos originais acima permanecem como contexto da Alpha 0.1.
