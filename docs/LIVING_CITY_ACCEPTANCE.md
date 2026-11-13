@@ -8,22 +8,26 @@ identificados no relatório de execução, não pela presença de código ou de 
 
 ## Evidência conferida na revisão do candidato
 
-Os **27 testes de domínio LC0–LC3 passaram** no candidato revisto. A suite cobre
+`npm test` em Node 24.22.1 terminou com **75/75 testes aprovados**: 47 regressões
+existentes e 28 testes da Living City LC0–LC3. Não houve falhas, skips ou
+cancelamentos. A suite cobre
 redes, censo, rotinas, snapshots, passos inválidos, partições de ticks, serviço
 médico completo, prioridade/idempotência, lotação, via bloqueada, avaria,
 profissionais finitos, progressão, transformação em transporte e exposição.
 Inclui também regressões de prioridade e entrega hospitalar concorrente, despacho
 policial após triagem, patrulha ocupada, proibição de atacar infetado não hostil,
 vetos por edifícios/terceiros, reação em deslocação, munição finita e reforço.
-Isto ainda não confirma CI remota nem as regressões externas à suite Living City.
+A regressão de alta hospitalar também demonstra que libertar uma cama permite
+retomar a entrega do doente em espera sem duplicar pessoas ou internamentos.
+A CI remota do commit final ainda precisa de confirmação.
 
 O [relatório de cenários](living-city-report.json) contém **nove execuções**:
 S0/S1/S2 × seeds 16927/42/2026, cada uma por 6000 ticks (600 segundos simulados).
 As invariantes foram verificadas a cada um dos **54 000 ticks**. Os hashes dos
 módulos nesse relatório foram conferidos com as fontes do candidato.
 
-O ficheiro de execução final `/tmp/living-city-final-smoke.json`, concluído em
-13 de novembro de 2026, regista **três verificações de browser aprovadas**, em
+O [relatório final de browser](living-city-browser.json), concluído em
+13 de novembro de 2026, regista **três verificações funcionais aprovadas**, em
 DPR 1/1,5/2. Em cada uma, S0/S1/S2 completaram 6000 ticks, sem ordens de gestão.
 O browser foi Chromium 156.0.8078.79. Foram verificados seleção, seguimento,
 seleção no Canvas antes/depois de redimensionar, ausência de mutação por câmara e
@@ -46,7 +50,7 @@ apresentados no browser; não representam dez minutos reais de captura contínua
 | Critérios | Estado da evidência nesta revisão |
 | --- | --- |
 | LC-01/02/03/04/05/11 | Exercitados pelos testes de domínio, nove cenários Node e casos de browser, dentro das fixtures descritas. |
-| LC-06 | Espera com hospital cheio, falta de profissional e reserva concorrente de profissionais testadas; libertação posterior de uma cama e continuação não têm teste dirigido próprio. |
+| LC-06 | Espera com hospital cheio, falta de profissional, reserva concorrente de profissionais e alta que liberta cama/retoma a admissão testadas, sem duplicação de população ou capacidade. |
 | LC-07/08/09 | Testes dirigidos demonstram autonomia, triagem anterior ao despacho, deslocação física, ameaça reconhecida, vetos por visão/terceiros, infetado não hostil, reação em movimento e custo de munição. |
 | LC-10 | Evento de tiro real apresentado visualmente e executado por Web Audio nos três DPR; consumo repetido não duplica som nem altera o snapshot. Mute e redução de efeitos não mudam a lógica. |
 | LC-12 | Censo, snapshots, comandos idempotentes, partições de ticks e reinício exercitados; matriz de três seeds/cenários concluída com invariantes por tick. |
@@ -70,14 +74,38 @@ Transmissão em compartimentos abstratos, falta de isolamento e perda de
 profissionais contribuem para a deterioração; rever parâmetros e capacidade com
 observação de jogo antes de expandir o sistema.
 
-## Verificações finais ainda pendentes
+## Desempenho e pacote verificados
 
-As medições de desempenho em curso não são contadas como concluídas nesta
-matriz. Regressões completas/CI, pacote HTML/ZIP, hashes dos artefactos e acesso
-publicado também precisam de evidência própria. Uma alteração posterior do bundle
-exige associar novas verificações ao seu hash; não atribuir automaticamente estes
-resultados a outra compilação. Não há certificação de 60 FPS, GPU física, memória
-de GPU ou teste prolongado de fugas.
+O relatório de browser contém **nove medições concluídas**, S0/S1/S2 × DPR
+1/1,5/2, no mesmo bundle identificado acima. Cada combinação teve uma captura
+de 10 segundos solicitados após dois segundos de aquecimento, usando SwiftShader
+por software. Foram observados cerca de **17,78–38,12 FPS**, conforme o caso.
+São ensaios preliminares cloud, com uma captura por combinação; não certificam
+60 FPS, GPU física, memória GPU ou ausência de fugas em sessões prolongadas.
+Os resultados e limites completos estão no [relatório de validação](LIVING_CITY_VALIDATION.md).
+
+O [ZIP publicado](../artifacts/living-city-v02/crisis-vector-living-city-v02.zip)
+foi descarregado do GitHub com **HTTP 200 e 396 828 bytes**. O SHA-256 é
+`b98c1f5346d80d65e0047ebfc365e97ae397f5a4e947b86dae536201ecda985b`.
+O conteúdo descarregado foi extraído e validado com
+`scripts/check-living-city-package.cjs`; o [resultado](living-city-package-check.json)
+é `passed`. S0/S1 demonstraram admissão da mesma pessoa, S2 produziu tiros,
+seleção/seguimento funcionaram e o viewport mobile de 390 pixels não apresentou
+overflow horizontal. O HTML autónomo fez uma requisição HTTP e funcionou com a
+rede desligada, sem erros JavaScript.
+
+A abertura direta por `file://` foi bloqueada pela política do Chromium antes da
+execução (`ERR_BLOCKED_BY_ADMINISTRATOR`). A execução local comprovada usa servidor
+estático após extrair o ZIP. A nova preview em Pages não foi declarada funcional;
+o acesso comprovado é o pacote descarregado e testado. Esta limitação não é uma
+falha do cenário nem prova de compatibilidade de `file://` noutros browsers.
+
+## Confirmação ainda pendente
+
+Falta confirmar a **CI remota do commit final com os 75 testes**; a passagem local
+acima não substitui essa execução. Uma alteração posterior do bundle exige
+associar novas verificações ao seu hash; não atribuir automaticamente estes
+resultados a outra compilação.
 
 ## Critérios do documento de produto
 

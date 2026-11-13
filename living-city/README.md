@@ -24,6 +24,8 @@ Selecionar no mapa ou pesquisar na lista. **Seguir** acompanha uma pessoa, viatu
 
 Controlos: clique seleciona; arrastar move a câmara; roda amplia; Espaço pausa; `R` recentra e termina o seguimento; velocidades 1×/2×/4×. O som começa desligado e só é ativado por clique explícito. Volume, mute e redução de flashes não alteram a lógica. O modo **debug** revela informação oculta e está assinalado no ecrã.
 
+![Acompanhamento de um habitante durante o transporte médico](../docs/living-city-package-desktop.png)
+
 ## O que observar
 
 O bairro tem oito quarteirões e 32 edifícios, redes pedonal/viária distintas e entradas ligadas a casas, comércio, trabalho, hospital e esquadra. Por defeito existem 150 residentes, quatro socorristas, seis agentes policiais e quatro profissionais hospitalares: **164 identidades**. Duas ambulâncias e três patrulhas usam pessoas e viaturas distintas.

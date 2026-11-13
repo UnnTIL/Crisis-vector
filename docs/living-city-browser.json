@@ -10561,7 +10561,8 @@
     "sha256": "f3ddb07374e2f835a30bda3b1dae19aae63d936992d5b7559c6fa4ce9a6d6508",
     "startedAt": "2026-11-13T21:36:17.429Z",
     "completedAt": "2026-11-13T21:38:10.938Z",
-    "sameBundle": true
+    "sameBundle": true,
+    "evidenceFile": "living-city-smoke.json"
   },
   "status": "completed",
   "completedAt": "2026-11-13T21:46:46.703Z"

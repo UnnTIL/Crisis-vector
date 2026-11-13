@@ -187,6 +187,38 @@ test('LC1: a full hospital keeps the patient physically present with an explicit
   assert.equal(patient.healthState,'symptomatic');assert.equal(world.state.events.filter(e=>e.type==='PatientAdmitted'&&e.personId===patient.id).length,0);
 });
 
+test('LC1: a real bed release resumes a waiting handover without duplicating either patient',()=>{
+  const world=create({fixture:'hospital-full',hospitalCapacity:1,ambulances:1,patrols:0}),ids=world.state.people.map(p=>p.id);
+  const existingId=world.state.facilities.hospital.patientIds[0],incomingId=world.state.initialPersonId;
+  assert.ok(existingId&&existingId!==incomingId);
+  let waiting;
+  for(let tick=0;tick<1800;tick++) {
+    world.step();checkInvariants(world.state,ids);
+    waiting=world.state.incidents.find(i=>i.personId===incomingId&&i.status==='handover'&&/Hospital lotado/.test(i.waitReason??''));
+    if(waiting)break;
+  }
+  assert.ok(waiting,'The actual ambulance must first reach a full hospital and wait');
+  assert.deepEqual(world.state.facilities.hospital.patientIds,[existingId]);
+  assert.equal(world.state.events.filter(e=>e.type==='PatientAdmitted'&&e.personId===incomingId).length,0);
+  const existing=world.state.people.find(p=>p.id===existingId);existing.medicalDischargeTick=world.state.tick+1;
+  let admitted;
+  for(let tick=0;tick<150;tick++) {
+    world.step();checkInvariants(world.state,ids);
+    admitted=world.state.events.find(e=>e.type==='PatientAdmitted'&&e.personId===incomingId);
+    if(admitted)break;
+  }
+  const discharge=world.state.events.find(e=>e.type==='PatientDischarged'&&e.entityIds.includes(existingId));
+  assert.ok(discharge&&admitted,'Real discharge must free a bed for the pending physical handover');
+  assert.ok(admitted.tick>discharge.tick,'Admission still requires staffed handover after capacity returns');
+  assert.equal(waiting.status,'resolved');
+  assert.deepEqual(world.state.facilities.hospital.patientIds,[incomingId]);
+  assert.equal(world.state.people.find(p=>p.id===incomingId).location.kind,'hospital');
+  assert.notEqual(existing.location.kind,'hospital');
+  assert.equal(world.state.events.filter(e=>e.type==='PatientAdmitted'&&e.personId===incomingId).length,1);
+  assert.equal(world.state.events.filter(e=>e.type==='PatientDischarged'&&e.entityIds.includes(existingId)).length,1);
+  checkInvariants(world.state,ids);
+});
+
 test('LC1: a blocked road explains the unavailable route and prevents a teleport pickup',()=>{
   const world=create({fixture:'blocked-route',ambulances:1,patrols:0}),vehicle=world.state.vehicles[0],initial={x:vehicle.x,z:vehicle.z};
   const ids=world.state.people.map(p=>p.id);
