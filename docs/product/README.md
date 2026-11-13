@@ -25,6 +25,7 @@ O pacote técnico está em proposta. O Decision Log distingue os princípios já
 | Documento | Responsabilidade | Estado desta entrega |
 | --- | --- | --- |
 | [GAME_VISION](GAME_VISION.md) | Identidade, experiência, prevenção, sucesso e limites de âmbito. | Direções de produto estabelecidas + proposta de concretização. |
+| [URBAN_LIVING_CITY_V02](URBAN_LIVING_CITY_V02.md) | Cidade orgânica, incidentes e resposta autónoma médica/policial com audiovisual; proposta de prova urbana V0.2. | Direção de produto estabelecida, modelo técnico `PROPOSED`. |
 | [GAMEPLAY_SCALES](GAMEPLAY_SCALES.md) | Navegação, câmara, seleção, ordens e comunicação entre escalas. | `PROPOSED`. |
 | [CRISIS_SCENARIOS](CRISIS_SCENARIOS.md) | Núcleo comum e regras específicas de cada ameaça. | Zombies primeiro estabelecido; contratos `PROPOSED`. |
 | [BASELINE_DATA_V1](BASELINE_DATA_V1.md) | Dados reais iniciais, fontes, proveniência, licenças e cinco países-piloto. | Direção factual aprovada; esquema técnico `PROPOSED`. |
