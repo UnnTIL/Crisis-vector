@@ -8,6 +8,7 @@ function initializePopulation(ctx){
   const {state:s}=ctx,homes=s.city.buildings.filter(b=>b.type==='residential'),destinations=s.city.buildings.filter(b=>b.type==='office'||b.type==='shop');
   const ped=id=>s.city.pedestrianGraph.nodes.find(n=>n.id===id),road=id=>s.city.vehicleGraph.nodes.find(n=>n.id===id);
   const hospital=s.city.buildings.find(b=>b.type==='hospital'),station=s.city.buildings.find(b=>b.type==='station');
+  hospital.capacity=s.config.hospitalCapacity;
   s.facilities={hospital:{buildingId:hospital.id,capacity:s.config.hospitalCapacity,patientIds:[],staffIds:[]},station:{buildingId:station.id,patrolIds:[]}};
   for(let i=0;i<s.config.residents;i++){
     const home=homes[i%homes.length],work=destinations[(i*3+Math.floor(ctx.random()*destinations.length))%destinations.length];

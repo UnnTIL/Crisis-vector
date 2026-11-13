@@ -47,6 +47,7 @@ function createHelpers(state){
     const remainder=shortest(index,anchor,target);if(remainder===null)return false;
     const path=inMotion?[anchor,...remainder]:remainder;
     if(isPerson&&entity.location?.kind!=='street'){
+      if(entity.location?.kind==='hospital')state.facilities.hospital.patientIds=state.facilities.hospital.patientIds.filter(id=>id!==entity.id);
       const node=index.nodes.get(from);entity.x=node.x;entity.z=node.z;entity.location={kind:'street',nodeId:from};
     }
     entity.nodeId=from;entity.path=path;entity.destinationNodeId=target;return true;
@@ -54,7 +55,8 @@ function createHelpers(state){
   const move=(entity,speed,index,isPerson)=>{
     if(!Number.isFinite(speed)||speed<0||entity.broken)return false;
     if(!entity.path.length)return entity.nodeId===entity.destinationNodeId;
-    let remaining=speed*.1;
+    const congestion=!isPerson&&state.vehicles.some(other=>other.id!==entity.id&&other.path.length&&entity.path[0]===other.path[0]&&distance(other,entity)<4)? .45:1;
+    let remaining=speed*.1*congestion;
     while(remaining>1e-10&&entity.path.length){
       const nextId=entity.path[0],target=index.nodes.get(nextId);
       const link=index.adj.get(entity.nodeId)?.find(l=>l.node===nextId);

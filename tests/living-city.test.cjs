@@ -113,3 +113,96 @@ test('LC0: equal fixed logical time partitions reproduce every canonical identit
   assert.deepEqual(a.snapshot(),b.snapshot());
   checkInvariants(a.state);checkInvariants(b.state);
 });
+
+test('LC1: an ordinary call autonomously completes physical assessment, pickup, hospitalization and return',()=>{
+  const world=create(),ids=world.state.people.map(p=>p.id),patientId=world.state.initialPersonId;
+  const ambulanceStarts=new Map(world.state.vehicles.filter(v=>v.type==='ambulance').map(v=>[v.id,{x:v.x,z:v.z}]));
+  let travelled=false,patientInVehicle=false,patientInHospital=false,medicsOnFoot=false;
+  for(let tick=0;tick<2000;tick++) {
+    const previous=new Map(world.state.vehicles.map(v=>[v.id,{x:v.x,z:v.z}]));
+    world.step();checkInvariants(world.state,ids);
+    for(const vehicle of world.state.vehicles.filter(v=>v.type==='ambulance')) {
+      const old=previous.get(vehicle.id),distance=Math.hypot(vehicle.x-old.x,vehicle.z-old.z);
+      assert.ok(distance<=world.state.config.parameters.ambulanceSpeed*TICK_SECONDS+.000001,'Ambulance must travel, not teleport');
+      const start=ambulanceStarts.get(vehicle.id);if(Math.hypot(vehicle.x-start.x,vehicle.z-start.z)>2)travelled=true;
+    }
+    const patient=world.state.people.find(p=>p.id===patientId);
+    patientInVehicle ||= patient.location.kind==='vehicle';patientInHospital ||= patient.location.kind==='hospital';
+    medicsOnFoot ||= world.state.people.some(p=>p.role==='medic'&&p.location.kind==='street');
+  }
+  assert.equal(world._commands.size,0,'Ordinary services must not require player commands');
+  const incident=world.state.incidents.find(i=>i.personId===patientId&&i.type==='medical');assert.ok(incident);
+  assert.equal(incident.status,'resolved');assert.ok(travelled&&patientInVehicle&&patientInHospital&&medicsOnFoot);
+  const events=world.state.events.filter(e=>e.incidentId===incident.id);
+  const chain=['IncidentObserved','CallCreated','CallReceived','Triaged','AmbulanceDispatched','AmbulanceEnRoute',
+    'AmbulanceOnScene','PatientAssessed','PatientMovingToAmbulance','PatientBoarded','HospitalArrival','PatientAdmitted','AmbulanceReturning','AmbulanceAvailable'];
+  let previousTick=-1;
+  for(const type of chain) {
+    const event=events.find(e=>e.type===type);assert.ok(event,`The actual ${type} phase must execute`);
+    assert.ok(event.tick>=previousTick,`${type} cannot precede its prerequisite`);previousTick=event.tick;
+  }
+  assert.equal(events.filter(e=>e.type==='PatientBoarded').length,1,'One person cannot be picked up twice');
+  assert.equal(events.filter(e=>e.type==='PatientAdmitted').length,1);
+  assert.ok(world.state.events.some(e=>e.type==='PatientDischarged'&&e.entityIds.includes(patientId)));
+  assert.equal(world.state.people.find(p=>p.id===patientId).healthState,'healthy');
+  assert.equal(world.state.events.some(e=>['PersonInfected','PersonReanimated','ShotFired'].includes(e.type)),false,'S0 does not create an epidemic or combat');
+});
+
+test('LC1: simultaneous calls share one finite ambulance by priority and repeat reports do not duplicate service',()=>{
+  const world=create({fixture:'concurrentCalls',ambulances:1,patrols:0});world.step(240);
+  checkInvariants(world.state);
+  const medical=world.state.incidents.filter(i=>i.type==='medical');assert.equal(medical.length,2);
+  const high=medical.find(i=>i.severity===5),low=medical.find(i=>i.severity===2);assert.ok(high&&low);
+  assert.equal(high.assignedAmbulanceId,'ambulance-1');assert.equal(low.assignedAmbulanceId,null);
+  assert.equal(low.status,'waiting');assert.match(low.waitReason,/ocupad|espera/i);
+  const calls=world.state.calls.length,incidentCount=world.state.incidents.length;
+  const patient=world.state.people.find(p=>p.id===low.personId);
+  for(let repeat=0;repeat<5;repeat++)assert.equal(world.ctx.report(patient,'medical',2,'Dor comunicada',patient.id).id,low.id);
+  assert.equal(world.state.calls.length,calls);assert.equal(world.state.incidents.length,incidentCount);
+  assert.equal(world.state.vehicles.filter(v=>v.type==='ambulance'&&v.incidentId!==null).length,1);
+});
+
+test('LC1: priority overrides are idempotent across field order and invalid commands preserve complete state',()=>{
+  const world=create();world.step(225);const incident=world.state.incidents[0];assert.ok(incident);
+  const command={commandId:'priority-1',type:'overridePriority',incidentId:incident.id,priority:4};
+  assert.equal(world.command(command).ok,true);const once=fullState(world);
+  assert.equal(world.command({priority:4,incidentId:incident.id,type:'overridePriority',commandId:'priority-1'}).duplicate,true);
+  assert.deepEqual(fullState(world),once);
+  for(const input of [null,{},'overridePriority',Object.create(command),{...command,priority:3},{...command,commandId:'new',priority:NaN},
+    {...command,commandId:'new',priority:0},{...command,commandId:'new',priority:6},
+    {...command,commandId:'new',priority:2.5},{...command,commandId:'new',incidentId:'toString'},
+    {...command,commandId:'new',unknown:true}]) {
+    const before=fullState(world);assert.equal(world.command(input).ok,false);assert.deepEqual(fullState(world),before);
+  }
+});
+
+test('LC1: a full hospital keeps the patient physically present with an explicit wait instead of inventing capacity',()=>{
+  const world=create({fixture:'hospital-full',hospitalCapacity:1,ambulances:1,patrols:0}),ids=world.state.people.map(p=>p.id);
+  const existingPatient=world.state.facilities.hospital.patientIds[0];assert.ok(existingPatient);
+  for(let tick=0;tick<1800;tick++){world.step();checkInvariants(world.state,ids);}
+  const incident=world.state.incidents.find(i=>i.personId===world.state.initialPersonId&&i.type==='medical');
+  assert.ok(incident);assert.equal(incident.status,'handover');assert.match(incident.waitReason,/Hospital lotado/);
+  assert.deepEqual(world.state.facilities.hospital.patientIds,[existingPatient]);
+  const patient=world.state.people.find(p=>p.id===incident.personId);assert.equal(patient.location.kind,'street');
+  assert.equal(patient.healthState,'symptomatic');assert.equal(world.state.events.filter(e=>e.type==='PatientAdmitted'&&e.personId===patient.id).length,0);
+});
+
+test('LC1: a blocked road explains the unavailable route and prevents a teleport pickup',()=>{
+  const world=create({fixture:'blocked-route',ambulances:1,patrols:0}),vehicle=world.state.vehicles[0],initial={x:vehicle.x,z:vehicle.z};
+  const ids=world.state.people.map(p=>p.id);
+  for(let tick=0;tick<1000;tick++){world.step();checkInvariants(world.state,ids);}
+  const incident=world.state.incidents.find(i=>i.type==='medical');assert.ok(incident);
+  assert.equal(incident.assignedAmbulanceId,null);assert.match(incident.waitReason,/Percurso.*interrompido/i);
+  assert.deepEqual({x:vehicle.x,z:vehicle.z},initial);assert.equal(vehicle.passengerIds.length,0);
+  assert.equal(world.state.events.some(e=>e.type==='PatientBoarded'),false);
+});
+
+test('LC1: a broken ambulance is not dispatched and its finite crew never appears at the patient',()=>{
+  const world=create({fixture:'broken-vehicle',ambulances:1,patrols:0}),vehicle=world.state.vehicles[0],initial={x:vehicle.x,z:vehicle.z};
+  world.step(1000);checkInvariants(world.state);
+  assert.equal(vehicle.broken,true);assert.deepEqual({x:vehicle.x,z:vehicle.z},initial);
+  const incident=world.state.incidents.find(i=>i.type==='medical');assert.ok(incident);
+  assert.equal(incident.assignedAmbulanceId,null);assert.match(incident.waitReason,/avariada/i);
+  assert.ok(vehicle.crewIds.every(id=>world.state.people.find(p=>p.id===id).location.vehicleId===vehicle.id));
+  assert.equal(world.state.events.some(e=>e.type==='AmbulanceDispatched'),false);
+});
