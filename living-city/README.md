@@ -71,6 +71,13 @@ node scripts/benchmark-living-city.cjs \
   --output /tmp/living-city-browser.json --warmup-ms 2000 --capture-ms 10000
 ```
 
+Para o primeiro confronto S2 com áudio e efeitos ativos:
+
+```bash
+node scripts/benchmark-living-city.cjs --url http://127.0.0.1:8000/living-city/ \
+  --output /tmp/living-city-combat.json --scenarios S2 --s2-prime-ticks 470 --audio 1
+```
+
 Para verificar um ZIP, com as mesmas ferramentas de browser:
 
 ```bash

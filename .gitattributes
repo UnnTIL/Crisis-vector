@@ -9,3 +9,4 @@ artifacts/living-city-v02/living-city-v02.html linguist-generated=true -whitespa
 docs/living-city-browser.json linguist-generated=true
 docs/living-city-report.json linguist-generated=true
 docs/living-city-smoke.json linguist-generated=true
+docs/living-city-combat-browser.json linguist-generated=true

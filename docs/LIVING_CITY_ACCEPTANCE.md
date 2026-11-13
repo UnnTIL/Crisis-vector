@@ -19,7 +19,7 @@ policial após triagem, patrulha ocupada, proibição de atacar infetado não ho
 vetos por edifícios/terceiros, reação em deslocação, munição finita e reforço.
 A regressão de alta hospitalar também demonstra que libertar uma cama permite
 retomar a entrega do doente em espera sem duplicar pessoas ou internamentos.
-A CI remota do commit final ainda precisa de confirmação.
+O estado da CI remota do commit final, com o respetivo SHA, é registado no [PR #11](https://github.com/UnnTIL/Crisis-vector/pull/11).
 
 O [relatório de cenários](living-city-report.json) contém **nove execuções**:
 S0/S1/S2 × seeds 16927/42/2026, cada uma por 6000 ticks (600 segundos simulados).
@@ -82,7 +82,7 @@ de 10 segundos solicitados após dois segundos de aquecimento, usando SwiftShade
 por software. Foram observados cerca de **17,78–38,12 FPS**, conforme o caso.
 São ensaios preliminares cloud, com uma captura por combinação; não certificam
 60 FPS, GPU física, memória GPU ou ausência de fugas em sessões prolongadas.
-Os resultados e limites completos estão no [relatório de validação](LIVING_CITY_VALIDATION.md).
+Foram acrescentadas três capturas do primeiro confronto S2 com disparos e som ativado: 35,52 / 22,37 / 14,09 FPS em DPR 1/1,5/2, com dois eventos visuais e dois sons por caso. O total é de 12 capturas curtas; os ensaios não isolam causalmente o custo do áudio nem medem a crise tardia. Os resultados e limites completos estão no [relatório de validação](LIVING_CITY_VALIDATION.md).
 
 O [ZIP publicado](../artifacts/living-city-v02/crisis-vector-living-city-v02.zip)
 foi descarregado do GitHub com **HTTP 200 e 396 828 bytes**. O SHA-256 é

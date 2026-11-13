@@ -70,7 +70,17 @@ FPS = intervalos RAF observados / duração real; percentis nearest-rank. Lógic
 | S2 | 1.5 | 27.95 | 33.3 / 50.0 / 50.1 | 1.70 / 2.30 | 280 |
 | S2 | 2 | 18.93 | 50.0 / 66.7 / 83.3 | 1.90 / 2.90 | 190 |
 
-As cargas mantêm 164 pessoas lógicas e cinco viaturas, com 32 edifícios; apenas pessoas efetivamente na rua são desenhadas individualmente. Pessoas no interior/veículo permanecem no censo. Foram observadas 18 draw calls nos casos capturados. Não há milhares de pontos cosméticos equivalentes a milhares de agentes.
+As nove capturas acima cobrem fases iniciais e não continham disparos. Foram por isso acrescentadas **três capturas de S2 durante o primeiro confronto**, uma por DPR, no mesmo bundle: preparação de 470 ticks (47 s), aquecimento de 2 s e captura de 10 s, com áudio ativado por clique. Em cada caso foram registados dois eventos de tiro apresentados e dois sons reproduzidos.
+
+| Carga | DPR | FPS | Frame p50 / p95 / p99 (ms) | Lógica p95 / p99 (ms/tick) | Tiros visuais / sons |
+| --- | ---: | ---: | --- | --- | ---: |
+| S2 com disparos/som | 1 | 35.52 | 33.3 / 33.4 / 66.7 | 1.80 / 4.40 | 2 / 2 |
+| S2 com disparos/som | 1.5 | 22.37 | 33.4 / 66.7 / 166.7 | 2.80 / 4.00 | 2 / 2 |
+| S2 com disparos/som | 2 | 14.09 | 66.6 / 100.1 / 150.1 | 2.80 / 7.00 | 2 / 2 |
+
+[JSON das três capturas de confronto](living-city-combat-browser.json). São **12 capturas curtas no total**, sem repetições por combinação. Estas usam outro momento lógico; as diferenças não isolam o custo do áudio/efeitos como num ensaio A/B. A carga tardia de centenas de ocorrências/reanimados não foi perfilada graficamente.
+
+As cargas mantêm 164 pessoas lógicas e cinco viaturas, com 32 edifícios; apenas pessoas efetivamente na rua são desenhadas individualmente. Pessoas no interior/veículo permanecem no censo. Foram observadas 18 draw calls no último frame das capturas iniciais; isto não mede o pico das chamadas temporárias de efeitos. Não há milhares de pontos cosméticos equivalentes a milhares de agentes.
 
 Heap JS observado após capturas: **8.13–10.63 MiB**; não é pico do processo ou memória GPU. A extensão de timestamps GPU não estava disponível: `gpuMs=null`, não zero. O p99 de lógica de S0/DPR1 teve um pico de 107,2 ms; não é ocultado pela média ou pelo p95 baixo. Diferenças pontuais de DPR não provam uma ordenação universal.
 
