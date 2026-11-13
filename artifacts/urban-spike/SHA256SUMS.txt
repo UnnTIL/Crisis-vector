@@ -1,0 +1,2 @@
+0cc87fac36ca0175ad7daf24be235573eaa45c8f7232219b5fa854cf3834273e  crisis-vector-urban-spike.zip
+775f8b8310822ed665ab6b8eba373d368d84d7eca608c58c9bdc4acfd63be2ef  urban-demo.html

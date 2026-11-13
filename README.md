@@ -12,6 +12,8 @@ Protótipo **original e jogável**, em português europeu, de um simulador fict�
 
 Para desenvolver com Codex, abrir esta pasta como projeto. O ficheiro `AGENTS.md` explica os princípios e as verificações a manter.
 
+A [prova urbana WebGL isolada](urban-spike/README.md) acrescenta uma missão sintética com duas equipas, hordas e evacuação, sem substituir esta demo mundial. As instruções incluem o pacote autónomo, controlos e limites de desempenho.
+
 ## Funcionalidades incluídas
 
 - Fronteiras de 177 países e territórios, com seleção interativa e estado próprio.

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111a22">
+  <link rel="icon" href="data:,">
+  <title>CRISIS VECTOR · Operação urbana</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="./demo.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="masthead">
+      <a class="brand" href="../index.html" aria-label="CRISIS VECTOR — voltar à demonstração mundial"><span class="brand-mark" aria-hidden="true"><i></i></span><span>CRISIS <b>VECTOR</b><small>OPERAÇÕES URBANAS</small></span></a>
+      <div class="operation-name"><span class="eyebrow">EXERCÍCIO TÁTICO / 001</span><h1>Corredor de evacuação</h1></div>
+      <div class="header-status"><span class="status-dot" aria-hidden="true"></span><span id="mission-status">A INICIALIZAR</span><span class="spike-tag">SPIKE WEBGL</span></div>
+    </header>
+
+    <section class="telemetry" aria-label="Estado da operação">
+      <div class="metric metric-time"><span class="metric-label">TEMPO DE OPERAÇÃO</span><strong id="mission-time">00:00</strong><span class="metric-detail">Relógio da simulação</span></div>
+      <div class="metric"><span class="metric-label"><i class="legend-dot civilians"></i>CIVIS NO TERRENO</span><strong id="stat-population">—</strong><span class="metric-detail">População a proteger</span></div>
+      <div class="metric"><span class="metric-label"><i class="legend-dot threat"></i>AMEAÇA NO SETOR</span><strong id="stat-zombies" class="number-threat">—</strong><span class="metric-detail">Inclui vagas em preparação</span></div>
+      <div class="metric"><span class="metric-label"><i class="legend-dot safe"></i>EVACUADOS</span><strong id="stat-evacuated" class="number-safe">—</strong><span class="metric-detail">Saída pelo ponto seguro</span></div>
+      <div class="metric"><span class="metric-label"><i class="legend-dot resources"></i>RECURSOS</span><strong id="stat-resources">—</strong><span class="metric-detail">Reserva operacional</span></div>
+      <div class="metric"><span class="metric-label"><i class="legend-dot lost"></i>BAIXAS HUMANAS</span><strong id="stat-casualties">—</strong><span class="metric-detail">Perdas acumuladas</span></div>
+    </section>
+
+    <main class="operation-layout">
+      <section class="theatre" aria-label="Mapa tático da operação">
+        <div class="theatre-toolbar">
+          <div class="theatre-title"><span class="signal-icon" aria-hidden="true">◈</span><div><strong>SETOR 07 / RIBEIRA</strong><span>Terreno sintético · vista operacional</span></div></div>
+          <div class="time-controls" role="group" aria-label="Controlo do tempo">
+            <button id="pause-button" class="pause-button" title="Pausar ou retomar a simulação · Espaço" aria-pressed="false">PAUSAR</button>
+            <div class="speed-controls"><button data-speed="1" class="active" aria-pressed="true" title="Velocidade normal">1×</button><button data-speed="2" aria-pressed="false" title="Velocidade dupla">2×</button><button data-speed="4" aria-pressed="false" title="Velocidade quádrupla">4×</button></div>
+          </div>
+        </div>
+
+        <div id="scene" class="scene">
+          <canvas id="urbanCanvas" aria-label="Mapa urbano tridimensional. Seleciona uma equipa, escolhe uma ordem e clica no terreno para definir o destino." tabindex="0"></canvas>
+          <div class="map-overline"><span><i class="status-dot"></i> VISUALIZAÇÃO TÁTICA</span><span class="map-overline-right">N ↑ &nbsp; / &nbsp; ÁREA DE EXERCÍCIO</span></div>
+          <div class="selection-hud"><span class="hud-label">EM COMANDO</span><strong id="selected-team">Seleciona uma equipa</strong><span id="selected-target">A aguardar uma ordem</span></div>
+          <div class="map-key" aria-label="Legenda do mapa"><span><i class="legend-dot safe"></i>Controlo</span><span><i class="legend-dot threat"></i>Ameaça</span><span><i class="legend-dot lost"></i>Perdido</span></div>
+          <div id="renderer-status" class="renderer-status">A preparar o terreno…</div>
+          <div class="scene-corner corner-tl"></div><div class="scene-corner corner-tr"></div><div class="scene-corner corner-bl"></div><div class="scene-corner corner-br"></div>
+
+          <div id="mission-overlay" class="mission-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="result-title" aria-describedby="result-description">
+            <div class="result-card"><div class="result-emblem" aria-hidden="true">◈</div><span class="eyebrow" id="result-eyebrow">RELATÓRIO OPERACIONAL</span><h2 id="result-title">Operação concluída</h2><p id="result-description">O resultado da missão está disponível.</p><div class="result-actions"><button id="restart-result" class="primary-button">NOVA TENTATIVA <span aria-hidden="true">↗</span></button><button id="dismiss-result" class="text-button">Inspecionar o terreno</button></div></div>
+          </div>
+        </div>
+
+        <div class="map-instructions"><span><kbd>CLIQUE</kbd> selecionar / dar ordem</span><span><kbd>ARRASTAR</kbd> mover câmara</span><span><kbd>RODA</kbd> zoom</span><span><kbd>ESPAÇO</kbd> pausa</span><span class="right-click-hint">Botão direito: mover</span></div>
+      </section>
+
+      <aside class="command-panel" aria-label="Comando da operação">
+        <section class="mission-brief panel-section">
+          <div class="section-heading"><span class="eyebrow">OBJETIVO DA MISSÃO</span><span class="section-code">01 / 03</span></div>
+          <h2>Abre uma saída. <br>Protege quem fica.</h2>
+          <p id="mission-objective">Conduz os civis ao ponto de evacuação e contém a ameaça. As equipas cumprem as tuas ordens de forma autónoma.</p>
+          <div class="objective-note"><i class="legend-dot safe"></i><span>Corredores seguros fazem a diferença.</span></div>
+        </section>
+
+        <section class="teams-section panel-section">
+          <div class="section-heading"><h2 class="eyebrow">EQUIPAS NO TERRENO</h2><span class="section-code">02 UN.</span></div>
+          <div id="team-list" class="team-list"><button class="team-card selected" data-team="alpha" aria-pressed="true"><span class="team-symbol" aria-hidden="true">A</span><span class="team-copy"><strong>Equipa Alfa</strong><small>Contenção e proteção</small></span><span class="team-state">PRONTA</span></button><button class="team-card" data-team="bravo" aria-pressed="false"><span class="team-symbol" aria-hidden="true">B</span><span class="team-copy"><strong>Equipa Bravo</strong><small>Apoio à evacuação</small></span><span class="team-state">PRONTA</span></button></div>
+        </section>
+
+        <section class="orders-section panel-section">
+          <div class="section-heading"><h2 class="eyebrow">ORDENS OPERACIONAIS</h2><span class="section-code">03 / 03</span></div>
+          <div class="order-grid" role="group" aria-label="Ordem para a equipa selecionada">
+            <button class="order-button selected" data-order="move" aria-pressed="true" title="Deslocar a equipa até ao ponto escolhido"><span aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M4 14 14 4M5 4h9v9"/></svg></span><b>Mover</b></button>
+            <button class="order-button" data-order="defend" aria-pressed="false" title="Defender uma posição e conter ameaças próximas"><span aria-hidden="true"><svg viewBox="0 0 18 18"><path d="m9 2 6 3v5l-6 6-6-6V5Z"/></svg></span><b>Defender</b></button>
+            <button class="order-button" data-order="perimeter" aria-pressed="false" title="Estabelecer um perímetro em torno da posição"><span aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M2 2h14v14H2ZM6 2v14M12 2v14M2 6h14M2 12h14"/></svg></span><b>Perímetro</b></button>
+            <button class="order-button" data-order="escort" aria-pressed="false" title="Acompanhar civis na direção da evacuação"><span aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M2 9h12M10 5l4 4-4 4M16 3v12"/></svg></span><b>Escoltar</b></button>
+            <button class="order-button order-retreat" data-order="retreat" aria-pressed="false" title="Retirar a equipa para uma posição segura"><span aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M14 4 4 14M4 5v9h9"/></svg></span><b>Retirar</b></button>
+          </div>
+          <div class="order-brief"><p id="order-description">Seleciona uma equipa, escolhe uma ordem e clica no terreno para a executar.</p><div><span>CUSTO DA ORDEM</span><strong id="order-cost">—</strong></div></div>
+        </section>
+
+        <details class="event-section panel-section"><summary>REGISTO OPERACIONAL <span aria-hidden="true">+</span></summary><ol id="event-log" class="event-log"><li>A aguardar início da operação.</li></ol></details>
+
+        <details class="performance-section panel-section"><summary>MONITOR DE DESEMPENHO <span aria-hidden="true">+</span></summary><p class="performance-note">Cargas sintéticas para comparar o renderizador. Não representam população adicional.</p><div class="performance-controls"><label>Perfil de teste<select id="profile-select"><option value="P1">P1 · Leve</option><option value="P2">P2 · Intermédio</option><option value="P3">P3 · Intenso</option></select></label><label>Edifícios<select id="building-count"><option value="2000">2 000</option><option value="5000">5 000</option><option value="10000">10 000</option></select></label><label>Marcadores<select id="marker-count"><option value="2000">2 000</option><option value="5000">5 000</option><option value="10000">10 000</option></select></label></div><dl class="performance-metrics"><div><dt>FPS</dt><dd id="perf-fps">—</dd></div><div><dt>Frame p95</dt><dd id="perf-p95">—</dd></div><div><dt>Lógica / passo</dt><dd id="perf-logic">—</dd></div><div><dt>Memória JS</dt><dd id="perf-memory">—</dd></div></dl></details>
+
+        <section class="scenario-section panel-section" aria-label="Reiniciar cenário"><label for="seed-input">SEED DO CENÁRIO</label><div class="seed-controls"><input id="seed-input" type="number" min="0" max="4294967295" step="1" value="16927" aria-label="Seed do cenário"><button id="reset-button" title="Reiniciar a operação com esta seed">↻ REINICIAR</button></div><p>Mesma seed e mesmas ordens, mesmo cenário.</p></section>
+      </aside>
+    </main>
+
+    <footer class="footer"><span>CRISIS VECTOR <i>/</i> PROVA URBANA ISOLADA</span><span>Cenário, cidade e capacidades fictícios. Sem dados militares reais.</span><a href="../index.html">Voltar ao mundo <span aria-hidden="true">↗</span></a></footer>
+  </div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+</body>
+</html>

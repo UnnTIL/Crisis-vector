@@ -9,3 +9,4 @@ data/baseline/inputs/**/raw/
 # Full website responses are never repository inputs, including alternate paths.
 data/baseline/**/*.html
 data/baseline/**/*.htm
+artifacts/urban-spike/package/
