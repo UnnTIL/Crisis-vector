@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111b22">
+  <link rel="icon" href="data:,">
+  <title>CRISIS VECTOR · Cidade viva</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="./demo.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="masthead">
+      <a class="brand" href="../index.html" aria-label="CRISIS VECTOR — demonstração mundial"><span class="brand-mark" aria-hidden="true"><i></i></span><span>CRISIS <b>VECTOR</b><small>CIDADE VIVA / V0.2</small></span></a>
+      <div class="page-title"><span class="eyebrow">OBSERVAR · COMPREENDER · RESPONDER</span><h1>A cidade antes da crise.</h1></div>
+      <div class="header-status"><i class="status-dot" aria-hidden="true"></i><span>RESPOSTA AUTÓNOMA</span><span class="version-tag">LIVING CITY</span></div>
+    </header>
+
+    <section class="telemetry" aria-label="Informação conhecida sobre a cidade">
+      <div class="metric metric-time"><span class="metric-label">TEMPO SIMULADO</span><strong id="sim-time">00:00</strong><span class="metric-detail" id="scenario-status">S0 · Cidade sem surto</span></div>
+      <div class="metric"><span class="metric-label"><i class="legend-dot population"></i>POPULAÇÃO</span><strong id="stat-population">—</strong><span class="metric-detail">Pessoas com identidade no censo</span></div>
+      <div class="metric"><span class="metric-label"><i class="legend-dot medical"></i>CASOS CONHECIDOS</span><strong id="stat-known-cases">—</strong><span class="metric-detail">Informação observada / reportada</span></div>
+      <div class="metric"><span class="metric-label"><i class="legend-dot calls"></i>OCORRÊNCIAS ATIVAS</span><strong id="stat-calls">—</strong><span class="metric-detail">Chamadas em acompanhamento</span></div>
+      <div class="metric"><span class="metric-label"><i class="legend-dot police"></i>MEIOS DISPONÍVEIS</span><strong id="stat-resources">—</strong><span class="metric-detail">Resposta médica e policial</span></div>
+    </section>
+
+    <main class="city-layout">
+      <section class="theatre" aria-label="Observação da cidade">
+        <div class="theatre-toolbar"><div class="theatre-title"><svg class="city-symbol" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 21V9h6v12M8 21V3h8v18m0 0V12h6v9M0 21h24M11 7h2m-2 4h2m-2 4h2M4 13h2m-2 4h2m12-1h2"/></svg><div><strong>BAIRRO DA RIBEIRA</strong><span>Quotidiano urbano · terreno sintético</span></div></div><div class="time-controls" role="group" aria-label="Controlo do tempo"><button id="pause-button" title="Pausar ou retomar a simulação · Espaço" aria-pressed="false">PAUSAR</button><div class="speed-controls"><button data-speed="1" class="active" aria-pressed="true">1×</button><button data-speed="2" aria-pressed="false">2×</button><button data-speed="4" aria-pressed="false">4×</button></div></div></div>
+        <div id="scene" class="scene">
+          <canvas id="livingCanvas" aria-label="Cidade interativa. Clica numa pessoa, viatura, edifício ou ocorrência para consultar a informação conhecida." tabindex="0"></canvas>
+          <div class="map-overline"><span><i class="status-dot"></i> ROTINAS E SERVIÇOS</span><span>VISTA ORTOGRÁFICA &nbsp; / &nbsp; N ↑</span></div>
+          <div class="observation-tag"><span class="eyebrow">A CIDADE CONTINUA</span><p>Observa as rotinas. Os serviços respondem<br>sem precisarem das tuas ordens.</p></div>
+          <div id="debug-banner" class="debug-banner hidden" role="status"><strong>DEBUG · VERDADE DO MOTOR</strong><span>Inclui informação ainda desconhecida pelos serviços.</span></div>
+          <div class="map-legend" aria-label="Legenda"><span><i class="legend-dot population"></i>Habitantes</span><span><i class="legend-dot medical"></i>Socorro</span><span><i class="legend-dot police"></i>Polícia</span><span><i class="legend-dot threat"></i>Hostilidade</span></div>
+          <div id="renderer-status" class="renderer-status" role="status">A preparar a cidade…</div>
+          <div class="scene-corner corner-tl"></div><div class="scene-corner corner-tr"></div><div class="scene-corner corner-bl"></div><div class="scene-corner corner-br"></div>
+        </div>
+        <div class="map-instructions"><span><kbd>CLIQUE</kbd> observar entidade</span><span><kbd>ARRASTAR</kbd> mover câmara</span><span><kbd>RODA</kbd> zoom</span><span><kbd>ESPAÇO</kbd> pausa</span><span class="observe-note">Sem ordens obrigatórias</span></div>
+      </section>
+
+      <aside class="observation-panel" aria-label="Informação e acompanhamento">
+        <section class="selection-section panel-section">
+          <div class="section-heading"><h2 class="eyebrow">EM OBSERVAÇÃO</h2><span id="selection-kind" class="section-code">CIDADE</span></div>
+          <h3 id="selection-title">Uma cidade em movimento.</h3>
+          <p id="selection-note" class="selection-note">Seleciona uma pessoa, viatura, edifício ou ocorrência no mapa. Aqui aparece apenas o que já é conhecido.</p>
+          <dl id="selection-details" class="selection-details"></dl>
+          <button id="follow-button" class="follow-button" aria-pressed="false" disabled><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M6 2H2v4m10-4h4v4M2 12v4h4m10-4v4h-4M9 6v6M6 9h6"/></svg><span>SEGUIR ENTIDADE</span></button>
+        </section>
+
+        <section class="entity-section panel-section" aria-label="Encontrar uma entidade">
+          <div class="section-heading"><h2 class="eyebrow">ENCONTRAR NA CIDADE</h2><span class="section-code">ÍNDICE</span></div>
+          <label class="sr-only" for="entity-search">Pesquisar pessoa, viatura, edifício ou ocorrência</label><input id="entity-search" type="search" placeholder="Nome, viatura, edifício…" autocomplete="off" aria-controls="entity-select">
+          <div class="entity-picker"><label class="sr-only" for="entity-select">Entidade a consultar</label><select id="entity-select"><option value="">Seleciona uma entidade</option></select><button id="select-entity-button" title="Consultar a entidade selecionada" aria-label="Consultar entidade"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11m-4-4 4 4-4 4"/></svg></button></div>
+          <p class="field-note">Inclui pessoas dentro de edifícios ou viaturas.</p>
+        </section>
+
+        <section class="timeline-section panel-section">
+          <div class="section-heading"><h2 class="eyebrow">DIÁRIO DA CIDADE</h2><span class="live-label"><i class="status-dot"></i> EM DIRETO</span></div>
+          <label class="sr-only" for="timeline-filter">Filtrar acontecimentos</label><select id="timeline-filter" class="timeline-filter"><option value="all">Todos os acontecimentos</option><option value="medical">Saúde e socorro</option><option value="police">Polícia e segurança</option><option value="calls">Chamadas e despacho</option></select>
+          <ol id="event-log" class="event-log"><li class="empty-event">As rotinas e as chamadas vão surgir aqui.</li></ol>
+          <p class="field-note">Relatórios podem chegar depois do acontecimento.</p>
+        </section>
+
+        <section class="scenario-section panel-section">
+          <div class="section-heading"><h2 class="eyebrow">CENÁRIO DE OBSERVAÇÃO</h2><span class="section-code">S0—S2</span></div>
+          <label class="sr-only" for="scenario-select">Cenário</label><select id="scenario-select"><option value="S0">S0 · Vida urbana, sem surto</option><option value="S1">S1 · Doença progressiva</option><option value="S2">S2 · Transformação súbita</option></select>
+          <div class="seed-controls"><label class="seed-label" for="seed-input">SEED<input id="seed-input" type="number" min="0" max="4294967295" step="1" value="16927"></label><button id="reset-button" title="Reiniciar o cenário com esta seed"><span aria-hidden="true">↻</span> REINICIAR</button></div>
+          <p class="field-note">Mudar cenário reinicia a observação. Parâmetros experimentais, sem validade clínica.</p>
+        </section>
+
+        <details class="display-section panel-section"><summary>CAMADAS E ACESSIBILIDADE <span aria-hidden="true">+</span></summary><div class="toggle-list"><label><input type="checkbox" data-layer="services" checked><span>Instalações e serviços</span></label><label><input type="checkbox" data-layer="risk"><span>Risco comunicado</span></label><label><input type="checkbox" data-layer="paths"><span>Percursos de serviço</span></label><label><input id="reduced-effects" type="checkbox"><span>Reduzir flashes e movimento</span></label><label class="debug-toggle"><input id="debug-truth" type="checkbox"><span>Debug: mostrar verdade do motor<small>Revela dados ainda não observados.</small></span></label></div></details>
+
+        <section class="audio-section panel-section" aria-label="Controlos de áudio"><div class="audio-controls"><button id="sound-toggle" aria-pressed="false" title="Ativar áudio sintetizado após este clique"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7h4l5-4v14l-5-4H3Zm12-1c2 2 2 6 0 8"/></svg><span>ATIVAR SOM</span></button><label class="sr-only" for="volume-control">Volume</label><input id="volume-control" type="range" min="0" max="1" step="0.05" value="0.35" title="Volume do áudio"></div><p id="audio-status" class="field-note" role="status">Som desligado · os acontecimentos continuam visíveis.</p></section>
+
+        <details class="performance-section panel-section"><summary>DESEMPENHO DO OBSERVADOR <span aria-hidden="true">+</span></summary><dl class="performance-metrics"><div><dt>FPS</dt><dd id="perf-fps">—</dd></div><div><dt>Frame p95</dt><dd id="perf-p95">—</dd></div><div><dt>Lógica / passo</dt><dd id="perf-logic">—</dd></div><div><dt>Memória JS</dt><dd id="perf-memory">—</dd></div></dl><p class="field-note">A câmara, o som e os efeitos não decidem a simulação.</p></details>
+      </aside>
+    </main>
+
+    <footer class="footer"><span>CRISIS VECTOR <i>/</i> CIDADE VIVA V0.2</span><span>Cidade e capacidades fictícias · população finita · prova isolada</span><nav aria-label="Outras demonstrações"><a href="../urban-spike/">Prova tática <span aria-hidden="true">↗</span></a><a href="../index.html">Mundo <span aria-hidden="true">↗</span></a></nav></footer>
+  </div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+</body>
+</html>

@@ -4,3 +4,9 @@ data/baseline/inputs/raw/** -text
 urban-spike/demo.js linguist-generated=true -whitespace
 artifacts/urban-spike/urban-demo.html linguist-generated=true -whitespace
 docs/urban-benchmark.json linguist-generated=true
+living-city/demo.js linguist-generated=true -whitespace
+artifacts/living-city-v02/living-city-v02.html linguist-generated=true -whitespace
+docs/living-city-browser.json linguist-generated=true
+docs/living-city-report.json linguist-generated=true
+docs/living-city-smoke.json linguist-generated=true
+docs/living-city-combat-browser.json linguist-generated=true

@@ -10,3 +10,4 @@ data/baseline/inputs/**/raw/
 data/baseline/**/*.html
 data/baseline/**/*.htm
 artifacts/urban-spike/package/
+artifacts/living-city-v02/package/
