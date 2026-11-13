@@ -211,3 +211,29 @@ A direção global da ROUND-001 está validada **para planear a execução**, ma
 - **Consequências:** separar `ObservedData`, `DerivedCapabilities` e `CampaignState`; guardar por campo fonte, ano, unidade, licença, versões e qualidade. Um conjunto congelado deve permitir campanha offline e reproduzível. Lacunas são identificadas, não preenchidas silenciosamente.
 - **Primeiro recorte proposto:** piloto com PRT, DEU, USA, BRA e MWI; exploração de fontes públicas e licenças por série. Os valores e a integração no motor **ainda não estão aprovados ou implementados**.
 - **Referências:** [Issue #7](https://github.com/UnnTIL/Crisis-vector/issues/7), [BASELINE_DATA_V1](BASELINE_DATA_V1.md) e [MASTER_ROADMAP_V2](MASTER_ROADMAP_V2.md).
+
+
+## ROUND-004 — Cidade viva e resposta autónoma (2026-11-13)
+
+### DEC-025 — Resposta civil autónoma antes da gestão estratégica
+
+- **Estado:** `APPROVED` — direção de produto; contratos e algoritmos `PROPOSED`.
+- **Decisão:** uma cidade funciona autonomamente antes do surto; serviços médicos e policiais respondem às ocorrências sem que o jogador precise de emitir ordens. A intervenção do jogador é opcional nesta fase. Gestão nacional, criação de safe zones e construção de perímetros estratégicos serão introduzidas mais tarde.
+- **Consequências:** instituições com meios, bases, tempos de deslocação e regras de decisão; informação incompleta; pedidos e despachos auditáveis. Não criar recursos ilimitados.
+- **Referência:** [Issue #10](https://github.com/UnnTIL/Crisis-vector/issues/10) e [URBAN_LIVING_CITY_V02.md](URBAN_LIVING_CITY_V02.md).
+
+### DEC-026 — Ameaça orgânica e população urbana existente
+
+- **Estado:** `APPROVED` — direção de produto; velocidades, infeção e topologia `PROPOSED`.
+- **Decisão:** não criar hordas temporizadas; a crise parte de pessoa existente e evolui via contacto/transformação, podendo começar com chamada médica ou evento abrupto da mesma identidade. Pessoas seguem rotinas e circulam entre edifícios/quarteirões; populações/reanimações mantêm balanços.
+- **Consequências:** separam-se saúde, vida, localização, ameaça e conhecimento dos serviços; hordas resultam de agregação espacial, não de novas pessoas criadas artificialmente.
+- **Referência:** [URBAN_LIVING_CITY_V02.md](URBAN_LIVING_CITY_V02.md).
+
+### DEC-027 — Agentes policiais e resposta audiovisual causal
+
+- **Estado:** `APPROVED` — direção de produto; regras de intervenção, sons e efeitos `PROPOSED`.
+- **Decisão:** agentes policiais individuais e viaturas distinguíveis, patrulhas e esquadra com despacho autónomo; agentes podem reagir a ameaça hostil confirmada em alcance/linha de visão, mesmo em movimento, segundo doutrina. Uma pessoa apenas infetada e não hostil não deve ser atacada automaticamente. Disparos observáveis têm resposta visual e sonora.
+- **Consequências:** flashes, som e impactos resultam de eventos lógicos confirmados e não alteram a simulação; controlos de áudio e redução de flashes; preservar originais/licenças.
+- **Referência:** [URBAN_LIVING_CITY_V02.md](URBAN_LIVING_CITY_V02.md).
+
+**Estado de execução:** A V0.2 e os parâmetros estão por implementar; o [PR #9](https://github.com/UnnTIL/Crisis-vector/pull/9) continua prova tática V0.1 isolada e não demonstra este comportamento institucional. Não realizar merge automático.
