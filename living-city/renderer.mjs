@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import PosePresentation from './presentation/poses.cjs';
+
+const {VisualPoseHistory,CANONICAL_AZIMUTH,CAMERA_ROTATION_STEP,normalizeAzimuth,cameraOffset}=PosePresentation;
 
 const COLORS={resident:0x95b8b0,officer:0x65aff3,medic:0xf3eee1,hospitalStaff:0xb1e2d5,ambulance:0xeeeadd,police:0x4488b7};
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
@@ -41,6 +44,7 @@ export class LivingRenderer{
     this.scene.add(new THREE.HemisphereLight(0xd7eeff,0x2b3835,2.0));
     const sun=new THREE.DirectionalLight(0xffedcf,2.2);sun.position.set(-35,80,42);this.scene.add(sun);
     this.camera=new THREE.OrthographicCamera(-60,60,45,-45,.1,500);this.target=new THREE.Vector3(47,0,34);this.cameraOffset=new THREE.Vector3(68,88,68);
+    this.azimuth=CANONICAL_AZIMUTH;this.rotationSteps=0;this.poseHistory=new VisualPoseHistory();this.visualAlpha=1;this.drawnPoses={people:new Map(),vehicles:new Map()};
     this.raycaster=new THREE.Raycaster();this.pointerNdc=new THREE.Vector2();this.ground=new THREE.Plane(new THREE.Vector3(0,1,0),0);this.dummy=new THREE.Object3D();
     this.cityGroup=new THREE.Group();this.liveGroup=new THREE.Group();this.scene.add(this.cityGroup,this.liveGroup);
     this.city=null;this.cityKey=null;this.widthWorld=94;this.heightWorld=68;this.state=null;this.disposed=false;
@@ -96,14 +100,16 @@ export class LivingRenderer{
   _node(graph,id){return graph?.nodes?.find(node=>node.id===id);}
   _position(entity){
     if(!entity)return null;
-    if(entity.location?.kind==='vehicle'){
-      const vehicle=recordOf(this.state.vehicles,entity.location.vehicleId);return vehicle?{x:vehicle.x,z:vehicle.z,hidden:true,inside:'vehicle',description:'no interior de uma viatura'}:null;
-    }
-    if(['building','hospital'].includes(entity.location?.kind)){
-      const building=recordOf(this.city.buildings,entity.location.buildingId||this.state.facilities?.hospital?.buildingId);
-      if(building){const node=this._node(this.city.pedestrianGraph,building.entranceNodeIds?.[0]);return {x:node?.x??building.x,z:node?.z??building.z,hidden:true,inside:'building',description:`no interior de ${building.name||'um edifício'}`,buildingId:building.id};}
-    }
-    return finite(entity.x)&&finite(entity.z)?{x:entity.x,z:entity.z,hidden:false}:null;
+    return entity.location?this.drawnPoses.people.get(entity.id)||null:this.drawnPoses.vehicles.get(entity.id)||null;
+  }
+  captureTick(state){return this.poseHistory.captureTick(state);}
+  snapToState(state){this.poseHistory.snapToState(state);}
+  _prepareVisualPoses(state,alpha){
+    const summary=this.poseHistory.getSummary();
+    if(summary.currentTick!==state.tick)this.poseHistory.captureTick(state);
+    this.visualAlpha=alpha;this.drawnPoses={people:new Map(),vehicles:new Map()};
+    for(const person of state.people||[]){const pose=this.poseHistory.getVisualPose('person',person.id,alpha);if(pose)this.drawnPoses.people.set(person.id,pose);}
+    for(const vehicle of state.vehicles||[]){const pose=this.poseHistory.getVisualPose('vehicle',vehicle.id,alpha);if(pose)this.drawnPoses.vehicles.set(vehicle.id,pose);}
   }
   _buildCity(city){
     disposeTree(this.cityGroup);this.scene.remove(this.cityGroup);this.cityGroup=new THREE.Group();this.scene.add(this.cityGroup);
@@ -181,16 +187,17 @@ export class LivingRenderer{
     const vehicles=this.state.vehicles||[];this._ensureVehicles(vehicles.length);this.vehicleIds=vehicles.map(vehicle=>vehicle.id);
     this.vehicleBodies.count=vehicles.length;this.vehicleRoofs.count=vehicles.length;this.vehicleWheels.count=vehicles.length*4;this.vehicleLights.count=vehicles.length*2;
     vehicles.forEach((vehicle,index)=>{
-      const next=this._node(this.city.vehicleGraph,vehicle.path?.[0]),angle=next?Math.atan2(next.x-vehicle.x,next.z-vehicle.z):0;
+      const position=this._position(vehicle);
+      const next=this._node(this.city.vehicleGraph,vehicle.path?.[0]),angle=next?Math.atan2(next.x-position.x,next.z-position.z):0;
       const ambulance=vehicle.type==='ambulance',length=ambulance?2.2:1.8;
-      this.dummy.position.set(vehicle.x,.47,vehicle.z);this.dummy.rotation.set(0,angle,0);this.dummy.scale.set(.95,.62,length);this.dummy.updateMatrix();this.vehicleBodies.setMatrixAt(index,this.dummy.matrix);this.vehicleBodies.setColorAt(index,new THREE.Color(ambulance?COLORS.ambulance:COLORS.police));
+      this.dummy.position.set(position.x,.47,position.z);this.dummy.rotation.set(0,angle,0);this.dummy.scale.set(.95,.62,length);this.dummy.updateMatrix();this.vehicleBodies.setMatrixAt(index,this.dummy.matrix);this.vehicleBodies.setColorAt(index,new THREE.Color(ambulance?COLORS.ambulance:COLORS.police));
       this.dummy.position.y=.94;this.dummy.scale.set(.8,ambulance?.42:.25,ambulance?1.15:.8);this.dummy.updateMatrix();this.vehicleRoofs.setMatrixAt(index,this.dummy.matrix);this.vehicleRoofs.setColorAt(index,new THREE.Color(ambulance?0xdce4de:0x94b6c1));
       for(let wheel=0;wheel<4;wheel++){
         const dx=wheel%2?.5:-.5,dz=wheel<2?-length*.32:length*.32;
-        this.dummy.position.set(vehicle.x+dx*Math.cos(angle)+dz*Math.sin(angle),.23,vehicle.z-dx*Math.sin(angle)+dz*Math.cos(angle));this.dummy.rotation.set(0,angle,Math.PI/2);this.dummy.scale.set(1,1,1);this.dummy.updateMatrix();this.vehicleWheels.setMatrixAt(index*4+wheel,this.dummy.matrix);
+        this.dummy.position.set(position.x+dx*Math.cos(angle)+dz*Math.sin(angle),.23,position.z-dx*Math.sin(angle)+dz*Math.cos(angle));this.dummy.rotation.set(0,angle,Math.PI/2);this.dummy.scale.set(1,1,1);this.dummy.updateMatrix();this.vehicleWheels.setMatrixAt(index*4+wheel,this.dummy.matrix);
       }
       for(let lamp=0;lamp<2;lamp++){
-        const offset=lamp?.2:-.2;this.dummy.position.set(vehicle.x+offset*Math.cos(angle),ambulance?1.23:1.06,vehicle.z-offset*Math.sin(angle));this.dummy.rotation.set(0,angle,0);this.dummy.scale.set(1,1,1);this.dummy.updateMatrix();this.vehicleLights.setMatrixAt(index*2+lamp,this.dummy.matrix);this.vehicleLights.setColorAt(index*2+lamp,new THREE.Color(lamp?0xa8e8f4:0x437df1));
+        const offset=lamp?.2:-.2;this.dummy.position.set(position.x+offset*Math.cos(angle),ambulance?1.23:1.06,position.z-offset*Math.sin(angle));this.dummy.rotation.set(0,angle,0);this.dummy.scale.set(1,1,1);this.dummy.updateMatrix();this.vehicleLights.setMatrixAt(index*2+lamp,this.dummy.matrix);this.vehicleLights.setColorAt(index*2+lamp,new THREE.Color(lamp?0xa8e8f4:0x437df1));
       }
     });
     for(const mesh of [this.vehicleBodies,this.vehicleRoofs,this.vehicleWheels,this.vehicleLights]){mesh.instanceMatrix.needsUpdate=true;mesh.boundingSphere=null;if(mesh.instanceColor)mesh.instanceColor.needsUpdate=true;mesh.visible=this.layers.vehicles;}
@@ -212,7 +219,7 @@ export class LivingRenderer{
   _entity(selection){
     if(!selection||!this.state)return null;
     if(selection.kind==='person'){const value=recordOf(this.state.people,selection.id);return value?{value,position:this._position(value)}:null;}
-    if(selection.kind==='vehicle'){const value=recordOf(this.state.vehicles,selection.id);return value?{value,position:{x:value.x,z:value.z}}:null;}
+    if(selection.kind==='vehicle'){const value=recordOf(this.state.vehicles,selection.id);return value?{value,position:this._position(value)}:null;}
     if(selection.kind==='building'){const value=recordOf(this.city.buildings,selection.id);return value?{value,position:{x:value.x,z:value.z}}:null;}
     if(selection.kind==='incident'){const value=recordOf(this._visibleIncidents(),selection.id);return value?{value,position:{x:value.x,z:value.z}}:null;}
     return null;
@@ -236,7 +243,7 @@ export class LivingRenderer{
       else if(this.selected.kind==='incident'){
         const patrol=recordOf(this.state.patrols,record.value.assignedPatrolId);
         const vehicle=recordOf(this.state.vehicles,record.value.assignedAmbulanceId)||recordOf(this.state.vehicles,patrol?.vehicleId);
-        if(vehicle){path=vehicle.path||[];graph=this.city.vehicleGraph;start={x:vehicle.x,z:vehicle.z};}
+        if(vehicle){path=vehicle.path||[];graph=this.city.vehicleGraph;start=this._position(vehicle);}
       }
     }
     const nodes=graph?path.map(id=>this._node(graph,id)).filter(Boolean):[];
@@ -276,14 +283,16 @@ export class LivingRenderer{
     this.tracers.geometry.attributes.position.needsUpdate=true;this.tracers.geometry.attributes.color.needsUpdate=true;this.tracers.geometry.setDrawRange(0,tracers*2);
     this.currentShotEffects={flashes,tracers,impacts};
   }
-  render(state,alpha=0){
+  render(state,alpha=1){
     if(this.disposed||!state?.city)return;const started=performance.now();
+    if(!finite(alpha))throw new TypeError('Visual alpha must be finite.');alpha=clamp(alpha,0,1);
     const newWorld=this.state!==state;
-    if(newWorld){this.seenEvents.clear();this.lastEventId=0;this.shotEffects=[];this.effectsConsumed=0;this.effectsRendered=0;this.lastTick=-1;}
+    if(newWorld){this.seenEvents.clear();this.lastEventId=0;this.shotEffects=[];this.effectsConsumed=0;this.effectsRendered=0;this.lastTick=-1;this.poseHistory.captureTick(state);}
     this.state=state;const city=state.city;
     const key=`${state.seed}:${city.width}:${city.height}:${city.buildings?.length}:${city.pedestrianGraph?.nodes?.length}`;
     if(key!==this.cityKey){this.cityKey=key;this._buildCity(city);}else this.city=city;
     if(state.tick<this.lastTick){this.seenEvents.clear();this.lastEventId=0;this.shotEffects=[];this.effectsConsumed=0;this.effectsRendered=0;}this.lastTick=state.tick;
+    this._prepareVisualPoses(state,alpha);
     const following=this._entity(this.follow);
     if(following?.position){this.target.x=following.position.x+this.followOffset.x;this.target.z=following.position.z+this.followOffset.z;this._updateCamera();}
     this.rect=this.canvas.getBoundingClientRect();const known=this._knownPeople(),visiblePeople=this._drawPeople(known);this._drawVehicles();this._drawIncidents();
@@ -305,10 +314,15 @@ export class LivingRenderer{
     if(this.disposed)return;const rect=this.container.getBoundingClientRect();this.width=Math.max(1,rect.width||640);this.height=Math.max(1,rect.height||480);
     this.dpr=clamp(window.devicePixelRatio||1,1,2);this.renderer.setPixelRatio(this.dpr);this.renderer.setSize(this.width,this.height,false);this.rect=this.canvas.getBoundingClientRect();this._updateCamera();
   }
-  _updateCamera(){const span=Math.max(this.widthWorld,this.heightWorld)*1.02,aspect=(this.width||640)/(this.height||480);this.camera.left=-span*aspect/2;this.camera.right=span*aspect/2;this.camera.top=span/2;this.camera.bottom=-span/2;this.camera.position.copy(this.target).add(this.cameraOffset);this.camera.lookAt(this.target);this.camera.updateProjectionMatrix();this.camera.updateMatrixWorld();}
-  resetCamera(){this.follow=null;this.followOffset={x:0,z:0};this.target.set(this.widthWorld/2,0,this.heightWorld/2);this.camera.zoom=1;this._updateCamera();}
+  _updateCamera(){const span=Math.max(this.widthWorld,this.heightWorld)*1.02,aspect=(this.width||640)/(this.height||480),offset=cameraOffset(this.azimuth);this.cameraOffset.set(offset.x,offset.y,offset.z);this.camera.left=-span*aspect/2;this.camera.right=span*aspect/2;this.camera.top=span/2;this.camera.bottom=-span/2;this.camera.position.copy(this.target).add(this.cameraOffset);this.camera.lookAt(this.target);this.camera.updateProjectionMatrix();this.camera.updateMatrixWorld();}
+  rotateCamera(direction){if(direction!==-1&&direction!==1)throw new TypeError('Camera rotation must be -1 or +1.');this.rotationSteps=((this.rotationSteps+direction)%24+24)%24;this.azimuth=normalizeAzimuth(CANONICAL_AZIMUTH+this.rotationSteps*CAMERA_ROTATION_STEP);this._updateCamera();return this.azimuth;}
+  resetCamera(){this.follow=null;this.followOffset={x:0,z:0};this.target.set(this.widthWorld/2,0,this.heightWorld/2);this.camera.zoom=1;this.rotationSteps=0;this.azimuth=CANONICAL_AZIMUTH;this._updateCamera();}
   project(x,z,height=0){const p=new THREE.Vector3(x,height,z).project(this.camera),rect=this.canvas.getBoundingClientRect();return {x:rect.left+(p.x+1)*rect.width/2,y:rect.top+(1-p.y)*rect.height/2,visible:p.z>=-1&&p.z<=1&&Math.abs(p.x)<=1.05&&Math.abs(p.y)<=1.05};}
   projectEntity(kind,id){const entity=this._entity({kind,id});return entity?.position?this.project(entity.position.x,entity.position.z,kind==='person'?.6:kind==='vehicle'?.65:kind==='incident'?1.7:kind==='building'?(entity.value.height||3)/2:0):null;}
+  getVisualPose(kind,id){
+    if(kind==='person'||kind==='vehicle'){const pose=this.drawnPoses[kind==='person'?'people':'vehicles'].get(id);return pose?{...pose}:null;}
+    const entity=this._entity({kind,id});return entity?.position?{kind,id,...entity.position,interpolated:false,currentTick:this.state.tick,previousTick:this.state.tick}:null;
+  }
   _groundAt(x,y){const rect=this.canvas.getBoundingClientRect();this.pointerNdc.set((x-rect.left)/rect.width*2-1,1-(y-rect.top)/rect.height*2);this.raycaster.setFromCamera(this.pointerNdc,this.camera);return this.raycaster.ray.intersectPlane(this.ground,new THREE.Vector3());}
   _pick(clientX,clientY){
     const point=this._groundAt(clientX,clientY);if(!point)return null;
@@ -321,8 +335,8 @@ export class LivingRenderer{
       if(hit.object===this.incidentMarkers)return {kind:'incident',id:this.incidentIds[index]};
       if(hit.object===this.buildingBodies)return {kind:'building',id:this.city.buildings[index].id};
     }
-    if(this.layers.people){const person=(this.state?.people||[]).filter(p=>p.location?.kind==='street').find(p=>Math.hypot(p.x-point.x,p.z-point.z)<.42);if(person)return {kind:'person',id:person.id};}
-    if(this.layers.vehicles){const vehicle=(this.state?.vehicles||[]).find(v=>Math.hypot(v.x-point.x,v.z-point.z)<1);if(vehicle)return {kind:'vehicle',id:vehicle.id};}
+    if(this.layers.people){const person=(this.state?.people||[]).filter(p=>p.location?.kind==='street').find(p=>{const pose=this._position(p);return pose&&Math.hypot(pose.x-point.x,pose.z-point.z)<.42;});if(person)return {kind:'person',id:person.id};}
+    if(this.layers.vehicles){const vehicle=(this.state?.vehicles||[]).find(v=>{const pose=this._position(v);return pose&&Math.hypot(pose.x-point.x,pose.z-point.z)<1;});if(vehicle)return {kind:'vehicle',id:vehicle.id};}
     if(this.layers.buildings){for(const building of this.city?.buildings||[])for(const id of building.entranceNodeIds||[]){const node=this._node(this.city.pedestrianGraph,id);if(node&&Math.hypot(node.x-point.x,node.z-point.z)<.7)return {kind:'building',id:building.id};}}
     return null;
   }
@@ -342,7 +356,8 @@ export class LivingRenderer{
   }
   getMetrics(){return {...this.metrics,renderer:`Three.js r${THREE.REVISION} / WebGL 2`,webgl2:true,gpu:{...this.gpu},drawCalls:this.renderer.info.render.calls,triangles:this.renderer.info.render.triangles,
     memory:{geometries:this.renderer.info.memory.geometries,textures:this.renderer.info.memory.textures},dpr:this.dpr,resolution:{cssWidth:this.width,cssHeight:this.height,bufferWidth:this.canvas.width,bufferHeight:this.canvas.height},
-    camera:{target:{x:this.target.x,z:this.target.z},zoom:this.camera.zoom},selected:this.selected?{...this.selected}:null,follow:this.follow?{...this.follow}:null,debug:this.debug,reducedEffects:this.reducedEffects,
+    camera:{target:{x:this.target.x,z:this.target.z},zoom:this.camera.zoom,azimuthRadians:this.azimuth,azimuthDegrees:this.azimuth*180/Math.PI,rotationStepDegrees:15},
+    interpolation:{...this.poseHistory.getSummary(),alpha:this.visualAlpha,tickMilliseconds:100},selected:this.selected?{...this.selected}:null,follow:this.follow?{...this.follow}:null,debug:this.debug,reducedEffects:this.reducedEffects,
     representation:'One street-person body per canonical identity; building/vehicle occupants remain counted and hidden. Selection markers at entrances are not extra people.'};}
-  dispose(){if(this.disposed)return;this.disposed=true;for(const [type,handler] of Object.entries(this.handlers))this.canvas.removeEventListener(type,handler);this.resizeObserver?.disconnect();window.removeEventListener('resize',this.windowResize);this.labels.remove();disposeTree(this.scene);this.renderer.dispose();this.renderer.forceContextLoss();if(this.ownsCanvas)this.canvas.remove();this.labelMap.clear();this.state=null;this.city=null;this.shotEffects=[];this.seenEvents.clear();}
+  dispose(){if(this.disposed)return;this.disposed=true;for(const [type,handler] of Object.entries(this.handlers))this.canvas.removeEventListener(type,handler);this.resizeObserver?.disconnect();window.removeEventListener('resize',this.windowResize);this.labels.remove();disposeTree(this.scene);this.renderer.dispose();this.renderer.forceContextLoss();if(this.ownsCanvas)this.canvas.remove();this.labelMap.clear();this.state=null;this.city=null;this.shotEffects=[];this.seenEvents.clear();this.drawnPoses.people.clear();this.drawnPoses.vehicles.clear();}
 }

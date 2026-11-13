@@ -16,8 +16,24 @@ const byId = (items, id) => items.find(item => item.id === id);
 const active = person => person && person.lifeState === 'alive';
 const fitForDuty = person => active(person) && person.healthState !== 'critical' && person.hp >= 25;
 const officers = (s, patrol) => patrol.officerIds.map(id => byId(s.people, id)).filter(Boolean);
+function ownsOfficer(s,patrol,person){
+  if(person.location.kind==='hospital'||s.facilities.hospital.patientIds.includes(person.id)||
+    person.location.kind==='vehicle'&&person.location.vehicleId!==patrol.vehicleId||
+    s.vehicles.some(vehicle=>vehicle.passengerIds.includes(person.id)))return false;
+  return !s.incidents.some(incident=>incident.type==='medical'&&incident.personId===person.id&&
+    !['resolved','cancelled'].includes(incident.status)&&(incident.assignedAmbulanceId||person.taskId===incident.id));
+}
+function underPoliceControl(s,person){
+  const patrol=s.patrols.find(p=>p.officerIds.includes(person.id));
+  return !!patrol&&ownsOfficer(s,patrol,person);
+}
+function parkedAtNode(ctx,vehicle){
+  const node=ctx.roadNode(vehicle.nodeId);
+  return !!node&&!vehicle.path.length&&distance(vehicle,node)<1e-7;
+}
 const available = (s, patrol) => ['available','patrolling'].includes(patrol.status) &&
-  !byId(s.vehicles, patrol.vehicleId)?.broken && officers(s, patrol).some(p => fitForDuty(p) && p.ammo > 0);
+  !byId(s.vehicles, patrol.vehicleId)?.broken && officers(s,patrol).every(p=>ownsOfficer(s,patrol,p))&&
+  officers(s, patrol).some(p => fitForDuty(p) && p.ammo > 0);
 
 function initializePolice(ctx) {
   const s = ctx.state, p = params(s);
@@ -53,6 +69,7 @@ function observesHostile(ctx, officer, target, p) {
 }
 
 function observe(ctx, officer, p) {
+  if(!underPoliceControl(ctx.state,officer))return;
   for (const target of ctx.state.people) {
     if (!observesHostile(ctx, officer, target, p)) continue;
     officer.lastObservedThreats[target.id] = {...ctx.position(target), tick:ctx.state.tick};
@@ -92,7 +109,7 @@ function thirdPartyInLine(ctx, officer, target, clearance) {
 }
 
 function authorizedTarget(ctx, officer, p) {
-  if (!fitForDuty(officer) || officer.location.kind !== 'street' || officer.ammo <= 0) return null;
+  if (!fitForDuty(officer) || !underPoliceControl(ctx.state,officer) || officer.location.kind !== 'street' || officer.ammo <= 0) return null;
   const targets = ctx.state.people.filter(target =>
     officer.knownThreats.includes(target.id) && observesHostile(ctx, officer, target, p) &&
     distance(ctx.position(officer), ctx.position(target)) <= p.policeFireRange
@@ -130,7 +147,7 @@ function fire(ctx, officer, p) {
 
 function requestBackup(ctx, patrol, reason) {
   const s = ctx.state, incident = byId(s.incidents, patrol.incidentId);
-  if (incident) {
+  if (incident&&incident.assignedPatrolId===patrol.id) {
     incident.requiresPolice = true;
     incident.policeStatus = 'waitingBackup';
     incident.assignedPatrolId = null;
@@ -150,7 +167,7 @@ function requestBackup(ctx, patrol, reason) {
   vehicle.incidentId = null;
   vehicle.status = 'waitingCrew';
   for (const officer of officers(s, patrol)) {
-    if (!active(officer) || officer.location.kind === 'vehicle') continue;
+    if (!active(officer) || !ownsOfficer(s,patrol,officer) || officer.location.kind === 'vehicle') continue;
     officer.activity = 'retreating';
     officer.taskId = null;
     ctx.routePerson(officer, 'foot-' + vehicle.nodeId);
@@ -184,7 +201,7 @@ function dispatch(ctx, p) {
     incident.policeStatus = 'enRoute';
     incident.waitReason = null;
     if (incident.type === 'violence') incident.status = 'assigned';
-    for (const officer of officers(s, selected)) if (active(officer)) { officer.activity = 'responding'; officer.taskId = incident.id; }
+    for (const officer of officers(s, selected)) if (active(officer)&&ownsOfficer(s,selected,officer)) { officer.activity = 'responding'; officer.taskId = incident.id; }
     ctx.emit('PatrolDispatched', 'A central enviou uma patrulha existente para uma ocorrência conhecida.', {
       entityIds:[selected.id, vehicle.id, incident.id], patrolId:selected.id, vehicleId:vehicle.id,
       incidentId:incident.id, position:ctx.position(vehicle), visibility:'reported'
@@ -193,9 +210,10 @@ function dispatch(ctx, p) {
 }
 
 function debark(ctx, patrol, vehicle, incident) {
+  if(!parkedAtNode(ctx,vehicle))return;
   const nodeId = 'foot-' + vehicle.nodeId;
   for (const officer of officers(ctx.state, patrol)) {
-    if (!active(officer) || officer.location.kind !== 'vehicle') continue;
+    if (!active(officer) || !ownsOfficer(ctx.state,patrol,officer) || officer.location.kind !== 'vehicle'||officer.location.vehicleId!==vehicle.id) continue;
     officer.location = {kind:'street', nodeId};
     officer.nodeId = nodeId;
     officer.x = vehicle.x; officer.z = vehicle.z;
@@ -221,21 +239,38 @@ function resolve(ctx, patrol, incident) {
   });
   patrol.status = 'returning'; patrol.incidentId = null;
   vehicle.status = 'waitingCrew'; vehicle.incidentId = null;
-  for (const officer of officers(s, patrol)) if (active(officer) && officer.location.kind === 'street') {
+  for (const officer of officers(s, patrol)) if (active(officer) && ownsOfficer(s,patrol,officer) && officer.location.kind === 'street') {
     officer.activity = 'returning'; officer.taskId = null;
     ctx.routePerson(officer, 'foot-' + vehicle.nodeId);
   }
 }
 
 function returnToVehicle(ctx, patrol, vehicle, p) {
+  if(!parkedAtNode(ctx,vehicle)){vehicle.waitReason='Viatura ainda não estacionou num nó viário real.';return;}
   let allAboard = true;
   for (const officer of officers(ctx.state, patrol)) {
     if (!active(officer)) continue;
-    if (officer.location.kind === 'vehicle') continue;
+    if(!ownsOfficer(ctx.state,patrol,officer)){patrol.status='unavailable';vehicle.status='unavailable';return;}
+    if (officer.location.kind === 'vehicle'&&officer.location.vehicleId===vehicle.id) continue;
     allAboard = false;
+    const footId='foot-'+vehicle.nodeId;
+    const needsReturnRoute=officer.destinationNodeId!==footId||
+      !officer.path.length&&!officer.finalApproach&&distance(ctx.position(officer),vehicle)>.25;
+    if(needsReturnRoute){
+      if(ctx.state.tick<(officer.nextPoliceReturnRouteTick??0))continue;
+      officer.nextPoliceReturnRouteTick=after(ctx,1);
+      if(!ctx.routePerson(officer,footId)){
+        vehicle.waitReason=patrol.waitReason='Acesso pedonal de regresso indisponível; a patrulha volta a tentar sem recuperar pessoas à distância.';
+        continue;
+      }
+      if(vehicle.waitReason?.startsWith('Acesso pedonal de regresso'))vehicle.waitReason=null;
+      if(patrol.waitReason?.startsWith('Acesso pedonal de regresso'))patrol.waitReason=null;
+    }
     ctx.movePerson(officer, officer.activity === 'retreating' ? p.policeRetreatSpeed : p.policeApproachSpeed);
-    if (distance(ctx.position(officer), vehicle) < .25 && !officer.path.length) {
+    if (officer.location.kind==='street'&&distance(ctx.position(officer), vehicle) < .25 && !officer.path.length&&!officer.finalApproach) {
       officer.location = {kind:'vehicle', vehicleId:vehicle.id};
+      officer.x=vehicle.x;officer.z=vehicle.z;officer.nodeId='foot-'+vehicle.nodeId;
+      officer.path=[];officer.travelEdge=null;officer.finalApproach=null;officer.destinationPoint=null;
       officer.activity = 'patrolling';
       officer.taskId = null;
       ctx.emit('OfficerBoarded', 'Um agente regressou fisicamente à sua viatura.', {
@@ -308,6 +343,42 @@ function crewEmergency(ctx, patrol, vehicle, p) {
 
 function updatePatrol(ctx, patrol, p) {
   const s = ctx.state, vehicle = byId(s.vehicles, patrol.vehicleId), crew = officers(s, patrol);
+  const transferred=crew.filter(officer=>!ownsOfficer(s,patrol,officer));
+  if(transferred.length){
+    if(patrol.incidentId)requestBackup(ctx,patrol,'Agente sob assistência médica ou na posse operacional de outro serviço.');
+    if(!patrol.ownershipSuspended){
+      patrol.ownershipSuspended=true;
+      ctx.emit('PatrolCrewUnavailable','A afiliação mantém-se, mas a patrulha não pode recuperar doentes de outro serviço.',{
+        entityIds:[patrol.id,...transferred.map(officer=>officer.id)],patrolId:patrol.id,
+        officerIds:transferred.map(officer=>officer.id),visibility:'reported'
+      });
+    }
+    patrol.status='unavailable';
+    vehicle.waitReason=patrol.waitReason='Tripulação sob assistência ou noutro serviço; sem recuperação automática de pessoas.';
+    if(vehicle.path.length){
+      if(distance(vehicle,ctx.roadNode(vehicle.nodeId))<1e-7){vehicle.path=[];vehicle.currentSpeed=0;}
+      else{
+        vehicle.path=vehicle.path.slice(0,1);vehicle.destinationNodeId=vehicle.path[0];
+        ctx.moveVehicle(vehicle,p.policeVehicleSpeed);
+        if(vehicle.path.length){vehicle.status='stopping';return;}
+      }
+    }
+    vehicle.status='unavailable';vehicle.currentSpeed=0;
+    for(const officer of transferred){
+      // A patient still inside this car needs a physical handoff at the
+      // stopped road access. A person already in another service is untouched.
+      if(officer.location.kind!=='vehicle'||officer.location.vehicleId!==vehicle.id||!parkedAtNode(ctx,vehicle))continue;
+      const nodeId='foot-'+vehicle.nodeId;
+      officer.location={kind:'street',nodeId};officer.nodeId=nodeId;
+      officer.x=vehicle.x;officer.z=vehicle.z;officer.path=[];
+      officer.travelEdge=null;officer.finalApproach=null;officer.destinationPoint=null;
+      ctx.emit('OfficerMedicalHandoff','O agente saiu da sua viatura parada para a assistência atribuída, mantendo a tarefa médica.',{
+        entityIds:[officer.id,vehicle.id,officer.taskId].filter(Boolean),officerId:officer.id,
+        vehicleId:vehicle.id,incidentId:officer.taskId,position:ctx.position(officer),visibility:'confirmed'
+      });
+    }
+    return;
+  }
   if (crewEmergency(ctx, patrol, vehicle, p)) return;
   if (patrol.status === 'busy') {
     if (s.tick < patrol.busyUntil) return;
@@ -334,7 +405,12 @@ function updatePatrol(ctx, patrol, p) {
     return;
   }
   if (patrol.status === 'responding') {
+    if(patrol.routeWait&&s.tick<(patrol.nextRouteRetryTick??0))return;
     if (ctx.moveVehicle(vehicle, p.policeVehicleSpeed)) {
+      if(patrol.routeWait){
+        if(incident.waitReason===patrol.routeWait.message)incident.waitReason=patrol.routeWait.previousReason;
+        vehicle.waitReason=null;patrol.routeWait=null;
+      }
       vehicle.status = 'onScene'; patrol.status = 'approaching';
       incident.policeStatus = 'onScene';
       if (incident.type === 'violence') incident.status = 'onScene';
@@ -344,7 +420,15 @@ function updatePatrol(ctx, patrol, p) {
         entityIds:[patrol.id, incident.id], patrolId:patrol.id, incidentId:incident.id,
         position:ctx.position(vehicle), visibility:'confirmed'
       });
-    } else if (vehicle.routeBlocked) requestBackup(ctx, patrol, 'Percurso policial bloqueado.');
+    } else if (vehicle.routeBlocked) {
+      const message='Percurso policial indisponível; a equipa aguarda e volta a avaliar o acesso.';
+      if(!patrol.routeWait)patrol.routeWait={message,previousReason:incident.waitReason??null};
+      patrol.nextRouteRetryTick=after(ctx,1);
+      incident.policeStatus='waitingRoute';incident.waitReason=message;vehicle.waitReason=message;
+    } else if(patrol.routeWait){
+      if(incident.waitReason===patrol.routeWait.message)incident.waitReason=patrol.routeWait.previousReason;
+      incident.policeStatus='enRoute';vehicle.waitReason=null;patrol.routeWait=null;
+    }
     return;
   }
   for (const officer of crew) {

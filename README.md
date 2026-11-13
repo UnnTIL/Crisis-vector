@@ -14,7 +14,7 @@ Para desenvolver com Codex, abrir esta pasta como projeto. O ficheiro `AGENTS.md
 
 A [prova urbana WebGL isolada](urban-spike/README.md) acrescenta uma missão sintética com duas equipas, hordas e evacuação, sem substituir esta demo mundial. As instruções incluem o pacote autónomo, controlos e limites de desempenho.
 
-A [Urban Living City V0.2](living-city/README.md) acrescenta um bairro com habitantes e resposta médica/policial autónoma, em três cenários sintéticos, preservando as demos anteriores.
+A [Living City V0.2.1](living-city/README.md) acrescenta um bairro com habitantes e resposta médica/policial autónoma, em três cenários sintéticos, preservando as demos anteriores.
 
 ## Funcionalidades incluídas
 

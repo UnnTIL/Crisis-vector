@@ -1,14 +1,18 @@
 {
   "schemaVersion": 1,
+  "engineVersion": "0.2.1",
+  "baseSimulationRate": 2,
+  "fixedTickMs": 100,
+  "visualInterpolation": "previous/current tick poses",
   "three": "0.181.2",
   "esbuild": "0.25.12",
-  "bundleBytes": 621187,
-  "bundleSHA256": "1bf2b16119aa572e069bd5205f882917f4cdbbaacd01e50a4dd04d2454683b1c",
+  "bundleBytes": 647877,
+  "bundleSHA256": "229b9a89c39b5fc386480fe41bd12de6e4ce6652b8c09b37088bc70780996430",
   "externalNetworkRequired": false,
   "files": [
     {
       "path": "living-city/app.mjs",
-      "sha256": "4aea8cade95921fe613581b5d8cb5aca4ba21b6f410776d2bcbf56b445028950"
+      "sha256": "4834dcfaa67175666dfb63393a903c3f07e1d9922ba8d86b195ffb219995f509"
     },
     {
       "path": "living-city/audio.mjs",
@@ -24,27 +28,31 @@
     },
     {
       "path": "living-city/core/helpers.cjs",
-      "sha256": "d498fed800c5347458127398ee14b663a7c5f91d8d9663b57cb21baa394740f2"
+      "sha256": "a2caf9714924520b578fc62eb6ef756bd9c73855262f2fa6c7b7e0a31e109b81"
     },
     {
       "path": "living-city/core/incidents.cjs",
-      "sha256": "d354ea7df301ebf8f5252174d96ca8f287c40f01f1dbe7673872379786f15440"
+      "sha256": "bc282e4ee30179319d2c0749300854d964069316e6add0042bb595d337e3db3c"
     },
     {
       "path": "living-city/core/medical.cjs",
-      "sha256": "f39041cd66c433dc7cbd784182ef657d8f8ffb01f953f1876c0c1e438eb6e4e9"
+      "sha256": "687703f6bbb3c338aeb3887ddfddef7f99e7daf51cd5955bd340256fc9a08250"
     },
     {
       "path": "living-city/core/police.cjs",
-      "sha256": "697656579e5826db704c0edca254e5508e9b8cf772ce6c989fccd6a9d8649712"
+      "sha256": "08b34d34937c7944faa4094a98fae11464f54fbde6c06d01e677f1e139e56f4c"
     },
     {
       "path": "living-city/core/population.cjs",
-      "sha256": "92d35247d46db6f70058838c4b3c4c9839a1deba009347b68f6ef82179482d1d"
+      "sha256": "c12717a82e73b2ad4214ca174c0d343b96797816ed9689dbcb863933b02185a0"
     },
     {
       "path": "living-city/core/topology.cjs",
       "sha256": "ac0becb485ef0c872ad4c07ac4d2fa6680067f4c84b3091de980f12b0f0aa053"
+    },
+    {
+      "path": "living-city/core/traffic.cjs",
+      "sha256": "85ed6fbe3060cec1b1e3d6f90108363ddc7ae0976d0170697e8a2ca08093957b"
     },
     {
       "path": "living-city/core/world.cjs",
@@ -52,15 +60,23 @@
     },
     {
       "path": "living-city/index.html",
-      "sha256": "caa1f6ebf6754dabdc40e2d7d8095ca1e10df9d41b7e8259a917c9e92d7222f7"
+      "sha256": "5db5f4795d9014b3c3f4983eab60481a69beab45b12764380d441d6f8a610cf6"
+    },
+    {
+      "path": "living-city/presentation/poses.cjs",
+      "sha256": "6329be39a46c8bc0591b2378a026f8dc89b91e2ea48640d461502a56ba38dba3"
+    },
+    {
+      "path": "living-city/presentation/time.cjs",
+      "sha256": "8fa8c2099e8d34223fa627dc1d8561fbeda4248c36d0bd382940fb1aefd56c94"
     },
     {
       "path": "living-city/renderer.mjs",
-      "sha256": "e845ce5c94f6aa50356bdc8ca3e4d7eda661d0af6ccd26df47352d3d717338a3"
+      "sha256": "34f665857f220ecc513bb0573d2c69a36fb73e3a2af9ad6bf3dcbef58fcc1568"
     },
     {
       "path": "living-city/styles.css",
-      "sha256": "e5b4ac9904f917e93366cbd12bad4f84bc5397e7c313543acaa5cc740cfb4f72"
+      "sha256": "cf6538675ce176c208b99faacb8f1cb2e0cae9f4c4daf457fe3f89c77cc5eb84"
     }
   ]
 }
