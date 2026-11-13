@@ -8,7 +8,14 @@ function reportIncident(ctx,person,type,severity,knownFact,reporterId){
   if(incident){
     if(knownFact&&!incident.knownFacts.includes(knownFact))incident.knownFacts.push(knownFact);
     if(reporterId&&!incident.witnessIds.includes(reporterId))incident.witnessIds.push(reporterId);
-    incident.severity=Math.max(incident.severity,severity);incident.priority=Math.max(incident.priority,severity);return incident;
+    const previousSeverity=incident.severity,previousPriority=incident.priority;
+    incident.severity=Math.max(incident.severity,severity);
+    if(incident.manualPriority===undefined||severity>previousSeverity)incident.priority=Math.max(incident.priority,severity);
+    if(severity>previousSeverity)ctx.emit('IncidentSeverityEscalated','Novos sinais observados aumentaram a gravidade da ocorrência.',{
+      entityIds:[incident.id,person.id,reporterId].filter(Boolean),incidentId:incident.id,visibility:'reported',previousSeverity,severity:incident.severity,
+      previousPriority,priority:incident.priority,manualOverrideSuperseded:incident.manualPriority!==undefined&&incident.priority>previousPriority
+    });
+    return incident;
   }
   const position=ctx.position(person),id=`incident-${++s.incidentSequence}`;
   incident={id,type,personId:person.id,...position,nodeId:ctx.nearestPedNode(position),severity,observedAt:s.tick,reportedAt:null,reporterId,
@@ -34,7 +41,7 @@ function initializeIncidents(ctx){
     for(const edge of s.city.vehicleGraph.edges)if(edge.from===hospital.vehicleNodeId||edge.to===hospital.vehicleNodeId)edge.blocked=true;
   }
   if(fixture==='hospitalFull'){
-    const residents=s.people.filter(p=>p.role==='resident'&&p.id!==s.initialPersonId).slice(-s.facilities.hospital.capacity);
+    const residents=s.facilities.hospital.capacity>0?s.people.filter(p=>p.role==='resident'&&p.id!==s.initialPersonId).slice(-s.facilities.hospital.capacity):[];
     for(const person of residents){
       person.location={kind:'hospital',buildingId:s.facilities.hospital.buildingId};person.taskId='existing-hospital-care';person.activity='hospitalized';person.path=[];person.medicalDischargeTick=1000000;
       s.facilities.hospital.patientIds.push(person.id);

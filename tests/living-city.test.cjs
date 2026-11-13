@@ -206,3 +206,110 @@ test('LC1: a broken ambulance is not dispatched and its finite crew never appear
   assert.ok(vehicle.crewIds.every(id=>world.state.people.find(p=>p.id===id).location.vehicleId===vehicle.id));
   assert.equal(world.state.events.some(e=>e.type==='AmbulanceDispatched'),false);
 });
+
+test('LC1: a free bed cannot admit a patient when every finite hospital professional is unavailable',()=>{
+  const world=create({ambulances:1,patrols:0}),ids=world.state.people.map(p=>p.id);
+  for(const staff of world.state.people.filter(p=>p.role==='hospitalStaff')){staff.healthState='critical';staff.taskId='fixture-unavailable';}
+  for(let tick=0;tick<1800;tick++){world.step();checkInvariants(world.state,ids);}
+  const incident=world.state.incidents.find(i=>i.type==='medical'&&i.personId===world.state.initialPersonId);assert.ok(incident);
+  assert.equal(incident.status,'handover');assert.match(incident.waitReason,/profissional|pessoal|equipa|staff/i);
+  assert.equal(world.state.facilities.hospital.patientIds.length,0);
+  assert.ok(world.state.facilities.hospital.capacity>0);
+  assert.equal(world.state.people.find(p=>p.id===incident.personId).location.kind,'street');
+  assert.equal(world.state.events.some(e=>e.type==='PatientAdmitted'),false);
+});
+
+test('LC2: progressive disease is initially unknown, reaches medical care, and exposes existing responders before reanimation',()=>{
+  const world=create({scenario:'S1'}),ids=world.state.people.map(p=>p.id),patientId=world.state.initialPersonId;
+  const patient=world.state.people.find(p=>p.id===patientId);
+  assert.equal(patient.lifeState,'alive');assert.equal(patient.hostile,false);assert.equal(patient.hasPathogen,true);
+  assert.deepEqual(patient.observedSymptoms,[]);assert.equal(world.state.calls.length,0);assert.equal(world.state.counters.knownCases,0);
+  world.step(199);assert.equal(world.state.calls.length,0,'Hidden truth must not create an omniscient medical call');
+  for(let tick=199;tick<2400;tick++){world.step();checkInvariants(world.state,ids);}
+  const events=world.state.events;
+  const symptom=events.find(e=>e.type==='SymptomsDeveloped'&&e.entityIds.includes(patientId));
+  const call=events.find(e=>e.type==='CallCreated'&&world.state.incidents.some(i=>i.id===e.incidentId&&i.personId===patientId));
+  const admission=events.find(e=>e.type==='PatientAdmitted'&&e.personId===patientId);
+  const death=events.find(e=>e.type==='HumanDied'&&e.entityIds.includes(patientId));
+  const reanimation=events.find(e=>e.type==='PersonReanimated'&&e.entityIds.includes(patientId));
+  assert.ok(symptom&&call&&admission&&death&&reanimation,'Disease must complete its existing-person chain');
+  assert.ok(symptom.tick<=call.tick&&call.tick<admission.tick&&admission.tick<death.tick&&death.tick<reanimation.tick);
+  const clinicalExposure=events.find(e=>e.type==='PersonInfected'&&e.sourceId===patientId&&e.sourceLifeState==='alive'&&
+    world.state.people.some(p=>e.entityIds.includes(p.id)&&['medic','hospitalStaff'].includes(p.role)));
+  assert.ok(clinicalExposure,'Living symptomatic disease must be capable of medical-contact transmission');
+  assert.ok(clinicalExposure.tick<death.tick);assert.ok(clinicalExposure.exposureSeconds>=world.state.outbreak.parameters.exposureSeconds);
+  assert.equal(reanimation.originalPersonId,patientId);
+  assert.equal(events.filter(e=>e.type==='HumanDied'&&e.entityIds.includes(patientId)).length,1,'Reanimation is not a second human death');
+});
+
+test('LC2: a deteriorating passenger transforms in the same ambulance and triggers a physical emergency stop and police request',()=>{
+  const world=create({scenario:'S1',ambulances:1,patrols:0,parameters:{criticalSeconds:800000,deathSeconds:900000,
+    reanimateDelaySeconds:.1,attackDamagePerSecond:0,zombieSpeed:0,exposureSeconds:100000,infectiousWhileAlive:0}});
+  const ids=world.state.people.map(p=>p.id),patient=world.state.people.find(p=>p.id===world.state.initialPersonId);
+  let vehicle;
+  for(let tick=0;tick<1800;tick++) {
+    world.step();checkInvariants(world.state,ids);
+    vehicle=world.state.vehicles.find(v=>v.passengerIds.includes(patient.id)&&v.status==='transporting');if(vehicle)break;
+  }
+  assert.ok(vehicle,'Fixture must execute an actual physical pickup before deterioration');
+  assert.equal(patient.location.kind,'vehicle');assert.equal(patient.location.vehicleId,vehicle.id);
+  patient.scheduledDeathTick=world.state.tick+1;
+  for(let tick=0;tick<150;tick++){world.step();checkInvariants(world.state,ids);}
+  assert.equal(patient.lifeState,'reanimated');assert.equal(patient.location.kind,'street');
+  assert.ok(!vehicle.passengerIds.includes(patient.id),'Disembarkation removes the former passenger reference');
+  assert.equal(vehicle.status,'awaitingPolice');
+  const incident=world.state.incidents.find(i=>i.id===vehicle.incidentId);assert.equal(incident.requiresPolice,true);
+  assert.match(incident.waitReason,/insegura|policial|patrulha|reforço/i);
+  assert.ok(world.state.events.some(e=>e.type==='MedicalSupportRequested'&&e.personId===patient.id));
+  assert.equal(world.state.events.filter(e=>e.type==='HumanDied'&&e.entityIds.includes(patient.id)).length,1);
+  assert.equal(world.state.events.filter(e=>e.type==='PersonReanimated'&&e.entityIds.includes(patient.id)).length,1);
+});
+
+test('LC2: sudden transformation preserves the original resident identity and never spawns a new horde',()=>{
+  const world=create({scenario:'S2'}),ids=world.state.people.map(p=>p.id),id=world.state.initialPersonId;
+  world.step(299);assert.equal(world.state.people.find(p=>p.id===id).lifeState,'alive');
+  assert.equal(world.state.events.some(e=>e.type==='HumanDied'),false);
+  world.step();assert.equal(world.state.people.find(p=>p.id===id).lifeState,'dead');checkInvariants(world.state,ids);
+  world.step(19);assert.equal(world.state.people.find(p=>p.id===id).lifeState,'dead');
+  world.step();assert.equal(world.state.people.find(p=>p.id===id).lifeState,'reanimated');checkInvariants(world.state,ids);
+  const event=world.state.events.find(e=>e.type==='PersonReanimated'&&e.entityIds.includes(id));
+  assert.ok(event);assert.equal(event.originalPersonId,id);assert.equal(event.deathTick,300);
+  assert.equal(world.state.people.length,ids.length);assert.equal(world.state.counters.dead,1);
+  assert.equal(world.state.counters.reanimatedHistorical,1);
+});
+
+function putOnStreet(world,person,node) {
+  person.location={kind:'street',nodeId:node.id};person.nodeId=node.id;person.x=node.x;person.z=node.z;
+  person.path=[];person.taskId='controlled-fixture';person.activity='resting';person.nextRoutineTick=1000000;
+}
+function contactFixture(parameters={}) {
+  const world=create({residents:4,ambulances:0,patrols:0,parameters:{attackDamagePerSecond:0,zombieSpeed:0,infectiousWhileAlive:0,...parameters}});
+  for(const person of world.state.people){person.location={kind:'building',buildingId:person.homeBuildingId};person.path=[];person.taskId='controlled-fixture';}
+  const source=world.state.people.find(p=>p.id===world.state.initialPersonId),target=world.state.people.find(p=>p.role==='resident'&&p.id!==source.id);
+  const node=world.state.city.pedestrianGraph.nodes.find(n=>n.id==='block-1-walk-1');
+  putOnStreet(world,source,node);putOnStreet(world,target,node);
+  Object.assign(source,{lifeState:'reanimated',healthState:'deceased',hostile:true,hp:55,reanimatedAt:0,hasPathogen:true});
+  world._counters();return {world,source,target};
+}
+
+test('LC2: contact infection requires measured duration and distance, with no instant or remote conversion',()=>{
+  const {world,source,target}=contactFixture(),ids=world.state.people.map(p=>p.id);
+  for(let tick=0;tick<79;tick++){world.step();checkInvariants(world.state,ids);}
+  assert.notEqual(target.hasPathogen,true);assert.equal(target.exposureTicks,79);assert.equal(target.healthState,'exposed');
+  const far=world.state.city.pedestrianGraph.nodes.find(n=>Math.hypot(n.x-source.x,n.z-source.z)>20);
+  putOnStreet(world,target,far);world.step(50);
+  assert.equal(target.exposureTicks,79,'Time outside contact radius cannot accumulate exposure');assert.notEqual(target.hasPathogen,true);
+  putOnStreet(world,target,world.state.city.pedestrianGraph.nodes.find(n=>n.id===source.nodeId));world.step();
+  assert.equal(target.hasPathogen,true);assert.equal(target.exposureSeconds,8);
+  const event=world.state.events.find(e=>e.type==='PersonInfected'&&e.entityIds.includes(target.id));assert.ok(event);
+  assert.equal(event.sourceId,source.id);assert.equal(event.exposureSeconds,8);checkInvariants(world.state,ids);
+});
+
+test('LC2: physically occluded people do not transmit through an intervening building',()=>{
+  const {world,source,target}=contactFixture({exposureDistance:25,exposureSeconds:1});
+  const nodes=world.state.city.pedestrianGraph.nodes;
+  const a=nodes.find(n=>n.id==='building-01-entrance'),b=nodes.find(n=>n.id==='block-1-walk-5');
+  putOnStreet(world,source,a);putOnStreet(world,target,b);assert.equal(world.ctx.lineOfSight(a,b),false);
+  assert.ok(Math.hypot(a.x-b.x,a.z-b.z)<25,'Fixture is in range, so the wall is the relevant veto');
+  world.step(30);assert.equal(target.exposureTicks,0);assert.notEqual(target.hasPathogen,true);
+});

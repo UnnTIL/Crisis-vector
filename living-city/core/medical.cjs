@@ -5,6 +5,17 @@ const personById=(state,id)=>state.people.find(p=>p.id===id);
 const seconds=(state,name,fallback)=>Math.max(1,Math.round((state.config.parameters[name]??fallback)*10));
 const crew=(s,v)=>v.crewIds.map(id=>personById(s,id)).filter(Boolean);
 const hospitalBuilding=s=>s.city.buildings.find(b=>b.id===s.facilities.hospital.buildingId);
+function releaseHospitalStaff(ctx,vehicle){
+  const person=personById(ctx.state,vehicle.hospitalStaffId);
+  if(person?.taskId===`handover:${vehicle.id}`){
+    person.taskId=null;if(person.lifeState==='alive'&&person.healthState!=='critical')person.activity='hospitalDuty';
+  }
+  vehicle.hospitalStaffId=null;
+}
+function fitHospitalStaff(ctx,person){
+  return person&&person.lifeState==='alive'&&person.healthState!=='critical'&&['building','hospital'].includes(person.location.kind)&&
+    person.location.buildingId===ctx.state.facilities.hospital.buildingId&&(!person.taskId||person.taskId.startsWith('handover:'));
+}
 function emit(ctx,type,message,vehicle,incident,extra={}){
   ctx.emit(type,message,{entityIds:[vehicle?.id,incident?.id,incident?.personId].filter(Boolean),position:vehicle?{x:vehicle.x,z:vehicle.z}:undefined,visibility:'confirmed',vehicleId:vehicle?.id,incidentId:incident?.id,...extra});
 }
@@ -50,7 +61,7 @@ function assignMedical(ctx){
     let vehicle=null;
     for(const candidate of available){if(ctx.routeVehicle(candidate,destination)){vehicle=candidate;break;}}
     if(!vehicle){
-      const reason=available.length?'Percurso viário interrompido; a central aguarda uma rota possível.':s.vehicles.some(v=>v.type==='ambulance'&&v.broken)?'Sem ambulância livre; existe uma viatura avariada.':'Todas as ambulâncias estão ocupadas; ocorrência em espera por prioridade.';
+      const reason=available.length?'Percurso viário interrompido; a central aguarda uma rota possível.':s.vehicles.some(v=>v.type==='ambulance'&&v.broken)?'Sem ambulância livre; existe uma viatura avariada.':s.vehicles.some(v=>v.type==='ambulance'&&v.status==='blocked')?'Sem tripulação operacional ou acesso seguro; ambulância indisponível.':'Todas as ambulâncias estão ocupadas; ocorrência em espera por prioridade.';
       setWait(ctx,incident,reason);continue;
     }
     vehicle.status='dispatched';vehicle.incidentId=incident.id;vehicle.destinationPersonId=patient.id;vehicle.speed=s.config.parameters.ambulanceSpeed;
@@ -83,6 +94,7 @@ function release(ctx,vehicle,incident){
 }
 function suspendUnsafe(ctx,vehicle,incident,patient,threat){
   const s=ctx.state;
+  releaseHospitalStaff(ctx,vehicle);
   incident.requiresPolice=true;incident.status='awaitingPolice';vehicle.status='awaitingPolice';
   setWait(ctx,incident,'Cena insegura; a equipa médica aguarda proteção policial.');
   if(threat){
@@ -102,10 +114,11 @@ function stopForThreat(ctx,vehicle,incident,patient){
 }
 function updateAmbulance(ctx,vehicle){
   const s=ctx.state,incident=s.incidents.find(i=>i.id===vehicle.incidentId),patient=incident&&personById(s,incident.personId);
-  if(vehicle.broken){vehicle.status='blocked';if(incident)setWait(ctx,incident,'Ambulância avariada; doente e tripulação permanecem na sua localização.');return;}
-  const compromised=crew(s,vehicle).find(p=>p.location.kind==='vehicle'&&p.location.vehicleId===vehicle.id&&(p.lifeState!=='alive'||p.healthState==='critical'));
+  if(vehicle.broken){releaseHospitalStaff(ctx,vehicle);vehicle.status='blocked';if(incident)setWait(ctx,incident,'Ambulância avariada; doente e tripulação permanecem na sua localização.');return;}
+  const compromised=crew(s,vehicle).find(p=>p.lifeState!=='alive'||p.healthState==='critical');
   if(compromised&&!['crewEmergencyStop','blocked'].includes(vehicle.status))vehicle.status='crewEmergencyStop';
   if(vehicle.status==='crewEmergencyStop'){
+    releaseHospitalStaff(ctx,vehicle);
     if(!stopForThreat(ctx,vehicle,incident,patient))return;
     vehicle.status='blocked';vehicle.waitReason='Tripulação incapacitada; viatura parada e ocorrência reencaminhada.';
     if(incident){
@@ -113,8 +126,9 @@ function updateAmbulance(ctx,vehicle){
       setWait(ctx,incident,vehicle.waitReason);vehicle.incidentId=null;
     }
     if(compromised){
-      if(compromised.lifeState==='reanimated')ctx.report(compromised,'violence',5,'Agressão observada na tripulação',crew(s,vehicle).find(p=>p.lifeState==='alive')?.id||incident?.reporterId);
-      else if(compromised.lifeState==='alive')ctx.report(compromised,'medical',5,'Colapso observado na tripulação',crew(s,vehicle).find(p=>p.id!==compromised.id&&p.lifeState==='alive')?.id||compromised.id);
+      const observer=crew(s,vehicle).find(p=>p.id!==compromised.id&&canObserve(ctx,p,compromised));
+      if(observer&&compromised.lifeState==='reanimated')ctx.report(compromised,'violence',5,'Agressão observada na tripulação',observer.id);
+      else if(observer&&compromised.lifeState==='alive')ctx.report(compromised,'medical',5,'Colapso observado na tripulação',observer.id);
     }
     emit(ctx,'MedicalResourceUnavailable','A viatura parou num nó viário; pessoas desembarcaram e a central reavalia os meios.',vehicle,incident);return;
   }
@@ -199,21 +213,36 @@ function updateAmbulance(ctx,vehicle){
   }
   if(vehicle.status==='handover'){
     if(danger){suspendUnsafe(ctx,vehicle,incident,patient,danger);return;}
-    if(patient.lifeState!=='alive'){incident.status='resolved';vehicle.status='collectingCrew';return;}
+    if(patient.lifeState!=='alive'){releaseHospitalStaff(ctx,vehicle);incident.status='resolved';vehicle.status='collectingCrew';return;}
     if(vehicle.medicalPhase==='hospitalApproach'){
       const arrived=ctx.movePerson(patient,patient.healthState==='critical'?.65:.9);let crewArrived=true;
       for(const medic of crew(s,vehicle))if(medic.lifeState==='alive'&&!ctx.movePerson(medic,1.15))crewArrived=false;
       if(arrived&&crewArrived){vehicle.medicalPhase='waitingBed';vehicle.phaseTick=s.tick;}
       return;
     }
-    if(s.facilities.hospital.patientIds.length>=s.facilities.hospital.capacity){setWait(ctx,incident,'Hospital lotado; doente e equipa aguardam uma vaga na entrada.');return;}
+    if(s.facilities.hospital.patientIds.length>=s.facilities.hospital.capacity){
+      releaseHospitalStaff(ctx,vehicle);vehicle.medicalPhase='waitingBed';
+      setWait(ctx,incident,'Hospital lotado; doente e equipa aguardam uma vaga na entrada.');return;
+    }
+    let professional=personById(s,vehicle.hospitalStaffId);
+    if(!fitHospitalStaff(ctx,professional)){
+      releaseHospitalStaff(ctx,vehicle);
+      professional=s.facilities.hospital.staffIds.map(id=>personById(s,id)).find(p=>fitHospitalStaff(ctx,p)&&!p.taskId);
+      if(!professional){
+        vehicle.medicalPhase='waitingBed';setWait(ctx,incident,'Sem profissional hospitalar apto e disponível; entrega em espera apesar da vaga.');return;
+      }
+      vehicle.hospitalStaffId=professional.id;professional.taskId=`handover:${vehicle.id}`;professional.activity='triaging';
+      vehicle.medicalPhase='hospitalAssessment';vehicle.phaseTick=s.tick;
+      emit(ctx,'HospitalAssessmentStarted','Um profissional hospitalar existente iniciou a entrega clínica.',vehicle,incident,{staffId:professional.id});
+    }
     setWait(ctx,incident,null);
     if(s.tick-vehicle.phaseTick<seconds(s,'handoverSeconds',6))return;
     const hospital=hospitalBuilding(s);
     patient.location={kind:'hospital',buildingId:hospital.id};patient.path=[];patient.activity='hospitalized';patient.taskId='hospital-care';patient.medicalDischargeTick=s.tick+seconds(s,'hospitalStaySeconds',65);
     if(!s.facilities.hospital.patientIds.includes(patient.id))s.facilities.hospital.patientIds.push(patient.id);
     incident.status='resolved';incident.resolution='Doente entregue ao hospital.';incident.resolvedAt=s.tick;vehicle.status='collectingCrew';
-    emit(ctx,'PatientAdmitted','Doente entregue; uma vaga hospitalar ficou ocupada.',vehicle,incident,{personId:patient.id,hospitalBuildingId:hospital.id});return;
+    emit(ctx,'PatientAdmitted','Doente entregue; uma vaga hospitalar ficou ocupada.',vehicle,incident,{personId:patient.id,hospitalBuildingId:hospital.id,staffId:professional.id});
+    releaseHospitalStaff(ctx,vehicle);return;
   }
   if(vehicle.status==='collectingCrew'){returnCrew(ctx,vehicle,incident);return;}
   if(vehicle.status==='returning'){
@@ -232,6 +261,7 @@ function discharge(ctx){
   }
 }
 function updateMedical(ctx){
+  for(const vehicle of ctx.state.vehicles)if(vehicle.type==='ambulance'&&vehicle.status!=='handover'&&vehicle.hospitalStaffId)releaseHospitalStaff(ctx,vehicle);
   discharge(ctx);assignMedical(ctx);
   for(const vehicle of ctx.state.vehicles)if(vehicle.type==='ambulance')updateAmbulance(ctx,vehicle);
 }
