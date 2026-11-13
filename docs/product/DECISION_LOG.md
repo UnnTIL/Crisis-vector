@@ -237,3 +237,26 @@ A direção global da ROUND-001 está validada **para planear a execução**, ma
 - **Referência:** [URBAN_LIVING_CITY_V02.md](URBAN_LIVING_CITY_V02.md).
 
 **Estado de execução:** A V0.2 e os parâmetros estão por implementar; o [PR #9](https://github.com/UnnTIL/Crisis-vector/pull/9) continua prova tática V0.1 isolada e não demonstra este comportamento institucional. Não realizar merge automático.
+
+
+## ROUND-005 — Iteração urbana e laboratório de simulação (2026-11-13)
+
+### DEC-028 — Fluidez e origem espacial das ocorrências
+
+- **Estado:** `APPROVED` — objetivo de jogabilidade, parâmetros finais `PROPOSED`.
+- **Decisão:** acontecimentos devem surgir de pessoas na sua posição/rotina real, e não de teletransporte do paciente inicial para local fixo. Câmara rotativa Q/E, movimento interpolado e velocidade de referência 1x inicialmente comparável ao antigo 2x; veículos devem ceder passagem a peões nas travessias.
+- **Consequências:** a apresentação gráfica não altera a lógica; incidentes continuam determinísticos pela seed; ver [Issue #12](https://github.com/UnnTIL/Crisis-vector/issues/12).
+
+### DEC-029 — Laboratório local com cenários persistentes/exportáveis
+
+- **Estado:** `APPROVED` — direção funcional, UX/esquema específicos `PROPOSED`.
+- **Decisão:** disponibilizar painel DEV de parâmetros reais do motor, presets locais, comparação de runs e exportação/importação JSON versionado de cenário/relatórios; reutilizar seeds e métricas em testes de balanceamento.
+- **Consequências:** dados no browser podem perder-se; exportação é arquivo durável controlado pelo utilizador. Publicação GitHub automática não está incluída, exigiria autenticação e backend seguro. Ver [Issue #13](https://github.com/UnnTIL/Crisis-vector/issues/13).
+
+### DEC-030 — Comportamento orgânico antes de escalar geografia
+
+- **Estado:** `APPROVED` — direção funcional, regras biológicas/comportamentais `PROPOSED`.
+- **Decisão:** aprofundar reação de civis, propagação por contacto, zonas internas do hospital e formação de hordas por concentração de reanimados existentes, sem spawns artificiais nem atrasos policiais impostos para obrigar a colapso.
+- **Consequências:** dimensionamento urbano só após testes de equilíbrio/performance; ver [Issue #14](https://github.com/UnnTIL/Crisis-vector/issues/14).
+
+**Execução:** V0.2.1 é a próxima tarefa autorizada para Codex, V0.2.2/V0.2.3 planeadas em PRs separados; nenhuma autorização de merge automático. [Plano detalhado](LIVING_CITY_ITERATION_V021_V023.md).
