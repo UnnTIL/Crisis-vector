@@ -72,6 +72,13 @@ function checkInvariants(state,initialIds) {
     assert.ok(vehicleIds.has(patrol.vehicleId),'Unknown police vehicle');unique(patrol.officerIds,'patrol officers');
     assert.ok(patrol.officerIds.every(id=>byPerson.get(id)?.role==='officer'),'Patrol staff not drawn from canonical officers');
   }
+  const handovers=vehicles.filter(v=>v.hospitalStaffId);
+  unique(handovers.map(v=>v.hospitalStaffId),'hospital professionals across handovers');
+  for(const vehicle of handovers) {
+    const professional=byPerson.get(vehicle.hospitalStaffId);
+    assert.equal(professional?.role,'hospitalStaff','Handover requires an existing professional');
+    assert.equal(professional.taskId,`handover:${vehicle.id}`,'A professional cannot serve conflicting handovers');
+  }
   const active=incidents.filter(i=>!['resolved','closed','cancelled'].includes(i.status));
   for(const field of ['assignedAmbulanceId','assignedPatrolId'])unique(active.map(i=>i[field]).filter(Boolean),'Active '+field);
   const population=populationOf(state);
@@ -144,7 +151,7 @@ function main(args=process.argv.slice(2)) {
   const core=path.join(ROOT,'living-city/core');
   for(const file of fs.readdirSync(core).filter(f=>f.endsWith('.cjs')).sort())report.sourceHashes.push({file:'living-city/core/'+file,sha256:sha256(fs.readFileSync(path.join(core,file)))});
   for(const scenario of options.scenarios)for(const seed of options.seeds) {
-    const result=runScenario({...options,seed,scenario});report.runs.push(result);
+    const result=runScenario({seed,scenario,seconds:options.seconds,residents:options.residents});report.runs.push(result);
     console.log(`${scenario} seed ${seed}: ${result.ticks} ticks; living ${result.population.living}; reanimated ${result.population.reanimated}; incidents ${result.incidents.length}`);
   }
   fs.mkdirSync(path.dirname(options.output),{recursive:true});fs.writeFileSync(options.output,JSON.stringify(report,null,2)+'\n');

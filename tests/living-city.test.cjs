@@ -313,3 +313,153 @@ test('LC2: physically occluded people do not transmit through an intervening bui
   assert.ok(Math.hypot(a.x-b.x,a.z-b.z)<25,'Fixture is in range, so the wall is the relevant veto');
   world.step(30);assert.equal(target.exposureTicks,0);assert.notEqual(target.hasPathogen,true);
 });
+
+test('LC1 regression: duplicate reports preserve a manual priority until genuinely new observed severity escalates',()=>{
+  const world=create();world.step(225);const incident=world.state.incidents[0],patient=world.state.people.find(p=>p.id===incident.personId);
+  assert.equal(world.command({commandId:'lower-known-case',type:'overridePriority',incidentId:incident.id,priority:1}).ok,true);
+  for(let i=0;i<5;i++)world.ctx.report(patient,'medical',incident.severity,'Dor comunicada',patient.id);
+  world.step(10);assert.equal(incident.priority,1,'Repeated knowledge cannot silently undo an explicit priority');
+  world.ctx.report(patient,'medical',5,'Novos sinais de colapso observados',patient.id);
+  assert.equal(incident.priority,5);assert.equal(incident.severity,5);
+  const escalation=world.state.events.find(e=>e.type==='IncidentSeverityEscalated'&&e.incidentId===incident.id);assert.ok(escalation);
+  assert.equal(escalation.previousPriority,1);assert.equal(escalation.priority,5);
+});
+
+test('LC1 regression: concurrent handovers reserve one real professional each and wait when that finite staff is busy',()=>{
+  const world=create({fixture:'concurrentCalls',ambulances:2,patrols:0,parameters:{handoverSeconds:1000}}),ids=world.state.people.map(p=>p.id);
+  const staff=world.state.people.filter(p=>p.role==='hospitalStaff'),fit=staff[0];
+  for(const person of staff.slice(1)){person.healthState='critical';person.taskId='fixture-unavailable';}
+  let waiting=false,maximumReservations=0;
+  for(let tick=0;tick<2000;tick++) {
+    world.step();checkInvariants(world.state,ids);
+    const reservations=world.state.vehicles.filter(v=>v.hospitalStaffId);maximumReservations=Math.max(maximumReservations,reservations.length);
+    assert.ok(reservations.length<=1,'One professional cannot perform two simultaneous handovers');
+    if(reservations.length)assert.equal(reservations[0].hospitalStaffId,fit.id);
+    if(world.state.vehicles.filter(v=>v.type==='ambulance'&&v.status==='handover').length===2&&
+      world.state.incidents.some(i=>/profissional/.test(i.waitReason??''))){waiting=true;break;}
+  }
+  assert.ok(waiting,'Both actual transports must reach the hospital and contend for staff');assert.equal(maximumReservations,1);
+  assert.equal(world.state.facilities.hospital.patientIds.length,0,'Long controlled handovers have not completed yet');
+  world.state.config.parameters.handoverSeconds=1;
+  for(let tick=0;tick<100;tick++){world.step();checkInvariants(world.state,ids);}
+  assert.equal(world.state.events.filter(e=>e.type==='PatientAdmitted').length,2);
+});
+
+test('LC1 regression: a crew emergency after admission cannot reopen or duplicate the completed patient history',()=>{
+  const world=create({ambulances:1}),ids=world.state.people.map(p=>p.id),patientId=world.state.initialPersonId;
+  let admission;
+  for(let tick=0;tick<1800;tick++){world.step();checkInvariants(world.state,ids);admission=world.state.events.find(e=>e.type==='PatientAdmitted'&&e.personId===patientId);if(admission)break;}
+  assert.ok(admission);const incident=world.state.incidents.find(i=>i.id===admission.incidentId);
+  const vehicle=world.state.vehicles.find(v=>v.id===admission.vehicleId),medic=world.state.people.find(p=>p.id===vehicle.crewIds[0]);
+  assert.equal(incident.status,'resolved');medic.healthState='critical';medic.symptoms=['collapse'];
+  for(let tick=0;tick<100;tick++){world.step();checkInvariants(world.state,ids);}
+  assert.equal(incident.status,'resolved');assert.equal(incident.assignedAmbulanceId,null);
+  assert.equal(world.state.facilities.hospital.patientIds.filter(id=>id===patientId).length,1);
+  assert.equal(world.state.events.filter(e=>e.type==='PatientAdmitted'&&e.personId===patientId).length,1);
+});
+
+test('LC3: witnessed hostility follows triage and physical patrol arrival before finite individual officers fire',()=>{
+  const world=create({scenario:'S2'}),ids=world.state.people.map(p=>p.id),ammoBefore=world.state.people.filter(p=>p.role==='officer').reduce((n,p)=>n+p.ammo,0);
+  let travelled=false;
+  const speed=world.state.config.parameters.policeVehicleSpeed??world.policeSystem.POLICE_DEFAULTS.policeVehicleSpeed;
+  for(let tick=0;tick<1500;tick++) {
+    const previous=new Map(world.state.vehicles.filter(v=>v.type==='police').map(v=>[v.id,{x:v.x,z:v.z}]));
+    world.step();checkInvariants(world.state,ids);
+    for(const vehicle of world.state.vehicles.filter(v=>v.type==='police')) {
+      const old=previous.get(vehicle.id),distance=Math.hypot(vehicle.x-old.x,vehicle.z-old.z);
+      assert.ok(distance<=speed*TICK_SECONDS+.000001,'Police vehicles must follow finite-speed physical routes');if(distance>0)travelled=true;
+    }
+  }
+  assert.equal(world._commands.size,0,'Police response must not depend on player orders');
+  const events=world.state.events,dispatches=events.filter(e=>e.type==='PatrolDispatched'),shots=events.filter(e=>e.type==='ShotFired');
+  assert.ok(dispatches.length>0&&shots.length>0&&travelled);
+  for(const dispatch of dispatches) {
+    const triage=events.find(e=>e.type==='Triaged'&&e.incidentId===dispatch.incidentId);assert.ok(triage,'Dispatch cannot bypass triage');
+    assert.ok(dispatch.tick>=triage.tick);
+    const arrival=events.find(e=>e.type==='PatrolOnScene'&&e.incidentId===dispatch.incidentId&&
+      e.patrolId===dispatch.patrolId&&e.eventId>dispatch.eventId);
+    if(arrival) {
+      const distance=Math.hypot(arrival.position.x-dispatch.position.x,arrival.position.z-dispatch.position.z);
+      assert.ok(arrival.tick>=dispatch.tick);
+      if(distance>0.000001)assert.ok(arrival.tick>dispatch.tick,'Nonzero physical travel requires elapsed logical time');
+    }
+  }
+  for(const shot of shots) {
+    assert.equal(world.state.people.find(p=>p.id===shot.shooterId)?.role,'officer');
+    assert.equal(shot.ammoSpent,1);assert.equal(shot.weaponClass,'service-sidearm');assert.equal(shot.authorizedBy,'direct-observation');
+    assert.ok(['hit','miss'].includes(shot.hitOutcome));assert.ok(Number.isFinite(shot.position.x)&&Number.isFinite(shot.targetPosition.z));
+    const identified=events.find(e=>e.type==='ThreatIdentified'&&e.observerId===shot.shooterId&&e.targetId===shot.targetId&&e.tick<=shot.tick);
+    assert.ok(identified,'Every shot requires actual prior recognition by its own shooter');
+    assert.ok(events.some(e=>e.type==='PersonReanimated'&&e.entityIds.includes(shot.targetId)&&e.tick<=shot.tick));
+  }
+  assert.ok(shots.some(e=>e.moving===true),'Officers must be able to react before finishing their walking route');
+  const ammoAfter=world.state.people.filter(p=>p.role==='officer').reduce((n,p)=>n+p.ammo,0);
+  assert.equal(ammoBefore-ammoAfter,shots.reduce((n,e)=>n+e.ammoSpent,0));
+});
+
+test('LC3: occupied patrols explain the queue instead of spawning a replacement response',()=>{
+  const world=create({scenario:'S2',residents:12,ambulances:0,patrols:1,fixture:'police-busy',parameters:{policeBusySeconds:120}}),ids=world.state.people.map(p=>p.id);
+  for(let tick=0;tick<1000;tick++){world.step();checkInvariants(world.state,ids);}
+  assert.equal(world.state.patrols.length,1);assert.equal(world.state.patrols[0].status,'busy');
+  const waiting=world.state.incidents.filter(i=>i.requiresPolice&&!['resolved','cancelled'].includes(i.status));assert.ok(waiting.length>0);
+  assert.ok(waiting.some(i=>/patrulha|reforço/.test(i.waitReason??'')));
+  assert.equal(world.state.events.some(e=>e.type==='PatrolDispatched'),false);assert.equal(world.state.events.some(e=>e.type==='ShotFired'),false);
+});
+
+function policeFixture({hostile=true,...parameters}={}) {
+  const world=create({residents:4,ambulances:0,patrols:1,parameters:{zombieSpeed:0,attackDamagePerSecond:0,exposureSeconds:100000,
+    infectiousWhileAlive:0,policeHitChance:1,...parameters}});
+  const source=world.state.people.find(p=>p.id===world.state.initialPersonId),patrol=world.state.patrols[0],vehicle=world.state.vehicles.find(v=>v.id===patrol.vehicleId);
+  for(const person of world.state.people.filter(p=>p.role!=='officer')){person.location={kind:'building',buildingId:person.homeBuildingId};person.path=[];person.taskId='controlled-fixture';}
+  const shooter=world.state.people.find(p=>p.id===patrol.officerIds[0]),other=world.state.people.find(p=>p.id===patrol.officerIds[1]);
+  const a=world.state.city.pedestrianGraph.nodes.find(n=>n.id==='block-1-walk-0'),b=world.state.city.pedestrianGraph.nodes.find(n=>n.id==='block-1-walk-1');
+  putOnStreet(world,shooter,a);putOnStreet(world,source,b);other.ammo=0;shooter.ammo=2;
+  Object.assign(source,hostile?{lifeState:'reanimated',healthState:'deceased',hostile:true,hp:55,reanimatedAt:0,hasPathogen:true}:
+    {lifeState:'alive',healthState:'infected',hostile:false,hasPathogen:true,infectedAt:0,symptomTick:100000,criticalTick:100000,scheduledDeathTick:100000});
+  const incident=world.ctx.report(source,'violence',5,'Controlled previously reported scene',shooter.id);
+  incident.status='onScene';incident.reportedAt=0;incident.assignedPatrolId=patrol.id;
+  for(const call of world.state.calls){call.status='triaged';call.receivedAt=0;}
+  patrol.status='approaching';patrol.incidentId=incident.id;patrol.sceneTick=0;vehicle.status='onScene';vehicle.incidentId=incident.id;
+  shooter.taskId=incident.id;shooter.knownThreats=[source.id];world.ctx.routePerson(shooter,b.id);world._counters();
+  return {world,source,shooter,other,patrol,vehicle,incident};
+}
+
+test('LC3: a known but living infected nonhostile person is never an automatic police target',()=>{
+  const {world,source,shooter}=policeFixture({hostile:false});world.step(30);checkInvariants(world.state);
+  assert.equal(source.lifeState,'alive');assert.equal(source.hostile,false);assert.equal(source.hasPathogen,true);
+  assert.equal(shooter.ammo,2);assert.equal(world.state.events.some(e=>e.type==='ShotFired'),false);
+});
+
+test('LC3: line of sight and an innocent bystander veto fire even when a hostile target is recognized and in range',()=>{
+  const wall=policeFixture({policeFireRange:25,policeObserveRange:25,policeApproachSpeed:0});
+  const nodes=wall.world.state.city.pedestrianGraph.nodes,a=nodes.find(n=>n.id==='building-01-entrance'),b=nodes.find(n=>n.id==='block-1-walk-5');
+  putOnStreet(wall.world,wall.shooter,a);putOnStreet(wall.world,wall.source,b);
+  assert.equal(wall.world.ctx.lineOfSight(a,b),false);wall.world.step(20);
+  assert.equal(wall.world.state.events.some(e=>e.type==='ShotFired'),false);assert.equal(wall.shooter.ammo,2);
+  const clear=policeFixture({policeApproachSpeed:0}),bystander=clear.world.state.people.find(p=>p.role==='resident'&&p.id!==clear.source.id);
+  const midpoint={id:clear.shooter.nodeId,x:(clear.shooter.x+clear.source.x)/2,z:(clear.shooter.z+clear.source.z)/2};
+  putOnStreet(clear.world,bystander,midpoint);assert.equal(clear.world.ctx.lineOfSight(clear.shooter,clear.source),true);
+  clear.world.step(20);assert.equal(clear.world.state.events.some(e=>e.type==='ShotFired'),false);assert.equal(clear.shooter.ammo,2);
+  assert.match(clear.shooter.fireHoldReason,/Terceiro/);
+  bystander.location={kind:'building',buildingId:bystander.homeBuildingId};clear.world.step();
+  assert.equal(clear.world.state.events.filter(e=>e.type==='ShotFired').length,1,'Removing the actual obstruction permits the otherwise authorized shot');
+});
+
+test('LC3: an officer fires while still moving, spends finite ammunition and requests backup when empty',()=>{
+  const {world,source,shooter}=policeFixture(),deadBefore=world.state.counters.dead;
+  world.step(30);checkInvariants(world.state);
+  const shots=world.state.events.filter(e=>e.type==='ShotFired');assert.equal(shots.length,2);
+  assert.ok(shots.every(e=>e.shooterId===shooter.id&&e.moving===true));assert.equal(shooter.ammo,0);
+  assert.equal(source.lifeState,'neutralized');assert.equal(world.state.counters.dead,deadBefore,'Neutralization does not create another human death');
+  assert.ok(world.state.events.some(e=>e.type==='BackupRequested'));
+  world.step(200);assert.equal(shooter.ammo,0,'Retreat and waiting cannot refill ammunition');
+  assert.equal(world.state.events.filter(e=>e.type==='ShotFired').length,2);
+});
+
+test('LC3: full outbreak snapshots are deterministic across frame-like tick partitions and reset reconstructs the initial seed',()=>{
+  const a=create({seed:42,scenario:'S2'}),b=create({seed:42,scenario:'S2'}),initial=a.snapshot();
+  a.step(900);
+  for(const ticks of [1,7,92,111,389,300]){b.step(ticks);for(let frame=0;frame<5;frame++)b.snapshot();}
+  assert.deepEqual(a.snapshot(),b.snapshot());checkInvariants(a.state);checkInvariants(b.state);
+  assert.deepEqual(create({seed:42,scenario:'S2'}).snapshot(),initial);
+});

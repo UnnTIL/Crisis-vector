@@ -122,8 +122,12 @@ function updateAmbulance(ctx,vehicle){
     if(!stopForThreat(ctx,vehicle,incident,patient))return;
     vehicle.status='blocked';vehicle.waitReason='Tripulação incapacitada; viatura parada e ocorrência reencaminhada.';
     if(incident){
-      incident.assignedAmbulanceId=null;incident.status=patient?.lifeState==='alive'?'waiting':'cancelled';
-      setWait(ctx,incident,vehicle.waitReason);vehicle.incidentId=null;
+      incident.assignedAmbulanceId=null;
+      if(!['resolved','cancelled'].includes(incident.status)){
+        incident.status=patient?.lifeState==='alive'&&patient.location.kind!=='hospital'?'waiting':'cancelled';
+        setWait(ctx,incident,vehicle.waitReason);
+      }
+      vehicle.incidentId=null;
     }
     if(compromised){
       const observer=crew(s,vehicle).find(p=>p.id!==compromised.id&&canObserve(ctx,p,compromised));
