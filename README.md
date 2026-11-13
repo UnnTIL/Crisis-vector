@@ -60,7 +60,7 @@ A demo inspira-se na categoria de estratégia e simulação de surtos, **sem cop
 node --test tests/simulation.test.cjs
 ```
 
-O piloto de dados está isolado em `data/baseline/` e **não substitui a Alpha 0.1**. Consultar o [pipeline D0–D2 e limitações](docs/BASELINE_DATA_PIPELINE.md) e o [relatório de cobertura](data/baseline/REPORT.md). `npm test` inclui as regressões do pipeline; a geração offline pode ser validada com `node scripts/data/validate-baseline.cjs`.
+O piloto de dados está isolado em `data/baseline/` e **não substitui a Alpha 0.1**. A edição `1.1.0-pilot`, com corte em 13/11/2026, contém os oito indicadores dos cinco países; cada valor conserva o seu ano e as condições de reutilização. A edição anterior de 12/11 está arquivada. Consultar o [pipeline D0–D2 e limitações](docs/BASELINE_DATA_PIPELINE.md), o [relatório de cobertura](data/baseline/REPORT.md) e as [atribuições e condições](data/baseline/ATTRIBUTION.md). `npm test` inclui as regressões do pipeline; a geração offline pode ser validada com `node scripts/data/validate-baseline.cjs`.
 
 ## Licença
 

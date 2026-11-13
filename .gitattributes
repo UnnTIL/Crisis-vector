@@ -1,0 +1,4 @@
+# Frozen provider responses must retain their exact bytes and line endings.
+data/baseline/inputs/raw/** -text
+# Website snapshots are development evidence; hashes validate their contents.
+data/baseline/inputs/raw/*.html -diff -merge

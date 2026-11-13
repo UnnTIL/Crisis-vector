@@ -8,6 +8,9 @@ const ROOT = path.resolve(__dirname, '../..');
 const PILOT = ['PRT', 'DEU', 'USA', 'BRA', 'MWI'];
 const SERIES = ['SP.POP.TOTL','SP.URB.TOTL.IN.ZS','NY.GDP.MKTP.CD','NY.GDP.PCAP.CD','GC.TAX.TOTL.GD.ZS','SH.MED.BEDS.ZS','GB.XPD.RSDV.GD.ZS','NE.TRD.GNFS.ZS'];
 const UNITS = ['persons','percent_population','current_USD','current_USD_per_person','percent_GDP','beds_per_1000_people','percent_GDP','percent_GDP'];
+const LEGACY_TERMS='https://www.worldbank.org/en/about/legal/terms-of-use-for-datasets';
+const DATASET_TERMS='https://www.worldbank.org/ext/en/legal/terms-conditions/datasets';
+const termsUrl=catalog=>catalog.termsUrl??LEGACY_TERMS;
 const UNIT_LABELS = {
   persons:['people','persons','number'], percent_population:['%','percent','percentage','% of total population'],
   current_USD:['current US$','current USD','USD','US$'],
@@ -56,7 +59,13 @@ function validateConfig(catalog, countryMap, licenseReview) {
     assert.ok(c.name.length > 0);
   }
   assert.equal(licenseReview.schemaVersion, 'baseline-license-review-v1');
-  assert.equal(licenseReview.termsUrl,'https://www.worldbank.org/en/about/legal/terms-of-use-for-datasets');
+  assert.ok([LEGACY_TERMS,DATASET_TERMS].includes(termsUrl(catalog)),'Unknown dataset terms URL');
+  if(termsUrl(catalog)===LEGACY_TERMS) {
+    assert.equal(catalog.dataVersion,'1.0.0-pilot','Only the archived edition may use legacy terms');
+    assert.equal(catalog.freezeDate,'2026-11-12');
+    assert.ok(Object.values(licenseReview.series).every(r=>r.status!=='verified'),'Legacy website terms cannot clear dataset redistribution');
+  }
+  assert.equal(licenseReview.termsUrl,termsUrl(catalog));
   assert.deepEqual(Object.keys(licenseReview.series).sort(), [...SERIES].sort());
   for (const i of catalog.indicators) {
     assert.equal(i.min, 0);
@@ -84,18 +93,18 @@ function validateAcquisition(acquisition, resources, catalog) {
     assert.match(q.id, /^[A-Za-z0-9._-]+$/);
     assert.ok(!ids.has(q.id), 'Duplicate query ID'); ids.add(q.id);
     assert.ok(['ok','blocked','error'].includes(q.status), 'Unknown query status');
-    assert.ok(['source','countries','indicator-metadata','series-metadata','observations','terms','documentation'].includes(q.kind),'Unknown query kind');
+    assert.ok(['source','countries','country-metadata','indicator-metadata','series-metadata','observations','terms','documentation'].includes(q.kind),'Unknown query kind');
     assert.ok(['indicator-metadata','series-metadata','observations'].includes(q.kind)?SERIES.includes(q.series):q.series===null,'Query series scope');
     const url = new URL(q.url);
     assert.equal(url.protocol, 'https:');
     assert.ok(['api.worldbank.org','www.worldbank.org','datahelpdesk.worldbank.org'].includes(url.hostname), 'Unexpected source host');
     assert.equal(url.username, ''); assert.equal(url.password, '');
-    if(q.kind==='terms')assert.equal(q.url,'https://www.worldbank.org/en/about/legal/terms-of-use-for-datasets','Terms evidence URL');
+    if(q.kind==='terms')assert.equal(q.url,termsUrl(catalog),'Terms evidence URL');
     if(q.kind==='documentation')assert.equal(q.url,'https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation','Documentation URL');
-    if(['source','countries','indicator-metadata','series-metadata','observations'].includes(q.kind)) {
+    if(['source','countries','country-metadata','indicator-metadata','series-metadata','observations'].includes(q.kind)) {
       assert.equal(url.hostname,'api.worldbank.org');
       const countries=PILOT.join(';');
-      const expected={source:'/v2/source/2',countries:`/v2/country/${countries}`,
+      const expected={source:'/v2/source/2',countries:`/v2/country/${countries}`,'country-metadata':`/v2/sources/2/country/${countries}/metadata`,
         'indicator-metadata':`/v2/indicator/${q.series}`,'series-metadata':`/v2/sources/2/series/${q.series}/metadata`,
         observations:`/v2/country/${countries}/indicator/${q.series}`};
       assert.equal(url.pathname,expected[q.kind],'Source query identity');
@@ -117,6 +126,12 @@ function validateAcquisition(acquisition, resources, catalog) {
       assert.ok(!path.isAbsolute(q.file) && !q.file.split(/[\\/]/).includes('..'), 'Unsafe source path');
       assert.ok(resources[q.id], `Missing frozen input ${q.id}`);
       assert.equal(sha256(resources[q.id]), q.sha256, `Checksum mismatch: ${q.id}`);
+      if(q.finalUrl) {
+        const final=new URL(q.finalUrl);
+        assert.equal(final.protocol,'https:');
+        assert.ok(['api.worldbank.org','www.worldbank.org','worldbank.org','datahelpdesk.worldbank.org'].includes(final.hostname),'Unexpected final source host');
+        if(q.kind==='terms' && termsUrl(catalog)===DATASET_TERMS)assert.equal(q.finalUrl,DATASET_TERMS,'Dataset terms redirected away from the dataset license');
+      }
     } else {
       assert.equal(q.file,null); assert.equal(q.sha256,null);
       assert.ok(q.errorCode, 'Missing failure reason');
@@ -140,7 +155,28 @@ function queryFor(acquisition, kind, series=null) {
   assert.equal(found.length,1, `Expected exactly one ${kind}/${series} query`);
   return found[0];
 }
-function permitted(review, acquisition, resources, cutoff, series) {
+function parseSeriesMetadata(payload,series) {
+  assert.equal(Number(payload.page),1,'Series metadata page');
+  assert.equal(Number(payload.pages),1,'Incomplete series metadata');
+  assert.ok(Array.isArray(payload.source) && payload.source.length===1,'Series metadata source');
+  assert.equal(String(payload.source[0].id),'2','Series metadata must be WDI');
+  const concepts=payload.source[0].concept;
+  assert.ok(Array.isArray(concepts));
+  const variables=concepts.filter(c=>c.id==='Series').flatMap(c=>c.variable??[]);
+  assert.equal(variables.length,1,'Series metadata must identify one series');
+  assert.equal(variables[0].id,series,'Series metadata identity');
+  const fields=variables[0].metatype;
+  assert.ok(Array.isArray(fields));
+  assert.equal(Number(payload.total),fields.length,'Incomplete series metadata fields');
+  const result={};
+  for(const field of fields) {
+    assert.equal(typeof field.id,'string');assert.equal(typeof field.value,'string');
+    assert.ok(!Object.hasOwn(result,field.id),'Duplicate metadata field');
+    Object.defineProperty(result,field.id,{value:field.value,enumerable:true});
+  }
+  return result;
+}
+function permitted(review, acquisition, resources, cutoff, series, modern=false) {
   assert.ok(['pending_review','verified','restricted'].includes(review.status), 'License review status');
   if (review.status !== 'verified') {
     assert.equal(review.commercialUse, 'not_cleared');
@@ -152,7 +188,7 @@ function permitted(review, acquisition, resources, cutoff, series) {
   assert.ok(typeof review.licenseId==='string' && review.licenseId.length>0);
   assert.ok(typeof review.attribution==='string' && review.attribution.length>0);
   assert.ok(review.evidence.length>0, 'License approval lacks evidence');
-  let termsEvidence=false,seriesEvidence=false;
+  let termsEvidence=false,seriesEvidence=false,licenseEvidence=false;
   for (const evidence of review.evidence) {
     const q = acquisition.queries.find(q=>q.id===evidence.queryId);
     assert.ok(q && q.status==='ok' && ['terms','series-metadata','indicator-metadata'].includes(q.kind), 'License evidence not retrieved');
@@ -163,9 +199,17 @@ function permitted(review, acquisition, resources, cutoff, series) {
     else {
       assert.equal(q.series,series,'License evidence belongs to a different series');
       if(q.kind==='indicator-metadata')seriesEvidence=true;
+      if(q.kind==='series-metadata') {
+        const metadata=parseSeriesMetadata(json(resources[q.id]),series);
+        assert.equal(metadata.License_Type,'CC BY-4.0','Source has not declared the reviewed license');
+        assert.ok(['https://datacatalog.worldbank.org/public-licenses#cc-by','https://creativecommons.org/licenses/by/4.0/'].includes(metadata.License_URL),'License URL conflicts with the source label');
+        assert.equal(review.licenseId,'CC-BY-4.0','Reviewed license conflicts with source');
+        licenseEvidence=true;
+      }
     }
   }
   assert.ok(termsEvidence && seriesEvidence,'License needs frozen terms and identity-checked metadata for this series');
+  if(modern)assert.ok(licenseEvidence,'This edition requires the explicit series-level license declaration');
   return true;
 }
 function buildBaseline({catalog, countryMap, licenseReview, acquisition, resources}) {
@@ -185,11 +229,23 @@ function buildBaseline({catalog, countryMap, licenseReview, acquisition, resourc
     for (const c of rows) assert.notEqual(c.region?.id,'NA','Aggregate country not allowed');
   }
   const normalized = new Map(), sourceRecords=[];
+  let countryContext=null;
+  const countryMetadataQuery=acquisition.queries.find(q=>q.kind==='country-metadata');
+  if(countryMetadataQuery?.status==='ok') {
+    const payload=json(resources[countryMetadataQuery.id]);
+    assert.equal(Number(payload.page),1);assert.equal(Number(payload.pages),1);
+    assert.equal(payload.source.length,1);assert.equal(String(payload.source[0].id),'2');
+    const variables=payload.source[0].concept.filter(c=>c.id==='Country').flatMap(c=>c.variable??[]);
+    assert.deepEqual(variables.map(c=>c.id).sort(),[...PILOT].sort(),'Country metadata identities');
+    countryContext=variables.map(c=>({iso3:c.id,fields:Object.fromEntries(c.metatype.map(f=>{assert.equal(typeof f.value,'string');return [f.id,f.value];}))}));
+  }
   for (const indicator of catalog.indicators) {
     const observations=queryFor(acquisition,'observations',indicator.series);
     const metadata=queryFor(acquisition,'indicator-metadata',indicator.series);
     const seriesMetadata=queryFor(acquisition,'series-metadata',indicator.series);
-    const review=licenseReview.series[indicator.series], cleared=permitted(review,acquisition,resources,cutoff,indicator.series);
+    const modern=termsUrl(catalog)===DATASET_TERMS;
+    const review=licenseReview.series[indicator.series], cleared=permitted(review,acquisition,resources,cutoff,indicator.series,modern);
+    const detailedMetadata=modern && seriesMetadata.status==='ok'?parseSeriesMetadata(json(resources[seriesMetadata.id]),indicator.series):null;
     let definition=null, version=null, dataRows=[];
     if (metadata.status==='ok') {
       const {rows}=checkPage(json(resources[metadata.id]),indicator.series+' metadata');
@@ -253,7 +309,7 @@ function buildBaseline({catalog, countryMap, licenseReview, acquisition, resourc
     normalized.set(indicator.key,cells);
     sourceRecords.push({series:indicator.series,name:definition?.name??null,unit:indicator.unit,sourceUnit:definition?.unit||null,
       sourceOrganization:definition?.sourceOrganization??null,sourceNote:definition?.sourceNote??null,
-      datasetVersion:version,license:review,queries:[metadata,seriesMetadata,observations]});
+      datasetVersion:version,license:review,queries:[metadata,seriesMetadata,observations],...(modern?{seriesMetadata:detailedMetadata}:{})});
   }
   const baseline={schemaVersion:catalog.schemaVersion,dataVersion:catalog.dataVersion,freezeDate:catalog.freezeDate,
     layer:'ObservedData',integratedIntoGame:false,
@@ -268,6 +324,7 @@ function buildBaseline({catalog, countryMap, licenseReview, acquisition, resourc
     byIndicator:catalog.indicators.map(i=>({key:i.key,series:i.series,available:baseline.countries.filter(c=>c.indicators[i.key].status==='available').length,total:5}))};
   const sources={schemaVersion:'baseline-sources-v1',freezeDate:catalog.freezeDate,sourceId:'2',sourceMetadata:source,
     sourceQuery,countryQuery,series:sourceRecords,otherQueries:acquisition.queries.filter(q=>['terms','documentation'].includes(q.kind)),excludedCandidates:catalog.excludedCandidates};
+  if(countryMetadataQuery)Object.assign(sources,{countryMetadataQuery,countryContext});
   const inputIndex=[['catalog.json',stableStringify(catalog),'canonical-json'],['country-map.json',stableStringify(countryMap),'canonical-json'],['license-review.json',stableStringify(licenseReview),'canonical-json'],['inputs/acquisition.json',stableStringify(acquisition),'canonical-json'],
     ...acquisition.queries.filter(q=>q.status==='ok').map(q=>['inputs/'+q.file,resources[q.id],'raw-bytes'])]
     .map(([file,bytes,representation])=>({file,representation,sha256:sha256(bytes)})).sort((a,b)=>a.file.localeCompare(b.file,'en'));
@@ -296,6 +353,46 @@ function generateArtifacts(bundle) {
     '', 'Consultas, falhas, datas reais de obtenção e revisões constam de sources.json e inputs/acquisition.json; checksums em manifest.json. Uma recusa CONNECT 403 é bloqueio do proxy antes de qualquer resposta HTTP da fonte. As consultas não tentadas após essa recusa apontam para o pedido de evidência, sem inventar datas de obtenção.',
     '', 'Geração offline: node scripts/data/normalize-baseline.cjs. Validação: node scripts/data/validate-baseline.cjs. O manifesto não inclui o próprio hash. A antiguidade e a classificação da fonte são preservadas; códigos não interpretados mantêm qualidade unclassified. lastupdated não é data de publicação de cada observação.', '');
   artifacts['REPORT.md']=lines.join('\n');
+  if(baseline.dataVersion!=='1.0.0-pilot') {
+    const current=['# BASELINE DATA V1 — Relatório D0–D2', '',
+      `Edição **${baseline.dataVersion}**, corte **${baseline.freezeDate}**. Camada factual separada, não integrada no motor. A edição 1.0.0-pilot de 12/11/2026 foi preservada em editions/1.0.0-pilot-2026-11-12.`, '',
+      `**Cobertura efetiva: ${coverage.availableCells}/40 (${coverage.coveragePercent}%).** Séries com resposta de dados: ${coverage.seriesResponsesRetrieved}/8. Imputações pelo pipeline: 0.`, '',
+      '| País | Indicadores disponíveis |', '| --- | ---: |',
+      ...baseline.countries.map(c=>`| ${c.name} (${c.iso3}) | ${Object.values(c.indicators).filter(v=>v.status==='available').length}/8 |`), '',
+      '## Valores originais e anos', '',
+      'Cada célula indica valor e ano próprios; não são todos dados de 2026. Valores em USD são correntes, sem conversão ou arredondamento de gameplay. A classificação permanece unclassified quando o código da fonte não identifica a natureza da observação; a definição de população explicita estimativas de meio do ano.', '',
+      '| Indicador / unidade | PRT | DEU | USA | BRA | MWI |', '| --- | --- | --- | --- | --- | --- |'];
+    for(const key of keys) {
+      const first=baseline.countries[0].indicators[key];
+      current.push(`| ${key} (${first.unit}) | `+baseline.countries.map(c=>{const v=c.indicators[key];return v.status==='available'?`${v.value} (${v.observationYear})`:`— ${v.missingReason}`;}).join(' | ')+' |');
+    }
+    current.push('', '## Cobertura por indicador e antiguidade', '', '| Série | Cobertura | Anos disponíveis | Maior antiguidade |', '| --- | ---: | --- | ---: |');
+    for(const key of keys) {
+      const cells=baseline.countries.map(c=>c.indicators[key]),available=cells.filter(v=>v.status==='available');
+      const age=available.length?Math.max(...available.map(v=>v.stalenessYears)):null;
+      current.push(`| ${cells[0].series} | ${available.length}/5 | ${[...new Set(available.map(v=>v.observationYear))].sort().join(', ')||'—'} | ${age===null?'—':age+(age===1?' ano':' anos')} |`);
+    }
+    current.push('', '## Comparação e limites de interpretação', '',
+      'Os números acima permitem comparar magnitudes publicadas, não prontidão, dificuldade ou resultados de campanha. Não há pontuações nem normalização de poder. PIB não é tesouraria; PIB por habitante não descreve desigualdade; camas por mil habitantes não medem vagas disponíveis, pessoal ou cuidados intensivos; comércio/PIB pode exceder 100%.', '',
+      'Amostras antigas são mantidas com o ano original, sem preenchimento silencioso. A variação de anos impede tratar razões entre séries como se fossem medições contemporâneas. Os perfis dos cinco países são um teste de diversidade de escala e cobertura, não uma classificação de vencedores e perdedores.');
+    if(sources.countryContext) {
+      current.push('', 'Âmbito da contabilidade governamental segundo metadados WDI:', '',
+        ...sources.countryContext.map(c=>`- ${c.iso3}: ${c.fields.GovernmentAccountingconcept??'não identificado'}.`), '',
+        'Por isso, receita fiscal/PIB não representa necessariamente o mesmo perímetro administrativo nos cinco países. A diferença é documentada; não foi corrigida com uma estimativa.');
+    }
+    current.push('', '## Fontes, versões e direitos de utilização', '',
+      '| Série | Revisão WDI | Licença declarada / revisão |', '| --- | --- | --- |',
+      ...sources.series.map(s=>`| ${s.series} | ${s.datasetVersion??'desconhecida'} | ${s.seriesMetadata?.License_Type??'não obtida'} / ${s.license.status} |`), '',
+      'Os metadados por série, origem, limitações estatísticas, evidência e atribuições estão em sources.json e license-review.json. A revisão técnica verificou os rótulos de licença e as exceções publicadas; não substitui aconselhamento jurídico nem autoriza outros datasets dos mesmos fornecedores.', '',
+      'Uso comercial dos valores declarados CC BY 4.0 exige cumprir atribuição ao Banco Mundial e fornecedores, identificação de alterações, ligação aos termos e preservação das condições adicionais WB, incluindo mediação/arbitragem e ausência de endosso. Os termos específicos de datasets prevalecem sobre termos gerais em conflito. HTML/assets do site são evidência de desenvolvimento, não recursos licenciados para embutir no jogo. Ver ATTRIBUTION.md e docs/BASELINE_DATA_PIPELINE.md.', '',
+      '## Proveniência e reprodução', '',
+      `SHA-256 de scenario-baseline-v1.json: \`${sha256(artifacts['scenario-baseline-v1.json'])}\`.`, '',
+      `Aquisição com datas reais em inputs/acquisition.json; URLs finais, tipos de conteúdo e hashes dos bytes congelados constam do manifesto. O corte é ${baseline.freezeDate}; lastupdated é revisão do dataset, não ano de observação ou data individual de publicação.`, '',
+      'Geração e validação offline: node scripts/data/normalize-baseline.cjs e node scripts/data/validate-baseline.cjs. Usar --base-dir para a edição arquivada. O manifesto não inclui o próprio hash.', '',
+      'Não houve integração D3, alterações ao motor/dados da Alpha, recalibração de regras, campanhas comparativas de 60/120 dias ou merge do PR.');
+    if(Object.keys(coverage.missingReasons).length)current.push('', 'Motivos de indisponibilidade:', '', ...Object.entries(coverage.missingReasons).map(([reason,count])=>`- ${reason}: ${count} células.`));
+    artifacts['REPORT.md']=current.join('\n')+'\n';
+  }
   artifacts['manifest.json']=stableStringify({schemaVersion:'baseline-manifest-v1',dataVersion:baseline.dataVersion,freezeDate:baseline.freezeDate,
     inputs:inputIndex,outputs:Object.keys(artifacts).sort().map(file=>({file,sha256:sha256(artifacts[file])}))});
   return artifacts;
@@ -312,4 +409,4 @@ function loadBundle({baseDir=path.join(ROOT,'data/baseline'),inputDir=path.join(
   }
   return {catalog:read('catalog.json'),countryMap:read('country-map.json'),licenseReview:read('license-review.json'),acquisition,resources};
 }
-module.exports={ROOT,PILOT,SERIES,UNITS,stableStringify,sha256,validateConfig,checkPage,validateAcquisition,buildBaseline,generateArtifacts,loadBundle};
+module.exports={ROOT,PILOT,SERIES,UNITS,stableStringify,sha256,validateConfig,checkPage,validateAcquisition,buildBaseline,generateArtifacts,loadBundle,parseSeriesMetadata};

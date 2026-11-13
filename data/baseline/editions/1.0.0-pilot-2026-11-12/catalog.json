@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "baseline-v1",
+  "dataVersion": "1.0.0-pilot",
+  "freezeDate": "2026-11-12",
+  "sourceId": "2",
+  "startYear": 1960,
+  "indicators": [
+    {"key":"population","series":"SP.POP.TOTL","name":"População","unit":"persons","min":0,"max":null},
+    {"key":"urbanization","series":"SP.URB.TOTL.IN.ZS","name":"População urbana","unit":"percent_population","min":0,"max":100},
+    {"key":"gdp","series":"NY.GDP.MKTP.CD","name":"PIB corrente","unit":"current_USD","min":0,"max":null},
+    {"key":"gdpPerCapita","series":"NY.GDP.PCAP.CD","name":"PIB por habitante","unit":"current_USD_per_person","min":0,"max":null},
+    {"key":"taxRevenue","series":"GC.TAX.TOTL.GD.ZS","name":"Receita fiscal","unit":"percent_GDP","min":0,"max":null},
+    {"key":"hospitalBeds","series":"SH.MED.BEDS.ZS","name":"Camas hospitalares","unit":"beds_per_1000_people","min":0,"max":null},
+    {"key":"research","series":"GB.XPD.RSDV.GD.ZS","name":"Despesa em I&D","unit":"percent_GDP","min":0,"max":100},
+    {"key":"trade","series":"NE.TRD.GNFS.ZS","name":"Comércio","unit":"percent_GDP","min":0,"max":null}
+  ],
+  "excludedCandidates": [
+    {"indicator":"publicDebt","reason":"FMI WEO: série, definição, proveniência e termos ainda por rever; fora do piloto WDI/source 2."},
+    {"indicator":"governance","reason":"WGI não é WDI/source 2; sem conversão em índice de jogo."},
+    {"indicator":"military","reason":"SIPRI, republicações e prontidão militar fora deste piloto; sem autorização comercial presumida."},
+    {"indicator":"roadsAndGeography","reason":"Cartografia e redes físicas fora do recorte D0–D2 de oito séries WDI."}
+  ]
+}

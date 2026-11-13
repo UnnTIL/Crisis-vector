@@ -4,13 +4,18 @@ const path=require('node:path');
 const assert=require('node:assert/strict');
 const {ROOT,loadBundle,buildBaseline,generateArtifacts,sha256}=require('./baseline.cjs');
 function main(args=process.argv.slice(2)){
-  let dir=path.join(ROOT,'data/baseline'),inputDir=path.join(dir,'inputs');
+  let baseDir=path.join(ROOT,'data/baseline'),dir,inputDir;
   for(let i=0;i<args.length;i++){
-    if(args[i]==='--out-dir' && args[i+1])dir=path.resolve(args[++i]);
-    else if(args[i]==='--input-dir' && args[i+1])inputDir=path.resolve(args[++i]);
-    else throw new Error('Usage: validate-baseline.cjs [--input-dir DIR] [--out-dir DIR]');
+    const option=args[i];
+    if(['--base-dir','--input-dir','--out-dir'].includes(option) && args[i+1] && !args[i+1].startsWith('--')){
+      const value=path.resolve(args[++i]);
+      if(option==='--base-dir')baseDir=value;
+      else if(option==='--out-dir')dir=value;
+      else inputDir=value;
+    }else throw new Error('Usage: validate-baseline.cjs [--base-dir DIR] [--input-dir DIR] [--out-dir DIR]');
   }
-  const inputs=loadBundle({inputDir}),a=generateArtifacts(buildBaseline(inputs)),b=generateArtifacts(buildBaseline(inputs));
+  inputDir ??= path.join(baseDir,'inputs'); dir ??= baseDir;
+  const inputs=loadBundle({baseDir,inputDir}),a=generateArtifacts(buildBaseline(inputs)),b=generateArtifacts(buildBaseline(inputs));
   assert.deepEqual(a,b,'Non-deterministic build');
   for(const [name,bytes] of Object.entries(a))assert.equal(fs.readFileSync(path.join(dir,name),'utf8'),bytes,`Stale or corrupt artifact: ${name}`);
   console.log(`Validated ${Object.keys(a).length} artifacts; two builds identical; SHA-256 ${sha256(a['scenario-baseline-v1.json'])}`);

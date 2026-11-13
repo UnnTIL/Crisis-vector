@@ -1,15 +1,336 @@
 {
   "schemaVersion": "baseline-license-review-v1",
-  "termsUrl": "https://www.worldbank.org/en/about/legal/terms-of-use-for-datasets",
-  "note": "Acesso aos termos e metadados bloqueado pelo proxy. Não se presume CC BY nem autorização comercial para séries de terceiros. Cada entrada exige revisão de exceções e evidência congelada antes de distribuir valores.",
+  "dataVersion": "1.1.0-pilot",
+  "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets",
+  "note": "Technical review of retrieved dataset terms and eight explicit per-series CC BY declarations; no blanket license assumed for other provider datasets or website assets.",
   "series": {
-    "SP.POP.TOTL": {"status":"pending_review","licenseId":null,"commercialUse":"not_cleared","thirdPartyExceptionsReviewed":false,"reviewedAt":null,"attribution":null,"evidence":[]},
-    "SP.URB.TOTL.IN.ZS": {"status":"pending_review","licenseId":null,"commercialUse":"not_cleared","thirdPartyExceptionsReviewed":false,"reviewedAt":null,"attribution":null,"evidence":[]},
-    "NY.GDP.MKTP.CD": {"status":"pending_review","licenseId":null,"commercialUse":"not_cleared","thirdPartyExceptionsReviewed":false,"reviewedAt":null,"attribution":null,"evidence":[]},
-    "NY.GDP.PCAP.CD": {"status":"pending_review","licenseId":null,"commercialUse":"not_cleared","thirdPartyExceptionsReviewed":false,"reviewedAt":null,"attribution":null,"evidence":[]},
-    "GC.TAX.TOTL.GD.ZS": {"status":"pending_review","licenseId":null,"commercialUse":"not_cleared","thirdPartyExceptionsReviewed":false,"reviewedAt":null,"attribution":null,"evidence":[]},
-    "SH.MED.BEDS.ZS": {"status":"pending_review","licenseId":null,"commercialUse":"not_cleared","thirdPartyExceptionsReviewed":false,"reviewedAt":null,"attribution":null,"evidence":[]},
-    "GB.XPD.RSDV.GD.ZS": {"status":"pending_review","licenseId":null,"commercialUse":"not_cleared","thirdPartyExceptionsReviewed":false,"reviewedAt":null,"attribution":null,"evidence":[]},
-    "NE.TRD.GNFS.ZS": {"status":"pending_review","licenseId":null,"commercialUse":"not_cleared","thirdPartyExceptionsReviewed":false,"reviewedAt":null,"attribution":null,"evidence":[]}
+    "SP.POP.TOTL": {
+      "status": "verified",
+      "licenseId": "CC-BY-4.0",
+      "commercialUse": "allowed",
+      "thirdPartyExceptionsReviewed": true,
+      "reviewedAt": "2026-11-13T18:25:30.434Z",
+      "attribution": "The World Bank: World Development Indicators: World Population Prospects, United Nations (UN), uri: https://population.un.org/wpp/, publisher: UN Population Division;\nStatistical databases and publications from national statistical offices, National Statistical Offices (NSOs), uri: https://unstats.un.org/home/nso_sites/, publisher: National Statistical Offices;\nEurostat: Demographic Statistics, Eurostat (ESTAT), uri: https://ec.europa.eu/eurostat/data/database?node_code=earn_ses_monthly, publisher: Eurostat;\nPopulation and Vital Statistics Report (various years), United Nations (UN), uri: https://unstats.un.org, publisher: UN Statistics Division",
+      "sourceLicenseType": "CC BY-4.0",
+      "sourceLicenseUrl": "https://datacatalog.worldbank.org/public-licenses#cc-by",
+      "countryScope": [
+        "PRT",
+        "DEU",
+        "USA",
+        "BRA",
+        "MWI"
+      ],
+      "additionalTerms": [
+        "World Bank Dataset Terms prevail over conflicting general website terms",
+        "Attribution to World Bank and original providers; pass on attribution requirement",
+        "Identify modifications and do not imply endorsement",
+        "Mandatory mediation/arbitration and retained privileges/immunities as stated in WB Dataset Terms"
+      ],
+      "exceptionsReview": "Reviewed License_Type, License_URL, Source, Limitationsandexceptions, Othernotes, indicator sourceOrganization/sourceNote and country accounting metadata. No specific redistribution restriction found in these retrieved series; methodological limitations are retained in sources.json.",
+      "evidence": [
+        {
+          "queryId": "terms",
+          "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+        },
+        {
+          "queryId": "metadata-SP.POP.TOTL",
+          "sha256": "2f8491efc00bf2c0995112ff8e87aba69e5e9d22d0880b22f7e3a4ec757ba05c",
+          "excerpt": "Population, total"
+        },
+        {
+          "queryId": "series-SP.POP.TOTL",
+          "sha256": "712962454b5aff094f1c5cdd00980e838d7c97b3d62456b5ae7dd7401b5644d7",
+          "excerpt": "CC BY-4.0"
+        }
+      ]
+    },
+    "SP.URB.TOTL.IN.ZS": {
+      "status": "verified",
+      "licenseId": "CC-BY-4.0",
+      "commercialUse": "allowed",
+      "thirdPartyExceptionsReviewed": true,
+      "reviewedAt": "2026-11-13T18:25:30.434Z",
+      "attribution": "The World Bank: World Development Indicators: World Urbanization Prospects, United Nations (UN), uri: https://population.un.org/wup/, note: United Nations Population Division's World Urbanization Prospects, National definitions, publisher: UN Population Division",
+      "sourceLicenseType": "CC BY-4.0",
+      "sourceLicenseUrl": "https://datacatalog.worldbank.org/public-licenses#cc-by",
+      "countryScope": [
+        "PRT",
+        "DEU",
+        "USA",
+        "BRA",
+        "MWI"
+      ],
+      "additionalTerms": [
+        "World Bank Dataset Terms prevail over conflicting general website terms",
+        "Attribution to World Bank and original providers; pass on attribution requirement",
+        "Identify modifications and do not imply endorsement",
+        "Mandatory mediation/arbitration and retained privileges/immunities as stated in WB Dataset Terms"
+      ],
+      "exceptionsReview": "Reviewed License_Type, License_URL, Source, Limitationsandexceptions, Othernotes, indicator sourceOrganization/sourceNote and country accounting metadata. No specific redistribution restriction found in these retrieved series; methodological limitations are retained in sources.json.",
+      "evidence": [
+        {
+          "queryId": "terms",
+          "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+        },
+        {
+          "queryId": "metadata-SP.URB.TOTL.IN.ZS",
+          "sha256": "ada77d666a1469f69379933d0597cdd420299806163905af52de79d538da95e6",
+          "excerpt": "Urban population (% of total population)"
+        },
+        {
+          "queryId": "series-SP.URB.TOTL.IN.ZS",
+          "sha256": "1538ee14ca3c3c836a65f53ffb130079e024df2c6b29d1d6a841043d5fbb453d",
+          "excerpt": "CC BY-4.0"
+        }
+      ]
+    },
+    "NY.GDP.MKTP.CD": {
+      "status": "verified",
+      "licenseId": "CC-BY-4.0",
+      "commercialUse": "allowed",
+      "thirdPartyExceptionsReviewed": true,
+      "reviewedAt": "2026-11-13T18:25:30.434Z",
+      "attribution": "The World Bank: World Development Indicators: Country official statistics, National Statistical Organizations and/or Central Banks;\nNational Accounts data files, Organisation for Economic Co-operation and Development (OECD);\nStaff estimates, World Bank (WB)",
+      "sourceLicenseType": "CC BY-4.0",
+      "sourceLicenseUrl": "https://datacatalog.worldbank.org/public-licenses#cc-by",
+      "countryScope": [
+        "PRT",
+        "DEU",
+        "USA",
+        "BRA",
+        "MWI"
+      ],
+      "additionalTerms": [
+        "World Bank Dataset Terms prevail over conflicting general website terms",
+        "Attribution to World Bank and original providers; pass on attribution requirement",
+        "Identify modifications and do not imply endorsement",
+        "Mandatory mediation/arbitration and retained privileges/immunities as stated in WB Dataset Terms"
+      ],
+      "exceptionsReview": "Reviewed License_Type, License_URL, Source, Limitationsandexceptions, Othernotes, indicator sourceOrganization/sourceNote and country accounting metadata. No specific redistribution restriction found in these retrieved series; methodological limitations are retained in sources.json.",
+      "evidence": [
+        {
+          "queryId": "terms",
+          "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+        },
+        {
+          "queryId": "metadata-NY.GDP.MKTP.CD",
+          "sha256": "51cec1e144a5bad8d92238630c0a305e20116e86d34ad95c7c315ed166255b28",
+          "excerpt": "GDP (current US$)"
+        },
+        {
+          "queryId": "series-NY.GDP.MKTP.CD",
+          "sha256": "918f78304b48789cac8a53465e1305df57f808b7f55efaa044efe1058a0f18fb",
+          "excerpt": "CC BY-4.0"
+        }
+      ]
+    },
+    "NY.GDP.PCAP.CD": {
+      "status": "verified",
+      "licenseId": "CC-BY-4.0",
+      "commercialUse": "allowed",
+      "thirdPartyExceptionsReviewed": true,
+      "reviewedAt": "2026-11-13T18:25:30.434Z",
+      "attribution": "The World Bank: World Development Indicators: Country official statistics, National Statistical Organizations and/or Central Banks;\nNational Accounts data files, Organisation for Economic Co-operation and Development (OECD);\nStaff estimates, World Bank (WB)",
+      "sourceLicenseType": "CC BY-4.0",
+      "sourceLicenseUrl": "https://datacatalog.worldbank.org/public-licenses#cc-by",
+      "countryScope": [
+        "PRT",
+        "DEU",
+        "USA",
+        "BRA",
+        "MWI"
+      ],
+      "additionalTerms": [
+        "World Bank Dataset Terms prevail over conflicting general website terms",
+        "Attribution to World Bank and original providers; pass on attribution requirement",
+        "Identify modifications and do not imply endorsement",
+        "Mandatory mediation/arbitration and retained privileges/immunities as stated in WB Dataset Terms"
+      ],
+      "exceptionsReview": "Reviewed License_Type, License_URL, Source, Limitationsandexceptions, Othernotes, indicator sourceOrganization/sourceNote and country accounting metadata. No specific redistribution restriction found in these retrieved series; methodological limitations are retained in sources.json.",
+      "evidence": [
+        {
+          "queryId": "terms",
+          "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+        },
+        {
+          "queryId": "metadata-NY.GDP.PCAP.CD",
+          "sha256": "96520c3a22b1f9da1c7456349a6e70b1643db88d427671faced17cb8b9eaf907",
+          "excerpt": "GDP per capita (current US$)"
+        },
+        {
+          "queryId": "series-NY.GDP.PCAP.CD",
+          "sha256": "3aa05daace298a8fd7652d09561904e22cba0b5de681a013971df3c47997819c",
+          "excerpt": "CC BY-4.0"
+        }
+      ]
+    },
+    "GC.TAX.TOTL.GD.ZS": {
+      "status": "verified",
+      "licenseId": "CC-BY-4.0",
+      "commercialUse": "allowed",
+      "thirdPartyExceptionsReviewed": true,
+      "reviewedAt": "2026-11-13T18:25:30.434Z",
+      "attribution": "The World Bank: World Development Indicators: Government Finance Statistics Yearbook and data files, International Monetary Fund (IMF)",
+      "sourceLicenseType": "CC BY-4.0",
+      "sourceLicenseUrl": "https://datacatalog.worldbank.org/public-licenses#cc-by",
+      "countryScope": [
+        "PRT",
+        "DEU",
+        "USA",
+        "BRA",
+        "MWI"
+      ],
+      "additionalTerms": [
+        "World Bank Dataset Terms prevail over conflicting general website terms",
+        "Attribution to World Bank and original providers; pass on attribution requirement",
+        "Identify modifications and do not imply endorsement",
+        "Mandatory mediation/arbitration and retained privileges/immunities as stated in WB Dataset Terms"
+      ],
+      "exceptionsReview": "Reviewed License_Type, License_URL, Source, Limitationsandexceptions, Othernotes, indicator sourceOrganization/sourceNote and country accounting metadata. No specific redistribution restriction found in these retrieved series; methodological limitations are retained in sources.json.",
+      "evidence": [
+        {
+          "queryId": "terms",
+          "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+        },
+        {
+          "queryId": "metadata-GC.TAX.TOTL.GD.ZS",
+          "sha256": "2c05b709dc94a66cae663ae7559bffb98089566fb03ddd323bbf6374df1432ca",
+          "excerpt": "Tax revenue (% of GDP)"
+        },
+        {
+          "queryId": "series-GC.TAX.TOTL.GD.ZS",
+          "sha256": "cfd1cb69c1eefc9a38ccfe2f7d5fb9fb6bc1c78f69cc8765d075f93d8eda91b3",
+          "excerpt": "CC BY-4.0"
+        }
+      ]
+    },
+    "SH.MED.BEDS.ZS": {
+      "status": "verified",
+      "licenseId": "CC-BY-4.0",
+      "commercialUse": "allowed",
+      "thirdPartyExceptionsReviewed": true,
+      "reviewedAt": "2026-11-13T18:25:30.434Z",
+      "attribution": "The World Bank: World Development Indicators: WHO data, supplemented by country data, World Health Organization (WHO)",
+      "sourceLicenseType": "CC BY-4.0",
+      "sourceLicenseUrl": "https://datacatalog.worldbank.org/public-licenses#cc-by",
+      "countryScope": [
+        "PRT",
+        "DEU",
+        "USA",
+        "BRA",
+        "MWI"
+      ],
+      "additionalTerms": [
+        "World Bank Dataset Terms prevail over conflicting general website terms",
+        "Attribution to World Bank and original providers; pass on attribution requirement",
+        "Identify modifications and do not imply endorsement",
+        "Mandatory mediation/arbitration and retained privileges/immunities as stated in WB Dataset Terms"
+      ],
+      "exceptionsReview": "Reviewed License_Type, License_URL, Source, Limitationsandexceptions, Othernotes, indicator sourceOrganization/sourceNote and country accounting metadata. No specific redistribution restriction found in these retrieved series; methodological limitations are retained in sources.json.",
+      "evidence": [
+        {
+          "queryId": "terms",
+          "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+        },
+        {
+          "queryId": "metadata-SH.MED.BEDS.ZS",
+          "sha256": "7739f9616144297442cdfb76a4bd55210f8ad1789f6f16a28995f05c30368517",
+          "excerpt": "Hospital beds (per 1,000 people)"
+        },
+        {
+          "queryId": "series-SH.MED.BEDS.ZS",
+          "sha256": "a6c48716ecd21af3d8240f5330a80caaf441627d542c2d9b11b9126917f72fec",
+          "excerpt": "CC BY-4.0"
+        }
+      ]
+    },
+    "GB.XPD.RSDV.GD.ZS": {
+      "status": "verified",
+      "licenseId": "CC-BY-4.0",
+      "commercialUse": "allowed",
+      "thirdPartyExceptionsReviewed": true,
+      "reviewedAt": "2026-11-13T18:25:30.434Z",
+      "attribution": "The World Bank: World Development Indicators: Stat Bulk Data Download Service, UN Educational, Scientific and Cultural Organization (UNESCO), uri: https://databrowser.uis.unesco.org/resources/bulk, publisher: UNESCO Institute for Statistics (UIS), date accessed: 2025-03-26, date published: 2025-02",
+      "sourceLicenseType": "CC BY-4.0",
+      "sourceLicenseUrl": "https://datacatalog.worldbank.org/public-licenses#cc-by",
+      "countryScope": [
+        "PRT",
+        "DEU",
+        "USA",
+        "BRA",
+        "MWI"
+      ],
+      "additionalTerms": [
+        "World Bank Dataset Terms prevail over conflicting general website terms",
+        "Attribution to World Bank and original providers; pass on attribution requirement",
+        "Identify modifications and do not imply endorsement",
+        "Mandatory mediation/arbitration and retained privileges/immunities as stated in WB Dataset Terms"
+      ],
+      "exceptionsReview": "Reviewed License_Type, License_URL, Source, Limitationsandexceptions, Othernotes, indicator sourceOrganization/sourceNote and country accounting metadata. No specific redistribution restriction found in these retrieved series; methodological limitations are retained in sources.json.",
+      "evidence": [
+        {
+          "queryId": "terms",
+          "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+        },
+        {
+          "queryId": "metadata-GB.XPD.RSDV.GD.ZS",
+          "sha256": "8b86f8208807c1ba1fa83a27f753bc5e59e7fbec115a22aabf574d2449fe22ae",
+          "excerpt": "Research and development expenditure (% of GDP)"
+        },
+        {
+          "queryId": "series-GB.XPD.RSDV.GD.ZS",
+          "sha256": "9960fc5ae8f8108e3153948bab78bd6d2864f9d7462d4a395dbc7961dd6068b9",
+          "excerpt": "CC BY-4.0"
+        }
+      ]
+    },
+    "NE.TRD.GNFS.ZS": {
+      "status": "verified",
+      "licenseId": "CC-BY-4.0",
+      "commercialUse": "allowed",
+      "thirdPartyExceptionsReviewed": true,
+      "reviewedAt": "2026-11-13T18:25:30.434Z",
+      "attribution": "The World Bank: World Development Indicators: Country official statistics, National Statistical Organizations and/or Central Banks;\nNational Accounts data files, Organisation for Economic Co-operation and Development (OECD);\nStaff estimates, World Bank (WB)",
+      "sourceLicenseType": "CC BY-4.0",
+      "sourceLicenseUrl": "https://datacatalog.worldbank.org/public-licenses#cc-by",
+      "countryScope": [
+        "PRT",
+        "DEU",
+        "USA",
+        "BRA",
+        "MWI"
+      ],
+      "additionalTerms": [
+        "World Bank Dataset Terms prevail over conflicting general website terms",
+        "Attribution to World Bank and original providers; pass on attribution requirement",
+        "Identify modifications and do not imply endorsement",
+        "Mandatory mediation/arbitration and retained privileges/immunities as stated in WB Dataset Terms"
+      ],
+      "exceptionsReview": "Reviewed License_Type, License_URL, Source, Limitationsandexceptions, Othernotes, indicator sourceOrganization/sourceNote and country accounting metadata. No specific redistribution restriction found in these retrieved series; methodological limitations are retained in sources.json.",
+      "evidence": [
+        {
+          "queryId": "terms",
+          "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+        },
+        {
+          "queryId": "metadata-NE.TRD.GNFS.ZS",
+          "sha256": "9d62a99289a9f6dad8827991e27354173795ea0ae71a7952d24db22a41e4f442",
+          "excerpt": "Trade (% of GDP)"
+        },
+        {
+          "queryId": "series-NE.TRD.GNFS.ZS",
+          "sha256": "b7019fcba97bc78d14537fe061130a787f58e0d04096d440cf7397780cab9f13",
+          "excerpt": "CC BY-4.0"
+        }
+      ]
+    }
   }
 }

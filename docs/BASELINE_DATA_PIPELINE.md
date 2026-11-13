@@ -1,76 +1,78 @@
 # BASELINE DATA V1 — piloto D0–D2
 
-Implementação isolada da [Issue #7](https://github.com/UnnTIL/Crisis-vector/issues/7), com base na autorização D0–D2 de 2026-11-12. Foram lidos integralmente `docs/product/BASELINE_DATA_V1.md` e `MASTER_ROADMAP_V2.md` na branch `docs/product-vision-v1`, commit `7a35654b3803aaf440d58efab96eac8d7ff82ad4`. A branch de implementação parte da `main` (`6efd5b3`), sem integrar os PRs #1/#5. Motor, interface e `data/world-data.js` da Alpha 0.1 permanecem intactos.
+Continuação da [Issue #7](https://github.com/UnnTIL/Crisis-vector/issues/7), após leitura integral da [revisão técnica do PR #8](https://github.com/UnnTIL/Crisis-vector/pull/8#issuecomment-6837826628). A implementação permanece na branch `feat/baseline-data-v1`, sem integração D3, alterações ao motor/dados da Alpha, campanhas de 60/120 dias ou merge. Os documentos de produto de referência foram consultados na branch documental, não incorporados por merge.
 
-**Estado desta edição: entrega parcial, recolha e revisão comercial bloqueadas.** O proxy do ambiente recusou `api.worldbank.org`, `www.worldbank.org` e `datahelpdesk.worldbank.org` com `CONNECT 403`, antes de qualquer resposta da origem. O pacote tem 40 células explícitas, **zero valores factuais recolhidos ou licenciados**, e não é uma baseline real pronta para campanha. Ver [relatório gerado](../data/baseline/REPORT.md).
+## Edições e datas reais
 
-## Âmbito e ficheiros
+- `1.0.0-pilot`, corte **2026-11-12**: edição original com 0/40 valores, bloqueada pelo proxy. Ficheiros e inputs preservados byte a byte em `data/baseline/editions/1.0.0-pilot-2026-11-12/`. Hash da baseline: `a4f8ca0d6aaaca2945ee4badcb17902d6e8e542ea56ccecbc0b82bb8deb52c10`.
+- `1.1.0-pilot`, corte **2026-11-13**: edição atual em `data/baseline/`, obtida depois de o novo ambiente responder com HTTP 200 à API. Datas de aquisição são reais e constam de `inputs/acquisition.json`. Cobertura, valores e anos efetivos: [relatório gerado](../data/baseline/REPORT.md).
 
-Os cinco países são PRT, DEU, USA, BRA e MWI. O dicionário verifica correspondência direta com os IDs da Alpha; não inventa ISO3 para agregados, territórios ou entidades disputadas. A expansão mundial exige outro trabalho de mapeamento.
+O corte não torna os valores medições de 2026. Última observação não nula, ano original e revisão WDI são conservados individualmente. `lastupdated` é revisão do dataset, não data de publicação de cada observação. Uma aquisição posterior ao corte é rejeitada antes de contactar fontes ou criar ficheiros; não existe opção CLI para backdating. Uma futura recolha exige nova versão e arquivo da edição anterior, ou um conector histórico com proveniência verificável. Não basta mudar uma data para fazer os testes passar.
 
-As oito séries WDI/source 2 são população, urbanização, PIB corrente, PIB por habitante, receita fiscal/PIB, camas por mil habitantes, I&D/PIB e comércio/PIB. FMI/WEO, WGI, SIPRI, cartografia e capacidades derivadas ficam excluídos. Não há rankings de prontidão, valores de gameplay, integração, campanha de 60/120 dias nem alterações às regras do jogo; estes pertencem a D3–D4.
+## Âmbito factual
+
+Cinco IDs internos/ISO3/World Bank diretamente correspondentes: PRT, DEU, USA, BRA e MWI. Não foram atribuídos códigos a agregados, territórios disputados ou entidades históricas.
+
+Oito séries WDI/source 2: população, urbanização, PIB corrente, PIB por habitante, receita fiscal/PIB, camas por mil habitantes, I&D/PIB e comércio/PIB. FMI/WEO, WGI, SIPRI, cartografia, índices militares e parâmetros derivados continuam fora do piloto. O metadado de país é recolhido apenas para documentar âmbito e comparabilidade, não como novo índice de gameplay.
+
+A base é a camada `ObservedData`, com `integratedIntoGame:false`. O nome da camada não afirma que todos os valores são observações diretas: `obs_status` vazio permanece `unclassified`, sem ocultar as definições de estimativa publicadas pela fonte. A população, por exemplo, é explicitamente descrita como estimativa de meio do ano. Não houve imputação, interpolação, conversão de moeda, preenchimento a zero ou criação de prontidão fictícia. `fallback:null` significa ausência de fallback; zero publicado continua zero.
+
+## Ficheiros
 
 | Ficheiro | Função |
 | --- | --- |
-| `data/baseline/catalog.json` | Oito séries, unidades esperadas, limites, versão e corte. |
-| `data/baseline/country-map.json` | IDs internos, ISO3, IDs de origem e exclusões. |
-| `data/baseline/license-review.json` | Revisão e autorização comercial por série; atualmente pendentes. |
-| `data/baseline/inputs/acquisition.json` | Consultas planeadas, tentativas reais, falhas e referências para recusas de host. |
-| `data/baseline/inputs/raw/` | Bytes exatos de respostas futuras; ignorados pelo Git até à revisão dos direitos. |
-| `data/baseline/scenario-baseline-v1.json` | Camada `ObservedData`, separada e sem consumo pelo jogo. |
-| `data/baseline/sources.json` | Metadados, termos, URLs e versões, ou ausência explícita. |
-| `coverage.json`, `coverage.csv`, `REPORT.md` | Matriz país × série × ano × valor × unidade × qualidade, cobertura e limitações. |
-| `manifest.json` | Checksums de entradas e saídas; não inclui o próprio hash. |
+| `catalog.json`, `country-map.json` | Versão/corte, oito séries, unidades e dicionário de cinco países. |
+| `license-review.json` | Revisão de direitos por série, condições e evidência congelada. |
+| `inputs/acquisition.json` | URLs pedidas/finais, datas reais, HTTP/proxy, ficheiros e hashes. |
+| `inputs/raw/` | Bytes congelados necessários à reprodução; novos payloads ficam em quarentena até revisão. |
+| `scenario-baseline-v1.json` | Valores originais, anos, unidades, origem, qualidade e licenças; sem consumo pelo motor. |
+| `sources.json` | Metadados WDI completos por série, fornecedores, notas e contexto de cada país. |
+| `coverage.json`, `coverage.csv`, `REPORT.md` | Cobertura, comparação de valores/anos e limitações. |
+| `manifest.json` | SHA-256 de inputs/outputs, sem hash do próprio manifesto. |
+| `ATTRIBUTION.md` | Atribuições e condições de utilização comercial. |
 
-## Execução
+## Execução e testes
 
-Requer Node 20 ou superior. A geração e validação offline usam apenas a biblioteca padrão. A recolha usa também `curl`, para respeitar as variáveis de proxy e CA fornecidas pelo ambiente; TLS e verificações de certificados permanecem ativos. Não há `npm install`, dependência nova ou configuração do runtime do jogo.
-
-A partir da raiz do checkout:
+Node 20 ou superior, sem dependências npm novas. Só a aquisição usa `curl`, com proxy, CA e verificação TLS fornecidos pelo ambiente. Geração e validação são offline.
 
 ```bash
-# Apenas build-time; não é necessário para gerar de novo a edição congelada.
+# Nova aquisição: nunca sobrescrever uma edição congelada sem criar outra versão.
 node scripts/data/fetch-world-bank.cjs --out-dir /tmp/crisis-wdi-acquisition
 
-# Reproduzir e verificar o pacote já congelado, sem rede.
+# Reconstruir a edição atual a partir dos inputs congelados.
 node scripts/data/normalize-baseline.cjs
 node scripts/data/validate-baseline.cjs
 npm test
 
-# Duas gerações independentes, usando exatamente os mesmos inputs.
+# Duas gerações independentes com os mesmos inputs.
 node scripts/data/normalize-baseline.cjs --out-dir /tmp/crisis-baseline-build-a
 node scripts/data/normalize-baseline.cjs --out-dir /tmp/crisis-baseline-build-b
 diff -r /tmp/crisis-baseline-build-a /tmp/crisis-baseline-build-b
+
+# Revalidar a edição antiga sem alterar os seus ficheiros.
+node scripts/data/validate-baseline.cjs --base-dir data/baseline/editions/1.0.0-pilot-2026-11-12
 ```
 
-O fetch termina com código **2** quando regista aquisição bloqueada/incompleta, **1** para erros de execução/configuração e **0** apenas para respostas HTTP 200 em todas as consultas. A presença de respostas não prova que valores, versões ou licenças tenham passado a normalização. Não converter código 2 num alegado sucesso da recolha. O manifesto guarda `proxyStatus:403` separado de `httpStatus:null`; o Banco Mundial não respondeu com um erro estatístico. Depois da primeira recusa explícita, as consultas do mesmo host ficam `attempted:false`, com datas nulas e referência ao pedido que recebeu a recusa.
+Os três CLIs aceitam `--base-dir` para selecionar os ficheiros de configuração e defaults de uma edição. Normalizador/validador aceitam `--input-dir` e `--out-dir`; aquisição aceita `--out-dir` e exige diretório novo ou `--replace` explícito. O fetch termina com código 2 se existirem pedidos bloqueados/falhados, 1 para erro de execução/configuração e 0 para respostas bem-sucedidas em todas as consultas. HTTP 200 não substitui validação do JSON, metadados e direitos.
 
-O conector recusa sobrescrever uma aquisição existente; usar um diretório novo ou `--replace` explicitamente. Nunca substituir um input congelado para fazer testes passar. A normalização aceita `--input-dir DIR` e `--out-dir DIR`; a validação aceita os mesmos argumentos para comparar ficheiros com uma reconstrução completa.
+A variante oficial de paginação `per_page=10000` é usada para metadados detalhados; o endpoint sem esse parâmetro devolveu corpo vazio em algumas séries durante a investigação. As respostas de observações são verificadas quanto a paginação completa, sem omitir páginas.
 
-## Corte, origem e qualidade
+## Integridade, unidades e ausências
 
-O corte é **2026-11-12**, não o ano comum dos dados. São pedidos os anos 1960–2026, sempre com `source=2`, e selecionado para cada país/série o último número não nulo com ano até ao corte. Valores de 2027 ou posteriores são excluídos; não há interpolação, medianas, extrapolação, preenchimento a zero ou fallback sintético. `fallback:null` significa que nenhum fallback foi aplicado. Zero publicado é mantido como zero. Se só existirem nulos, o motivo é `no_non_null_observation`; isso é diferente de uma falha de rede ou de licença.
+Validam-se ISO3, source 2, série, URLs, redirecionamento final dos termos, datas de calendário, corte, duplicados, números finitos, limites e coerência das unidades. Valores fora do intervalo não são corrigidos silenciosamente. Comércio e receita fiscal em % do PIB não recebem um teto genérico de 100%; urbanização/I&D seguem o catálogo. Unidades vazias da API ficam registadas como tal; a unidade canónica vem do dicionário fixo da série. Uma unidade reportada contraditória bloqueia a geração.
 
-Não há opção CLI para falsificar a data de obtenção. Aquisições posteriores ao corte são rejeitadas pela normalização. Uma nova recolha após essa data exige nova edição/data de corte/versionamento, ou um arquivo histórico verificável e um conector próprio; uma API atual não prova que uma revisão era conhecida no passado. `lastupdated` identifica a revisão do dataset, não a data de publicação ou observação individual. Uma revisão posterior ao corte não é distribuída nesta edição. `publishedAt` permanece nulo quando não fornecido.
+Os valores conservam a precisão JSON/IEEE-754, com os bytes originais disponíveis para auditoria. Checksum de `raw-bytes` refere bytes exatos; `canonical-json` refere chaves ordenadas, indentação de dois espaços e LF final, não os espaços de apresentação originais. Builds não acrescentam timestamps variáveis. Caminhos e symlinks que escapem aos inputs são rejeitados.
 
-Cada valor conserva ano, unidade canónica, unidade reportada quando disponível, valor original, URL, data real de obtenção, revisão, checksum do payload e transformação `identity_latest_non_null_at_cutoff/v1`. As unidades canónicas vêm do dicionário fixo de séries; metadados com unidade vazia não são confundidos com uma unidade medida adicional. Uma unidade reportada contraditória/desconhecida bloqueia a normalização e exige revisão. Não há conversão de moeda ou deflatores. Números seguem a precisão IEEE-754 do JSON/JavaScript; os bytes originais conservam a representação publicada.
+`network_access_denied`, `source_request_failed`, `license_not_cleared`, `source_revision_after_freeze` e `no_non_null_observation` são situações distintas. Nenhuma representa zero. O arquivo de 12/11 continua a descrever CONNECT 403 corretamente: recusa do proxy antes de resposta da origem, não ausência de dados WDI. A nova edição não apaga essa evidência.
 
-Uma publicação WDI pode conter observações, estimativas, projeções ou imputações. Códigos `obs_status` não interpretados ficam `quality.classification:unclassified`, preservando o código original; não se presume que o valor seja uma medição observada. Não existe inferência de qualidade a partir do país, magnitude ou nome da série. Dados sintéticos só existem nas fixtures identificadas dos testes, nunca na baseline factual.
+## Termos e utilização comercial
 
-Validam-se schema, ISO3, série/source, URLs, paginação completa, anos/datas de calendário, duplicados, números finitos e limites de unidades. Comércio e receita fiscal em % do PIB não recebem um teto genérico de 100%; urbanização e I&D têm os limites definidos no catálogo. Uma anomalia não é silenciosamente corrigida. PIB corrente não é dinheiro público disponível; camas não medem pessoal, vagas ou capacidade operacional; comércio não representa rotas físicas.
+A revisão confirmou que o URL antigo de termos redirecionava para condições gerais. A fonte correta é [World Bank Dataset Terms](https://www.worldbank.org/ext/en/legal/terms-conditions/datasets), cuja secção específica prevalece em caso de conflito. As oito séries declaram individualmente `License_Type: CC BY-4.0`; o registo conserva também `License_URL`, fornecedores e limitações/exceções. Não foram encontradas restrições específicas de reutilização nas respostas destas séries e cinco países. Isto não licencia automaticamente outros dados IMF, OECD, WHO, UNESCO ou UN.
 
-## Congelamento, hashes e distribuição
+O gate moderno exige evidência congelada de **termos específicos + metadados de identificação + declaração explícita da licença da própria série**, revisão de exceções, atribuição e data posterior à obtenção da evidência. Só então valores entram no pacote distribuível. A revisão é técnica e rastreável, não um parecer jurídico.
 
-Respostas bem-sucedidas são guardadas byte a byte, com SHA-256. O manifesto distingue `raw-bytes` de `canonical-json`: o segundo representa JSON com chaves ordenadas, duas casas de indentação e LF final, não os espaços de apresentação do ficheiro original. Datas de execução da geração não entram nos outputs. Os outputs são sempre reconstruídos a partir dos mesmos inputs e comparados, em vez de confiar apenas num hash editável. Caminhos de inputs que escapem ao diretório, incluindo symlinks, são rejeitados.
+Uso comercial deve cumprir CC BY 4.0 e condições adicionais WB: atribuição ao Banco Mundial e fornecedores, ligação à licença/termos, indicação das transformações, ausência de endosso e mediação/arbitragem previstas nos termos. As condições concretas e atribuições estão em [ATTRIBUTION.md](../data/baseline/ATTRIBUTION.md). Páginas externas de Data Catalog/Creative Commons não puderam ser obtidas neste ambiente; não se inventou o seu conteúdo. A evidência utilizada é a declaração por série e a concessão direta na página específica do Banco Mundial.
 
-Payloads novos ficam em quarentena no diretório `raw/`, ignorado pelo Git. **Não fazer commit de dados brutos ou derivados antes de confirmar direitos aplicáveis a cada série/ficheiro e aos cinco países.** Após revisão, os inputs permitidos necessários à reprodução devem ser adicionados intencionalmente ao pacote congelado; ficheiros não redistribuíveis devem ficar fora e a sua cobertura permanecer indisponível. Repetibilidade com payloads apenas locais não equivale a reprodução por terceiros.
+HTML de termos/documentação é evidência de desenvolvimento. A licença dos valores não concede direitos gerais aos assets/HTML do website; estes não devem ser embutidos num pacote comercial do jogo. O jogo permanece sem referências à baseline e sem chamadas de rede. Também não é concedida aqui uma nova licença comercial ao código do repositório.
 
-Não se presume que qualquer série WDI/agregada seja CC BY: podem existir fontes originais e exceções de terceiros. `license-review.json` só permite incorporar valores com `status:verified`, licença identificada, `commercialUse:allowed`, revisão de exceções, atribuição, data e evidência congelada dos termos **e dos metadados da série correspondente**. Um excerto de outra série não autoriza a atual; pagamentos/licenças restritos não são contornados. Esse registo é uma revisão humana rastreável, não um parecer jurídico automático. Atualmente as oito entradas estão `pending_review/not_cleared`, sem valores incorporados.
-
-Para eventual uso comercial, verificar atribuição exigida, licença exata, restrições por fonte/país/ficheiro, direito a transformações e redistribuição offline e quaisquer termos de terceiros. A ausência de acesso aos termos não constitui autorização. A licença do código do projeto também não é conferida pela licença dos dados; o repositório não contém aqui uma concessão nova de licença comercial do código.
-
-## Bloqueios e próxima ação
-
-A política de rede em execução recusou os três hosts do Banco Mundial. Foi guardado no rascunho o conjunto restrito `api.worldbank.org`, `www.worldbank.org`, `datahelpdesk.worldbank.org` e `api.github.com`, preservando a entrada GitHub já existente. O guardado não aplicou a política nem publicou o ambiente. Para retomar recolha/revisão e abrir o draft PR, é necessário aplicar as alterações nas definições; o produto também assinala publicação pendente da configuração.
-
-Depois de confirmar novo acesso, executar uma aquisição nova com datas reais, rever os termos por série, congelar apenas inputs permitidos e voltar a gerar/testar. **D0–D2 não é declarado concluído com dados reais enquanto estes bloqueios persistirem.** Não existe uma comparação quantitativa defensável entre os países nesta edição; o relatório comparativo é de cobertura, proveniência e limitações.
+Antes de distribuir comercialmente uma edição, rever atribuições, cláusulas e fronteira entre payloads licenciados e evidência de desenvolvimento. Não alterar números factuais para balanceamento: integrações e capacidades derivadas pertencem a uma tarefa D3 posterior.

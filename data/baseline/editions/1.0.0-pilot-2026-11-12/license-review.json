@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "baseline-license-review-v1",
+  "termsUrl": "https://www.worldbank.org/en/about/legal/terms-of-use-for-datasets",
+  "note": "Acesso aos termos e metadados bloqueado pelo proxy. Não se presume CC BY nem autorização comercial para séries de terceiros. Cada entrada exige revisão de exceções e evidência congelada antes de distribuir valores.",
+  "series": {
+    "SP.POP.TOTL": {"status":"pending_review","licenseId":null,"commercialUse":"not_cleared","thirdPartyExceptionsReviewed":false,"reviewedAt":null,"attribution":null,"evidence":[]},
+    "SP.URB.TOTL.IN.ZS": {"status":"pending_review","licenseId":null,"commercialUse":"not_cleared","thirdPartyExceptionsReviewed":false,"reviewedAt":null,"attribution":null,"evidence":[]},
+    "NY.GDP.MKTP.CD": {"status":"pending_review","licenseId":null,"commercialUse":"not_cleared","thirdPartyExceptionsReviewed":false,"reviewedAt":null,"attribution":null,"evidence":[]},
+    "NY.GDP.PCAP.CD": {"status":"pending_review","licenseId":null,"commercialUse":"not_cleared","thirdPartyExceptionsReviewed":false,"reviewedAt":null,"attribution":null,"evidence":[]},
+    "GC.TAX.TOTL.GD.ZS": {"status":"pending_review","licenseId":null,"commercialUse":"not_cleared","thirdPartyExceptionsReviewed":false,"reviewedAt":null,"attribution":null,"evidence":[]},
+    "SH.MED.BEDS.ZS": {"status":"pending_review","licenseId":null,"commercialUse":"not_cleared","thirdPartyExceptionsReviewed":false,"reviewedAt":null,"attribution":null,"evidence":[]},
+    "GB.XPD.RSDV.GD.ZS": {"status":"pending_review","licenseId":null,"commercialUse":"not_cleared","thirdPartyExceptionsReviewed":false,"reviewedAt":null,"attribution":null,"evidence":[]},
+    "NE.TRD.GNFS.ZS": {"status":"pending_review","licenseId":null,"commercialUse":"not_cleared","thirdPartyExceptionsReviewed":false,"reviewedAt":null,"attribution":null,"evidence":[]}
+  }
+}

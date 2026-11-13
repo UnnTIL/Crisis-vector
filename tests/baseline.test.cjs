@@ -11,13 +11,17 @@ const {acquire, makeQueries, validateTimestamp} = require('../scripts/data/fetch
 const {stableStringify, sha256, buildBaseline, generateArtifacts, loadBundle} = require('../scripts/data/baseline.cjs');
 const ROOT = path.resolve(__dirname, '..');
 const DATA = path.join(ROOT, 'data/baseline');
-const readConfig = name => JSON.parse(fsSync.readFileSync(path.join(DATA, name), 'utf8'));
+const ARCHIVE = path.join(DATA, 'editions/1.0.0-pilot-2026-11-12');
+const ARCHIVED_BASELINE_HASH = 'a4f8ca0d6aaaca2945ee4badcb17902d6e8e542ea56ccecbc0b82bb8deb52c10';
+const CURRENT_BASELINE_HASH = '1f3c2e2f15a9ca7776ab87ab57ab63d6f81bc26bd74238760f37e282df5ed506';
+const readConfig = (name, baseDir=DATA) => JSON.parse(fsSync.readFileSync(path.join(baseDir, name), 'utf8'));
 
 // Values and responses built in these tests are synthetic fixtures only. They
 // are never fetched from a provider or published as the real-country baseline.
 const retrievedAt = '2026-11-12T12:00:00.000Z';
 const fixtureCatalog = readConfig('catalog.json');
 const fixtureCountries = readConfig('country-map.json');
+const afterFreeze = catalog => new Date(Date.parse(catalog.freezeDate+'T00:00:00.000Z')+86400000).toISOString();
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 async function temporary(t) {
   const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'crisis-baseline-test-'));
@@ -51,7 +55,7 @@ test('an explicit proxy denial is attempted once per host and preserves unavaila
       return {status:'blocked', httpStatus:null, proxyStatus:403, errorCode:'proxy_connect_denied', error:'Synthetic test proxy denial.', body:null};
     }});
   assert.equal(calls.length, 3, 'API, terms and documentation hosts each get one probe');
-  assert.equal(acquisition.queries.length, 28);
+  assert.equal(acquisition.queries.length, makeQueries(fixtureCatalog,fixtureCountries).length);
   assert.ok(acquisition.queries.every(q=>q.status==='blocked' && q.file===null && q.sha256===null));
   for (const query of acquisition.queries.filter(q=>q.attempted)) {
     assert.equal(query.httpStatus, null, 'proxy denial is not an upstream provider HTTP response');
@@ -70,7 +74,7 @@ test('acquisition freezes exact response bytes and refuses replacement before ma
   const outDir = await temporary(t), body = Buffer.from('{"synthetic-fixture":true}\n');
   const acquisition = await acquire({catalog:fixtureCatalog, countryMap:fixtureCountries, outDir, clock:()=>retrievedAt,
     request:async()=>({status:'ok', httpStatus:200, errorCode:null, error:null, body})});
-  assert.equal(acquisition.queries.length, 28);
+  assert.equal(acquisition.queries.length, makeQueries(fixtureCatalog,fixtureCountries).length);
   for (const query of acquisition.queries) {
     const frozen = await fs.readFile(path.join(outDir, query.file));
     assert.deepEqual(frozen, body);
@@ -82,12 +86,22 @@ test('acquisition freezes exact response bytes and refuses replacement before ma
   assert.equal(calls, 0);
 });
 
+test('acquisition refuses an expired edition before contacting any source', async t => {
+  const outDir=await temporary(t);
+  let calls=0;
+  await assert.rejects(()=>acquire({catalog:fixtureCatalog,countryMap:fixtureCountries,outDir,
+    clock:()=>afterFreeze(fixtureCatalog),
+    request:async()=>{calls++;return {status:'ok',httpStatus:200,body:Buffer.from('{}')};}}), /freeze|cutoff|corte/i);
+  assert.equal(calls,0);
+});
+
 function page(rows, extra={}) {
   return [{page:1, pages:1, total:rows.length, ...extra}, rows];
 }
 function fixture() {
   const catalog = structuredClone(fixtureCatalog), countryMap = structuredClone(fixtureCountries);
-  const licenseReview = readConfig('license-review.json'), resources = Object.create(null);
+  const licenseReview = readConfig('license-review.json',ARCHIVE), resources = Object.create(null);
+  licenseReview.termsUrl=catalog.termsUrl??licenseReview.termsUrl;
   const evidenceText = 'Synthetic test-only permission evidence; not a real provider license.';
   const acquisition = {
     schemaVersion:'baseline-inputs-v1', freezeDate:catalog.freezeDate,
@@ -101,8 +115,16 @@ function fixture() {
     let payload;
     if (query.kind==='source') payload = page([{id:'2', name:'Synthetic WDI test fixture', lastupdated:'2026-10-01'}]);
     else if (query.kind==='countries') payload = page(countryMap.countries.map(c=>({id:c.iso3, name:c.name, region:{id:'TEST'}})));
+    else if (query.kind==='country-metadata') payload = {page:1,pages:1,total:countryMap.countries.length,
+      source:[{id:'2',concept:[{id:'Country',variable:countryMap.countries.map(c=>({id:c.iso3,
+        metatype:[{id:'GovernmentAccountingconcept',value:'Synthetic test context'}]}))}]}]};
     else if (query.kind==='indicator-metadata') payload = page([{id:query.series, name:'Synthetic '+query.series, unit:'', source:{id:'2'}, sourceOrganization:'Test fixture', sourceNote:'Not actual country data.'}]);
-    else if (query.kind==='series-metadata') payload = {testOnly:true};
+    else if (query.kind==='series-metadata') payload = {page:1,pages:1,total:3,
+      source:[{id:'2',concept:[{id:'Series',variable:[{id:query.series,metatype:[
+        {id:'License_Type',value:'CC BY-4.0'},
+        {id:'License_URL',value:'https://datacatalog.worldbank.org/public-licenses#cc-by'},
+        {id:'Source',value:'Synthetic fixture, not an actual provider response.'}
+      ]}]}]}]};
     else if (query.kind==='observations') {
       const indicator = catalog.indicators.find(i=>i.series===query.series);
       const base = ['urbanization','research'].includes(indicator.key)?20:1000;
@@ -119,11 +141,13 @@ function fixture() {
   const terms = acquisition.queries.find(q=>q.kind==='terms');
   for (const [series, review] of Object.entries(licenseReview.series)) {
     const metadata=acquisition.queries.find(q=>q.kind==='indicator-metadata' && q.series===series);
+    const detailed=acquisition.queries.find(q=>q.kind==='series-metadata' && q.series===series);
     Object.assign(review, {
-      status:'verified', licenseId:'LicenseRef-SyntheticTestFixture', commercialUse:'allowed',
+      status:'verified', licenseId:'CC-BY-4.0', commercialUse:'allowed',
       thirdPartyExceptionsReviewed:true, reviewedAt:retrievedAt, attribution:'Synthetic test fixture only',
       evidence:[{queryId:terms.id, sha256:terms.sha256, excerpt:evidenceText},
-        {queryId:metadata.id, sha256:metadata.sha256, excerpt:'Synthetic '+series}]
+        {queryId:metadata.id, sha256:metadata.sha256, excerpt:'Synthetic '+series},
+        {queryId:detailed.id,sha256:detailed.sha256,excerpt:'License_Type'}]
     });
   }
   return {catalog, countryMap, licenseReview, acquisition, resources};
@@ -168,6 +192,7 @@ test('latest non-null value at the cutoff preserves original value, year, units 
   assert.equal(bundle.baseline.layer, 'ObservedData');
   assert.equal(bundle.baseline.integratedIntoGame, false);
   assert.equal(cell(bundle, 'hospitalBeds').unit, 'beds_per_1000_people');
+  assert.equal(bundle.sources.countryContext.find(c=>c.iso3==='MWI').fields.GovernmentAccountingconcept,'Synthetic test context');
 });
 
 test('zero remains a legitimate value while missing observations remain null without imputation', () => {
@@ -238,17 +263,20 @@ test('unknown ISO3, duplicate country-years, wrong series, wrong source and part
   assert.throws(()=>buildBaseline(source));
   const url=fixture();queryOf(url, 'observations').url=queryOf(url, 'observations').url.replace('source=2','source=3');
   assert.throws(()=>buildBaseline(url));
+  const countryContext=fixture();
+  changePayload(countryContext,'country-metadata',p=>{p.source[0].concept[0].variable[0].id='WLD';});
+  assert.throws(()=>buildBaseline(countryContext), /Country metadata identities/);
 });
 
 test('future source revisions are not presented as a historical freeze and future retrieval dates reject', () => {
   const inputs=fixture();
-  changePayload(inputs, 'observations', p=>{p[0].lastupdated='2026-11-13';});
+  changePayload(inputs, 'observations', p=>{p[0].lastupdated=afterFreeze(inputs.catalog).slice(0,10);});
   const result=buildBaseline(inputs);
   assert.equal(cell(result).value, null);
   assert.equal(cell(result).missingReason, 'source_revision_after_freeze');
-  const retrieved=fixture();retrieved.acquisition.completedAt='2026-11-13T00:00:00.000Z';
+  const retrieved=fixture();retrieved.acquisition.completedAt=afterFreeze(retrieved.catalog);
   assert.throws(()=>buildBaseline(retrieved), /freeze/);
-  const request=fixture();request.acquisition.queries[0].requestedAt='2026-11-13T00:00:00.000Z';
+  const request=fixture();request.acquisition.queries[0].requestedAt=afterFreeze(request.catalog);
   assert.throws(()=>buildBaseline(request));
   const invalidDate=fixture();changePayload(invalidDate,'observations',p=>{p[0].lastupdated='2026-00-00';});
   assert.throws(()=>buildBaseline(invalidDate));
@@ -256,7 +284,7 @@ test('future source revisions are not presented as a historical freeze and futur
 
 test('commercial redistribution requires per-series approval, third-party review and frozen evidence', () => {
   const pending=fixture();
-  pending.licenseReview.series=readConfig('license-review.json').series;
+  pending.licenseReview.series=readConfig('license-review.json',ARCHIVE).series;
   const result=buildBaseline(pending);
   assert.equal(result.coverage.availableCells, 0);
   assert.equal(result.coverage.missingReasons.license_not_cleared, 40);
@@ -264,7 +292,7 @@ test('commercial redistribution requires per-series approval, third-party review
   for (const change of [
     r=>{r.thirdPartyExceptionsReviewed=false;}, r=>{r.evidence=[];},
     r=>{r.evidence[0].sha256='0'.repeat(64);}, r=>{r.evidence[0].excerpt='not present in evidence';},
-    r=>{r.commercialUse='not_cleared';}, r=>{r.reviewedAt='2026-11-13T00:00:00.000Z';}
+    r=>{r.commercialUse='not_cleared';}, r=>{r.reviewedAt=afterFreeze(fixtureCatalog);}
   ]) {
     const inputs=fixture();change(inputs.licenseReview.series['SP.POP.TOTL']);
     assert.throws(()=>buildBaseline(inputs));
@@ -281,6 +309,27 @@ test('license approval is tied to frozen terms and metadata for the same indicat
   const beforeEvidence=fixture();
   beforeEvidence.licenseReview.series['SP.POP.TOTL'].reviewedAt='2026-11-11T12:00:00.000Z';
   assert.throws(()=>buildBaseline(beforeEvidence), /evidence|review/i);
+});
+
+test('current edition requires an explicit same-series license and an unredirected dataset terms page', () => {
+  const noDeclaration=fixture();
+  noDeclaration.licenseReview.series['SP.POP.TOTL'].evidence.pop();
+  assert.throws(()=>buildBaseline(noDeclaration), /series-level license/);
+  const identity=fixture();
+  changePayload(identity,'series-metadata', p=>{p.source[0].concept[0].variable[0].id='NY.GDP.MKTP.CD';});
+  assert.throws(()=>buildBaseline(identity), /identity/);
+  const license=fixture();
+  changePayload(license,'series-metadata', p=>{p.source[0].concept[0].variable[0].metatype[0].value='Other license';});
+  assert.throws(()=>buildBaseline(license), /declared|license/);
+  const licenseUrl=fixture();
+  changePayload(licenseUrl,'series-metadata', p=>{p.source[0].concept[0].variable[0].metatype[1].value='https://untrusted.example/license';});
+  assert.throws(()=>buildBaseline(licenseUrl), /license|License/);
+  const review=fixture();review.licenseReview.series['SP.POP.TOTL'].licenseId='CC0-1.0';
+  assert.throws(()=>buildBaseline(review), /license conflicts/);
+  const incomplete=fixture();changePayload(incomplete,'series-metadata', p=>{p.pages=2;});
+  assert.throws(()=>buildBaseline(incomplete), /Incomplete/);
+  const redirected=fixture();queryOf(redirected,'terms').finalUrl='https://www.worldbank.org/ext/en/legal';
+  assert.throws(()=>buildBaseline(redirected), /Dataset terms redirected/);
 });
 
 test('provenance URLs cannot silently change country scope, API path, format or cutoff', () => {
@@ -325,17 +374,79 @@ test('full offline artifact generation repeats identical contents and manifest h
   assert.equal(a['coverage.csv'].trim().split('\n').length, 41);
 });
 
-test('checked-in pilot artifacts rebuild offline and explicitly document blocked coverage', () => {
-  const inputs=loadBundle(), bundle=buildBaseline(inputs), artifacts=generateArtifacts(bundle);
+test('archived November 12 edition remains byte-identical with its original blocked coverage', () => {
+  const inputs=loadBundle({baseDir:ARCHIVE}), bundle=buildBaseline(inputs), artifacts=generateArtifacts(bundle);
+  assert.equal(bundle.baseline.dataVersion,'1.0.0-pilot');
+  assert.equal(bundle.baseline.freezeDate,'2026-11-12');
+  assert.equal(sha256(artifacts['scenario-baseline-v1.json']),ARCHIVED_BASELINE_HASH);
   assert.equal(bundle.baseline.countries.length,5);
   assert.equal(bundle.coverage.totalCells,40);
   assert.equal(bundle.coverage.availableCells,0);
   assert.equal(bundle.coverage.missingReasons.network_access_denied,40);
-  for (const [name,bytes] of Object.entries(artifacts)) assert.equal(fsSync.readFileSync(path.join(DATA,name),'utf8'),bytes);
+  for (const [name,bytes] of Object.entries(artifacts)) assert.equal(fsSync.readFileSync(path.join(ARCHIVE,name),'utf8'),bytes);
   for (const country of bundle.baseline.countries) for (const record of Object.values(country.indicators)) {
     assert.equal(record.value,null);assert.equal(record.observationYear,null);
     assert.equal(record.fallback,null);assert.equal(record.license.commercialUse,'not_cleared');
   }
+});
+
+test('current November 13 edition rebuilds from its own frozen responses with factual and license gates', () => {
+  const inputs=loadBundle(), bundle=buildBaseline(inputs), artifacts=generateArtifacts(bundle);
+  assert.equal(bundle.baseline.dataVersion,'1.1.0-pilot');
+  assert.equal(bundle.baseline.freezeDate,'2026-11-13');
+  assert.equal(sha256(artifacts['scenario-baseline-v1.json']),CURRENT_BASELINE_HASH);
+  assert.equal(bundle.baseline.countries.length,5);
+  assert.equal(bundle.coverage.totalCells,40);
+  const observations=inputs.acquisition.queries.filter(q=>q.kind==='observations');
+  assert.equal(observations.length,8);
+  assert.equal(inputs.acquisition.queries.length,29);
+  assert.ok(inputs.acquisition.queries.every(q=>q.status==='ok'));
+  assert.equal(bundle.coverage.seriesResponsesRetrieved,8);
+  assert.equal(bundle.coverage.availableCells,40);
+  assert.equal(bundle.coverage.seriesResponsesRetrieved,observations.filter(q=>q.status==='ok').length);
+  const cells=bundle.baseline.countries.flatMap(c=>Object.values(c.indicators));
+  assert.equal(bundle.coverage.availableCells,cells.filter(v=>v.status==='available').length);
+  assert.equal(bundle.coverage.unavailableCells,cells.filter(v=>v.status==='unavailable').length);
+  assert.equal(bundle.coverage.availableCells+bundle.coverage.unavailableCells,40);
+  assert.equal(bundle.coverage.imputedCells,0);
+  for (const country of bundle.baseline.countries) for (const [key,record] of Object.entries(country.indicators)) {
+    assert.equal(record.sourceId,'2');
+    assert.equal(record.sourceCountryCode,country.iso3);
+    assert.equal(record.unit,inputs.catalog.indicators.find(i=>i.key===key).unit);
+    assert.equal(record.fallback,null);
+    if(record.status==='available') {
+      assert.equal(typeof record.value,'number');assert.ok(Number.isFinite(record.value));
+      assert.equal(record.originalValue,record.value);
+      assert.ok(Number.isInteger(record.observationYear)&&record.observationYear<=2026);
+      assert.equal(record.license.commercialUse,'allowed');assert.equal(record.license.status,'verified');
+      assert.equal(record.missingReason,null);
+      const query=observations.find(q=>q.series===record.series);
+      assert.equal(query.status,'ok');assert.equal(record.inputChecksum,query.sha256);
+      const [,rows]=JSON.parse(inputs.resources[query.id]);
+      const latest=rows.filter(r=>r.countryiso3code===country.iso3 && r.value!==null && Number(r.date)<=2026)
+        .sort((a,b)=>Number(b.date)-Number(a.date))[0];
+      assert.ok(latest,'an available value must originate in its frozen source response');
+      assert.deepEqual([record.value,record.observationYear],[latest.value,Number(latest.date)]);
+    } else {
+      assert.equal(record.status,'unavailable');assert.equal(record.value,null);
+      assert.equal(record.originalValue,null);assert.equal(record.observationYear,null);
+      assert.ok(record.missingReason);
+    }
+  }
+  for(const [name,bytes] of Object.entries(artifacts))assert.equal(fsSync.readFileSync(path.join(DATA,name),'utf8'),bytes);
+});
+
+test('editions cannot silently reuse an acquisition frozen under a different cutoff', () => {
+  const archived=loadBundle({baseDir:ARCHIVE}), currentFixture=fixture();
+  assert.throws(()=>buildBaseline({...archived,catalog:currentFixture.catalog}));
+  assert.throws(()=>buildBaseline({...currentFixture,catalog:archived.catalog}));
+  assert.notEqual(generateArtifacts(buildBaseline(currentFixture))['scenario-baseline-v1.json'],
+    generateArtifacts(buildBaseline(archived))['scenario-baseline-v1.json']);
+  const downgrade=fixture();
+  downgrade.catalog.termsUrl='https://www.worldbank.org/en/about/legal/terms-of-use-for-datasets';
+  downgrade.licenseReview.termsUrl=downgrade.catalog.termsUrl;
+  queryOf(downgrade,'terms').url=downgrade.catalog.termsUrl;
+  assert.throws(()=>buildBaseline(downgrade), /legacy|Legacy|edition|archiv/i);
 });
 
 test('offline CLI builds reproducibly in separate output directories and detects artifact tampering', async t => {
@@ -347,6 +458,10 @@ test('offline CLI builds reproducibly in separate output directories and detects
   execFileSync(process.execPath, ['scripts/data/validate-baseline.cjs','--out-dir',first], {cwd:ROOT});
   await fs.appendFile(path.join(first,'scenario-baseline-v1.json'),'corrupt');
   assert.throws(()=>execFileSync(process.execPath, ['scripts/data/validate-baseline.cjs','--out-dir',first], {cwd:ROOT,stdio:'pipe'}));
+  const historical=path.join(directory,'historical');
+  execFileSync(process.execPath,['scripts/data/normalize-baseline.cjs','--base-dir',ARCHIVE,'--out-dir',historical],{cwd:ROOT});
+  assert.equal(sha256(await fs.readFile(path.join(historical,'scenario-baseline-v1.json'))),ARCHIVED_BASELINE_HASH);
+  execFileSync(process.execPath,['scripts/data/validate-baseline.cjs','--base-dir',ARCHIVE,'--out-dir',historical],{cwd:ROOT});
 });
 
 test('frozen source symlinks cannot escape the input directory', async t => {
