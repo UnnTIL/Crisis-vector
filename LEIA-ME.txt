@@ -1,0 +1,11 @@
+CRISIS VECTOR — prova urbana isolada
+
+Abrir urban-spike/index.html num navegador desktop recente com WebGL 2.
+O ficheiro inclui Three.js, código e estilos locais; não consulta CDNs ou APIs.
+Se o navegador bloquear file://, executar na pasta extraída:
+  python3 -m http.server 8000
+E abrir http://127.0.0.1:8000/urban-spike/
+
+Selecionar Alfa/Bravo, escolher uma ordem e clicar numa rua. Arrastar move a câmara; roda amplia; Espaço pausa; teclas 1/2 selecionam; R recentra.
+Preparar ambos os acessos orientais antes das vagas. Evacuar 90/120 civis em 210 segundos.
+Valores sintéticos, sem integração na campanha. Three.js tem licença MIT incluída.
