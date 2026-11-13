@@ -14,7 +14,7 @@ Com o ZIP publicado, extrair e abrir `urban-spike/index.html` num browser deskto
 python3 -m http.server 8000
 ```
 
-Abrir `http://127.0.0.1:8000/urban-spike/`. O `index.html` da raiz continua a ser a Alpha mundial. Com o checkout do repositório, o mesmo servidor funciona sem instalar dependências: `demo.js` já está empacotado.
+Abrir `http://127.0.0.1:8000/urban-spike/`. A execução pelo servidor estático foi validada. A política do Chromium gerido bloqueou a navegação direta `file://` (`ERR_BLOCKED_BY_ADMINISTRATOR`); esse modo não foi validado neste executor. O `index.html` da raiz continua a ser a Alpha mundial. Com o checkout do repositório, o mesmo servidor funciona sem instalar dependências: `demo.js` já está empacotado.
 
 1. A missão começa em pausa. Selecionar **Alfa** ou **Bravo**, escolher uma ordem e clicar numa rua.
 2. Preparar os acessos orientais norte/sul antes das vagas. As duas equipas deslocam-se por caminhos físicos; não chegam instantaneamente.
@@ -73,7 +73,7 @@ Usar `--chromium` para outro executável; a instalação do browser é um pré-r
 
 ## Limites e próxima integração
 
-Não há A1b integrado, população da campanha, geografia real, multiplayer, gravação, logística mundial, diplomacia, dados militares ou economia nova. Hordas seguem caminhos coletivos e pressionam barreiras; não procuram um desvio dinâmico de cada checkpoint. Unidades são equipas, não indivíduos com IA. O recorte não pretende ser um jogo militar completo.
+Não há A1b integrado, população da campanha, geografia real, multiplayer, gravação, logística mundial, diplomacia, dados militares ou economia nova. Hordas seguem caminhos coletivos e pressionam barreiras; não procuram um desvio dinâmico de cada checkpoint. Os perímetros criam novas barreiras; reparação/reforço de uma barreira existente não está implementado. Unidades são equipas, não indivíduos com IA. O recorte não pretende ser um jogo militar completo.
 
 O alvo desktop/GPU e o protocolo longo ainda precisam de medição. A matriz proposta com 20/50/100 equipas, agentes individuais 0/500/2000/todos, mundo em background, GPU timestamp, carregamento com cache rigorosamente frio e ensaio prolongado de memória não foi executada; não se criou carga visual fictícia de equipas para a aparentar.
 

@@ -3,3 +3,4 @@ data/baseline/inputs/raw/** -text
 # Generated bundles preserve upstream Three.js shader string whitespace.
 urban-spike/demo.js linguist-generated=true -whitespace
 artifacts/urban-spike/urban-demo.html linguist-generated=true -whitespace
+docs/urban-benchmark.json linguist-generated=true

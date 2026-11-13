@@ -42,7 +42,7 @@ As medições apontam para limitações fortes no contexto gráfico por software
 - A renderização dos perfis não altera ordens, população ou recursos. Há snapshots antes/depois, samples brutos, latência observada de seleção e CPU de callbacks por caso. A latência Playwright inclui protocolo/espera do browser e não é uma medição de ponta a ponta de um dispositivo humano.
 - Seed 16927: ficar na base falha no tick 421 (42,1 s), zero evacuados e 32 novas mortes; perímetros nos dois acessos cumprem o objetivo no tick 1875 (187,5 s), 120 evacuados, zero novas mortes, 158 neutralizações e dois materiais gastos.
 - Os 11 testes urbanos de Node cobrem comandos inválidos/idempotentes, rotas e edifícios, consumo finito, rutura de barreira uma vez, escolta, conservação a cada tick, reinício, determinismo e distribuição de exatamente os mesmos ticks entre 10/30/60/144 FPS. Não são testes de milhares de IAs individuais.
-- O HTML autónomo dentro do ZIP foi também aberto no Chromium: somente uma requisição HTTP (o próprio HTML), rede desligada, hordas ativas aos 25 s, ordens, sucesso com 120 evacuações e reinício, sem erros JavaScript.
+- O HTML autónomo dentro do ZIP foi também aberto no Chromium: somente uma requisição HTTP (o próprio HTML), rede desligada, hordas ativas aos 25 s, ordens, sucesso com 120 evacuações e reinício, sem erros JavaScript. A tentativa direta por `file://` foi bloqueada pela política do browser gerido (`ERR_BLOCKED_BY_ADMINISTRATOR`), antes da execução; por isso esse modo não está validado e recomenda-se o servidor estático local.
 
 ## O que falta medir e recomendações
 
