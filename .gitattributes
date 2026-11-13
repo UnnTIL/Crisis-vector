@@ -1,0 +1,2 @@
+# Frozen provider responses must retain their exact bytes and line endings.
+data/baseline/inputs/raw/** -text

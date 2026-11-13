@@ -1,0 +1,1489 @@
+{
+  "countries": [
+    {
+      "indicators": {
+        "gdp": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "e7dd842c8f741e71523f77b6a557dd565762e65c4a2ba5b2f1847c1e16253d82",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/NY.GDP.MKTP.CD?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 346639825141.821,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:21:40.505Z",
+          "series": "NY.GDP.MKTP.CD",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "PRT",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/NY.GDP.MKTP.CD?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "current_USD",
+          "value": 346639825141.821
+        },
+        "gdpPerCapita": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "2e0ecc95683baf6e6d4320e22b77e886f4fc04d6956ccf89972169c3442a5310",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/NY.GDP.PCAP.CD?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 32081.8106150292,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:04.864Z",
+          "series": "NY.GDP.PCAP.CD",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "PRT",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/NY.GDP.PCAP.CD?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "current_USD_per_person",
+          "value": 32081.8106150292
+        },
+        "hospitalBeds": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "c8bc56984a55b57eb16042ab12c6cee9f5bb1e50322b4c3d957c5c7949fc1acc",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/SH.MED.BEDS.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2022,
+          "originalValue": 3.48,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:32.646Z",
+          "series": "SH.MED.BEDS.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "PRT",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/SH.MED.BEDS.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 4,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "beds_per_1000_people",
+          "value": 3.48
+        },
+        "population": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "2b64348ef729c4f5ab1f4ec357a92c85c9f7c317f66c14e9d8e570fb028d4738",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/SP.POP.TOTL?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 10804871,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:20:08.926Z",
+          "series": "SP.POP.TOTL",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "PRT",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/SP.POP.TOTL?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "persons",
+          "value": 10804871
+        },
+        "research": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "f6f3cdcda2c8c354b99b93af44fb6935c2ee36b7b25194fbdee0ee24c897fc49",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/GB.XPD.RSDV.GD.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2023,
+          "originalValue": 1.69491,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:53.558Z",
+          "series": "GB.XPD.RSDV.GD.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "PRT",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/GB.XPD.RSDV.GD.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 3,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_GDP",
+          "value": 1.69491
+        },
+        "taxRevenue": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "dc12b7391fc79ad9ed11f2446422e0fdc49e2d401827005c33d70709bb74ddbd",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/GC.TAX.TOTL.GD.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2024,
+          "originalValue": 22.3472676749446,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:22.528Z",
+          "series": "GC.TAX.TOTL.GD.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "PRT",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/GC.TAX.TOTL.GD.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 2,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_GDP",
+          "value": 22.3472676749446
+        },
+        "trade": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "072ee5ddb7ed0bc095ce6d95bdfc0adc2f64afb0d824753b488f97a9b002a143",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/NE.TRD.GNFS.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 86.3988769792664,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:23:16.011Z",
+          "series": "NE.TRD.GNFS.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "PRT",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/NE.TRD.GNFS.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_GDP",
+          "value": 86.3988769792664
+        },
+        "urbanization": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "36efaa756daab94a4de909b4de8aae577a0b0086790017272fc579b72ecbfddc",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/SP.URB.TOTL.IN.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 61.4953199318985,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:21:06.189Z",
+          "series": "SP.URB.TOTL.IN.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "PRT",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/SP.URB.TOTL.IN.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_population",
+          "value": 61.4953199318985
+        }
+      },
+      "internalId": "PRT",
+      "iso3": "PRT",
+      "name": "Portugal",
+      "sourceId": "PRT"
+    },
+    {
+      "indicators": {
+        "gdp": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "e7dd842c8f741e71523f77b6a557dd565762e65c4a2ba5b2f1847c1e16253d82",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/NY.GDP.MKTP.CD?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 5050922925047.05,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:21:40.505Z",
+          "series": "NY.GDP.MKTP.CD",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "DEU",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/NY.GDP.MKTP.CD?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "current_USD",
+          "value": 5050922925047.05
+        },
+        "gdpPerCapita": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "2e0ecc95683baf6e6d4320e22b77e886f4fc04d6956ccf89972169c3442a5310",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/NY.GDP.PCAP.CD?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 60496.4350820414,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:04.864Z",
+          "series": "NY.GDP.PCAP.CD",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "DEU",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/NY.GDP.PCAP.CD?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "current_USD_per_person",
+          "value": 60496.4350820414
+        },
+        "hospitalBeds": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "c8bc56984a55b57eb16042ab12c6cee9f5bb1e50322b4c3d957c5c7949fc1acc",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/SH.MED.BEDS.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2023,
+          "originalValue": 7.55,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:32.646Z",
+          "series": "SH.MED.BEDS.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "DEU",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/SH.MED.BEDS.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 3,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "beds_per_1000_people",
+          "value": 7.55
+        },
+        "population": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "2b64348ef729c4f5ab1f4ec357a92c85c9f7c317f66c14e9d8e570fb028d4738",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/SP.POP.TOTL?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 83491249,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:20:08.926Z",
+          "series": "SP.POP.TOTL",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "DEU",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/SP.POP.TOTL?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "persons",
+          "value": 83491249
+        },
+        "research": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "f6f3cdcda2c8c354b99b93af44fb6935c2ee36b7b25194fbdee0ee24c897fc49",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/GB.XPD.RSDV.GD.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2023,
+          "originalValue": 3.1539,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:53.558Z",
+          "series": "GB.XPD.RSDV.GD.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "DEU",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/GB.XPD.RSDV.GD.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 3,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_GDP",
+          "value": 3.1539
+        },
+        "taxRevenue": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "dc12b7391fc79ad9ed11f2446422e0fdc49e2d401827005c33d70709bb74ddbd",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/GC.TAX.TOTL.GD.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2024,
+          "originalValue": 10.890812364142,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:22.528Z",
+          "series": "GC.TAX.TOTL.GD.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "DEU",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/GC.TAX.TOTL.GD.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 2,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_GDP",
+          "value": 10.890812364142
+        },
+        "trade": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "072ee5ddb7ed0bc095ce6d95bdfc0adc2f64afb0d824753b488f97a9b002a143",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/NE.TRD.GNFS.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 78.5128112199127,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:23:16.011Z",
+          "series": "NE.TRD.GNFS.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "DEU",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/NE.TRD.GNFS.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_GDP",
+          "value": 78.5128112199127
+        },
+        "urbanization": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "36efaa756daab94a4de909b4de8aae577a0b0086790017272fc579b72ecbfddc",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/SP.URB.TOTL.IN.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 82.13822205362,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:21:06.189Z",
+          "series": "SP.URB.TOTL.IN.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "DEU",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/SP.URB.TOTL.IN.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_population",
+          "value": 82.13822205362
+        }
+      },
+      "internalId": "DEU",
+      "iso3": "DEU",
+      "name": "Alemanha",
+      "sourceId": "DEU"
+    },
+    {
+      "indicators": {
+        "gdp": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "e7dd842c8f741e71523f77b6a557dd565762e65c4a2ba5b2f1847c1e16253d82",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/NY.GDP.MKTP.CD?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 30769700000000,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:21:40.505Z",
+          "series": "NY.GDP.MKTP.CD",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "USA",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/NY.GDP.MKTP.CD?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "current_USD",
+          "value": 30769700000000
+        },
+        "gdpPerCapita": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "2e0ecc95683baf6e6d4320e22b77e886f4fc04d6956ccf89972169c3442a5310",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/NY.GDP.PCAP.CD?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 90026.5163005744,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:04.864Z",
+          "series": "NY.GDP.PCAP.CD",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "USA",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/NY.GDP.PCAP.CD?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "current_USD_per_person",
+          "value": 90026.5163005744
+        },
+        "hospitalBeds": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "c8bc56984a55b57eb16042ab12c6cee9f5bb1e50322b4c3d957c5c7949fc1acc",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/SH.MED.BEDS.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2022,
+          "originalValue": 2.68,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:32.646Z",
+          "series": "SH.MED.BEDS.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "USA",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/SH.MED.BEDS.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 4,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "beds_per_1000_people",
+          "value": 2.68
+        },
+        "population": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "2b64348ef729c4f5ab1f4ec357a92c85c9f7c317f66c14e9d8e570fb028d4738",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/SP.POP.TOTL?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 341784857,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:20:08.926Z",
+          "series": "SP.POP.TOTL",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "USA",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/SP.POP.TOTL?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "persons",
+          "value": 341784857
+        },
+        "research": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "f6f3cdcda2c8c354b99b93af44fb6935c2ee36b7b25194fbdee0ee24c897fc49",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/GB.XPD.RSDV.GD.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2023,
+          "originalValue": 3.44716,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:53.558Z",
+          "series": "GB.XPD.RSDV.GD.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "USA",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/GB.XPD.RSDV.GD.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 3,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_GDP",
+          "value": 3.44716
+        },
+        "taxRevenue": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "dc12b7391fc79ad9ed11f2446422e0fdc49e2d401827005c33d70709bb74ddbd",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/GC.TAX.TOTL.GD.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2024,
+          "originalValue": 10.7694743667429,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:22.528Z",
+          "series": "GC.TAX.TOTL.GD.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "USA",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/GC.TAX.TOTL.GD.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 2,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_GDP",
+          "value": 10.7694743667429
+        },
+        "trade": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "072ee5ddb7ed0bc095ce6d95bdfc0adc2f64afb0d824753b488f97a9b002a143",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/NE.TRD.GNFS.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2024,
+          "originalValue": 25.0160172978284,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:23:16.011Z",
+          "series": "NE.TRD.GNFS.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "USA",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/NE.TRD.GNFS.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 2,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_GDP",
+          "value": 25.0160172978284
+        },
+        "urbanization": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "36efaa756daab94a4de909b4de8aae577a0b0086790017272fc579b72ecbfddc",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/SP.URB.TOTL.IN.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 80.1921733027869,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:21:06.189Z",
+          "series": "SP.URB.TOTL.IN.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "USA",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/SP.URB.TOTL.IN.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_population",
+          "value": 80.1921733027869
+        }
+      },
+      "internalId": "USA",
+      "iso3": "USA",
+      "name": "Estados Unidos",
+      "sourceId": "USA"
+    },
+    {
+      "indicators": {
+        "gdp": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "e7dd842c8f741e71523f77b6a557dd565762e65c4a2ba5b2f1847c1e16253d82",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/NY.GDP.MKTP.CD?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 2279920092492.13,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:21:40.505Z",
+          "series": "NY.GDP.MKTP.CD",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "BRA",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/NY.GDP.MKTP.CD?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "current_USD",
+          "value": 2279920092492.13
+        },
+        "gdpPerCapita": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "2e0ecc95683baf6e6d4320e22b77e886f4fc04d6956ccf89972169c3442a5310",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/NY.GDP.PCAP.CD?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 10713.2856869511,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:04.864Z",
+          "series": "NY.GDP.PCAP.CD",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "BRA",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/NY.GDP.PCAP.CD?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "current_USD_per_person",
+          "value": 10713.2856869511
+        },
+        "hospitalBeds": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "c8bc56984a55b57eb16042ab12c6cee9f5bb1e50322b4c3d957c5c7949fc1acc",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/SH.MED.BEDS.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2021,
+          "originalValue": 2.52,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:32.646Z",
+          "series": "SH.MED.BEDS.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "BRA",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/SH.MED.BEDS.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 5,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "beds_per_1000_people",
+          "value": 2.52
+        },
+        "population": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "2b64348ef729c4f5ab1f4ec357a92c85c9f7c317f66c14e9d8e570fb028d4738",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/SP.POP.TOTL?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 212812405,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:20:08.926Z",
+          "series": "SP.POP.TOTL",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "BRA",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/SP.POP.TOTL?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "persons",
+          "value": 212812405
+        },
+        "research": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "f6f3cdcda2c8c354b99b93af44fb6935c2ee36b7b25194fbdee0ee24c897fc49",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/GB.XPD.RSDV.GD.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2023,
+          "originalValue": 1.1938,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:53.558Z",
+          "series": "GB.XPD.RSDV.GD.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "BRA",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/GB.XPD.RSDV.GD.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 3,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_GDP",
+          "value": 1.1938
+        },
+        "taxRevenue": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "dc12b7391fc79ad9ed11f2446422e0fdc49e2d401827005c33d70709bb74ddbd",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/GC.TAX.TOTL.GD.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2024,
+          "originalValue": 15.4102340832552,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:22.528Z",
+          "series": "GC.TAX.TOTL.GD.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "BRA",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/GC.TAX.TOTL.GD.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 2,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_GDP",
+          "value": 15.4102340832552
+        },
+        "trade": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "072ee5ddb7ed0bc095ce6d95bdfc0adc2f64afb0d824753b488f97a9b002a143",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/NE.TRD.GNFS.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 35.2914822615074,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:23:16.011Z",
+          "series": "NE.TRD.GNFS.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "BRA",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/NE.TRD.GNFS.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_GDP",
+          "value": 35.2914822615074
+        },
+        "urbanization": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "36efaa756daab94a4de909b4de8aae577a0b0086790017272fc579b72ecbfddc",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/SP.URB.TOTL.IN.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 88.1772996487898,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:21:06.189Z",
+          "series": "SP.URB.TOTL.IN.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "BRA",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/SP.URB.TOTL.IN.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_population",
+          "value": 88.1772996487898
+        }
+      },
+      "internalId": "BRA",
+      "iso3": "BRA",
+      "name": "Brasil",
+      "sourceId": "BRA"
+    },
+    {
+      "indicators": {
+        "gdp": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "e7dd842c8f741e71523f77b6a557dd565762e65c4a2ba5b2f1847c1e16253d82",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/NY.GDP.MKTP.CD?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 14918276698.303,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:21:40.505Z",
+          "series": "NY.GDP.MKTP.CD",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "MWI",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/NY.GDP.MKTP.CD?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "current_USD",
+          "value": 14918276698.303
+        },
+        "gdpPerCapita": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "2e0ecc95683baf6e6d4320e22b77e886f4fc04d6956ccf89972169c3442a5310",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/NY.GDP.PCAP.CD?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 671.506847203876,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:04.864Z",
+          "series": "NY.GDP.PCAP.CD",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "MWI",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/NY.GDP.PCAP.CD?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "current_USD_per_person",
+          "value": 671.506847203876
+        },
+        "hospitalBeds": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "c8bc56984a55b57eb16042ab12c6cee9f5bb1e50322b4c3d957c5c7949fc1acc",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/SH.MED.BEDS.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2011,
+          "originalValue": 1.3,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:32.646Z",
+          "series": "SH.MED.BEDS.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "MWI",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/SH.MED.BEDS.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 15,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "beds_per_1000_people",
+          "value": 1.3
+        },
+        "population": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "2b64348ef729c4f5ab1f4ec357a92c85c9f7c317f66c14e9d8e570fb028d4738",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/SP.POP.TOTL?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 22216120,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:20:08.926Z",
+          "series": "SP.POP.TOTL",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "MWI",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/SP.POP.TOTL?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "persons",
+          "value": 22216120
+        },
+        "research": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "f6f3cdcda2c8c354b99b93af44fb6935c2ee36b7b25194fbdee0ee24c897fc49",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/GB.XPD.RSDV.GD.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2019,
+          "originalValue": 0.17752,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:53.558Z",
+          "series": "GB.XPD.RSDV.GD.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "MWI",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/GB.XPD.RSDV.GD.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 7,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_GDP",
+          "value": 0.17752
+        },
+        "taxRevenue": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "dc12b7391fc79ad9ed11f2446422e0fdc49e2d401827005c33d70709bb74ddbd",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/GC.TAX.TOTL.GD.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2024,
+          "originalValue": 15.5978477117661,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:22:22.528Z",
+          "series": "GC.TAX.TOTL.GD.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "MWI",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/GC.TAX.TOTL.GD.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 2,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_GDP",
+          "value": 15.5978477117661
+        },
+        "trade": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "072ee5ddb7ed0bc095ce6d95bdfc0adc2f64afb0d824753b488f97a9b002a143",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/NE.TRD.GNFS.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 39.3994694717291,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:23:16.011Z",
+          "series": "NE.TRD.GNFS.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "MWI",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/NE.TRD.GNFS.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_GDP",
+          "value": 39.3994694717291
+        },
+        "urbanization": {
+          "datasetVersion": "2026-11-11",
+          "fallback": null,
+          "inputChecksum": "36efaa756daab94a4de909b4de8aae577a0b0086790017272fc579b72ecbfddc",
+          "license": {
+            "commercialUse": "allowed",
+            "licenseId": "CC-BY-4.0",
+            "status": "verified",
+            "termsUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
+          },
+          "metadataUrl": "https://api.worldbank.org/v2/indicator/SP.URB.TOTL.IN.ZS?source=2&format=json",
+          "missingReason": null,
+          "observationYear": 2025,
+          "originalValue": 17.5949868386317,
+          "publishedAt": null,
+          "quality": {
+            "classification": "unclassified",
+            "sourceStatus": null
+          },
+          "retrievedAt": "2026-11-13T18:21:06.189Z",
+          "series": "SP.URB.TOTL.IN.ZS",
+          "source": "World Bank — World Development Indicators",
+          "sourceCountryCode": "MWI",
+          "sourceId": "2",
+          "sourceUnit": null,
+          "sourceUrl": "https://api.worldbank.org/v2/country/PRT;DEU;USA;BRA;MWI/indicator/SP.URB.TOTL.IN.ZS?source=2&date=1960:2026&format=json&per_page=20000",
+          "stalenessYears": 1,
+          "status": "available",
+          "transformation": {
+            "id": "identity_latest_non_null_at_cutoff",
+            "imputed": false,
+            "version": "1"
+          },
+          "unit": "percent_population",
+          "value": 17.5949868386317
+        }
+      },
+      "internalId": "MWI",
+      "iso3": "MWI",
+      "name": "Malawi",
+      "sourceId": "MWI"
+    }
+  ],
+  "dataVersion": "1.1.0-pilot",
+  "freezeDate": "2026-11-13",
+  "integratedIntoGame": false,
+  "layer": "ObservedData",
+  "schemaVersion": "baseline-v1"
+}

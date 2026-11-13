@@ -1,0 +1,49 @@
+{
+  "dataVersion": "1.0.0-pilot",
+  "freezeDate": "2026-11-12",
+  "inputs": [
+    {
+      "file": "catalog.json",
+      "representation": "canonical-json",
+      "sha256": "7497be9e081c3b6d97ab046c329b6e215d9ca277940c8c973b9ec9aac1ba7ea3"
+    },
+    {
+      "file": "country-map.json",
+      "representation": "canonical-json",
+      "sha256": "c6c66bd8136e94d727f7b915452166328a2c14257a200248a0f7ee5fc1c7db5e"
+    },
+    {
+      "file": "inputs/acquisition.json",
+      "representation": "canonical-json",
+      "sha256": "b1f45c9912dd51ce58881bf904b11ef4a042c85b55c12cf9271e87326a1645ce"
+    },
+    {
+      "file": "license-review.json",
+      "representation": "canonical-json",
+      "sha256": "4ebcf304a276f7065a8e44425d2da80bfe4175f2b13bfde54b3333ddfb6a9385"
+    }
+  ],
+  "outputs": [
+    {
+      "file": "REPORT.md",
+      "sha256": "32b0416ec11730b0c2586b2db1ce75661f1f41d8e5e35025ccb085ac607108cb"
+    },
+    {
+      "file": "coverage.csv",
+      "sha256": "517738de0c22827d4cb8fa644c2d996977d34c8f1102485a3b3d4329057163a6"
+    },
+    {
+      "file": "coverage.json",
+      "sha256": "51b4600fa73ced327a4d126110a224aaa0403c33179d5d4f90a68bfd0032ddc4"
+    },
+    {
+      "file": "scenario-baseline-v1.json",
+      "sha256": "a4f8ca0d6aaaca2945ee4badcb17902d6e8e542ea56ccecbc0b82bb8deb52c10"
+    },
+    {
+      "file": "sources.json",
+      "sha256": "2e46d0937151bcdab8e4a2f649c83cc73b71e4831f958ea5fa3f59cc77d88e68"
+    }
+  ],
+  "schemaVersion": "baseline-manifest-v1"
+}

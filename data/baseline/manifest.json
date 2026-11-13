@@ -1,0 +1,194 @@
+{
+  "dataVersion": "1.1.0-pilot",
+  "freezeDate": "2026-11-13",
+  "inputs": [
+    {
+      "file": "catalog.json",
+      "representation": "canonical-json",
+      "sha256": "9ea0ccdd75a036878d10ce42fcddd026d9ea29bab2e5d62a536aeaa59cb1063a"
+    },
+    {
+      "file": "country-map.json",
+      "representation": "canonical-json",
+      "sha256": "c6c66bd8136e94d727f7b915452166328a2c14257a200248a0f7ee5fc1c7db5e"
+    },
+    {
+      "file": "inputs/acquisition.json",
+      "representation": "canonical-json",
+      "sha256": "1e4db516d4c2c5dbb53f580e82ce32d0fb27786f5bc6e6c5513a8dc6fbebfbdb"
+    },
+    {
+      "file": "inputs/evidence/documentation.json",
+      "representation": "minimal-web-evidence-json",
+      "sha256": "3789fe4370ab55577f63e7ae692e0643a090be2ea03673d9ae8103e0c9cbcfe8"
+    },
+    {
+      "file": "inputs/evidence/terms.json",
+      "representation": "minimal-web-evidence-json",
+      "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a"
+    },
+    {
+      "file": "inputs/raw/countries.json",
+      "representation": "raw-bytes",
+      "sha256": "b89be43794b6b83dda2bf97576483c9820d92cac266e30b80d4c0c1adcdc2aa6"
+    },
+    {
+      "file": "inputs/raw/country-metadata.json",
+      "representation": "raw-bytes",
+      "sha256": "0b1708798e5e1593393f379d4afc6a18749c9fc51a2e436e4d661724eb61f1cc"
+    },
+    {
+      "file": "inputs/raw/metadata-GB.XPD.RSDV.GD.ZS.json",
+      "representation": "raw-bytes",
+      "sha256": "8b86f8208807c1ba1fa83a27f753bc5e59e7fbec115a22aabf574d2449fe22ae"
+    },
+    {
+      "file": "inputs/raw/metadata-GC.TAX.TOTL.GD.ZS.json",
+      "representation": "raw-bytes",
+      "sha256": "2c05b709dc94a66cae663ae7559bffb98089566fb03ddd323bbf6374df1432ca"
+    },
+    {
+      "file": "inputs/raw/metadata-NE.TRD.GNFS.ZS.json",
+      "representation": "raw-bytes",
+      "sha256": "9d62a99289a9f6dad8827991e27354173795ea0ae71a7952d24db22a41e4f442"
+    },
+    {
+      "file": "inputs/raw/metadata-NY.GDP.MKTP.CD.json",
+      "representation": "raw-bytes",
+      "sha256": "51cec1e144a5bad8d92238630c0a305e20116e86d34ad95c7c315ed166255b28"
+    },
+    {
+      "file": "inputs/raw/metadata-NY.GDP.PCAP.CD.json",
+      "representation": "raw-bytes",
+      "sha256": "96520c3a22b1f9da1c7456349a6e70b1643db88d427671faced17cb8b9eaf907"
+    },
+    {
+      "file": "inputs/raw/metadata-SH.MED.BEDS.ZS.json",
+      "representation": "raw-bytes",
+      "sha256": "7739f9616144297442cdfb76a4bd55210f8ad1789f6f16a28995f05c30368517"
+    },
+    {
+      "file": "inputs/raw/metadata-SP.POP.TOTL.json",
+      "representation": "raw-bytes",
+      "sha256": "2f8491efc00bf2c0995112ff8e87aba69e5e9d22d0880b22f7e3a4ec757ba05c"
+    },
+    {
+      "file": "inputs/raw/metadata-SP.URB.TOTL.IN.ZS.json",
+      "representation": "raw-bytes",
+      "sha256": "ada77d666a1469f69379933d0597cdd420299806163905af52de79d538da95e6"
+    },
+    {
+      "file": "inputs/raw/observations-GB.XPD.RSDV.GD.ZS.json",
+      "representation": "raw-bytes",
+      "sha256": "f6f3cdcda2c8c354b99b93af44fb6935c2ee36b7b25194fbdee0ee24c897fc49"
+    },
+    {
+      "file": "inputs/raw/observations-GC.TAX.TOTL.GD.ZS.json",
+      "representation": "raw-bytes",
+      "sha256": "dc12b7391fc79ad9ed11f2446422e0fdc49e2d401827005c33d70709bb74ddbd"
+    },
+    {
+      "file": "inputs/raw/observations-NE.TRD.GNFS.ZS.json",
+      "representation": "raw-bytes",
+      "sha256": "072ee5ddb7ed0bc095ce6d95bdfc0adc2f64afb0d824753b488f97a9b002a143"
+    },
+    {
+      "file": "inputs/raw/observations-NY.GDP.MKTP.CD.json",
+      "representation": "raw-bytes",
+      "sha256": "e7dd842c8f741e71523f77b6a557dd565762e65c4a2ba5b2f1847c1e16253d82"
+    },
+    {
+      "file": "inputs/raw/observations-NY.GDP.PCAP.CD.json",
+      "representation": "raw-bytes",
+      "sha256": "2e0ecc95683baf6e6d4320e22b77e886f4fc04d6956ccf89972169c3442a5310"
+    },
+    {
+      "file": "inputs/raw/observations-SH.MED.BEDS.ZS.json",
+      "representation": "raw-bytes",
+      "sha256": "c8bc56984a55b57eb16042ab12c6cee9f5bb1e50322b4c3d957c5c7949fc1acc"
+    },
+    {
+      "file": "inputs/raw/observations-SP.POP.TOTL.json",
+      "representation": "raw-bytes",
+      "sha256": "2b64348ef729c4f5ab1f4ec357a92c85c9f7c317f66c14e9d8e570fb028d4738"
+    },
+    {
+      "file": "inputs/raw/observations-SP.URB.TOTL.IN.ZS.json",
+      "representation": "raw-bytes",
+      "sha256": "36efaa756daab94a4de909b4de8aae577a0b0086790017272fc579b72ecbfddc"
+    },
+    {
+      "file": "inputs/raw/series-GB.XPD.RSDV.GD.ZS.json",
+      "representation": "raw-bytes",
+      "sha256": "9960fc5ae8f8108e3153948bab78bd6d2864f9d7462d4a395dbc7961dd6068b9"
+    },
+    {
+      "file": "inputs/raw/series-GC.TAX.TOTL.GD.ZS.json",
+      "representation": "raw-bytes",
+      "sha256": "cfd1cb69c1eefc9a38ccfe2f7d5fb9fb6bc1c78f69cc8765d075f93d8eda91b3"
+    },
+    {
+      "file": "inputs/raw/series-NE.TRD.GNFS.ZS.json",
+      "representation": "raw-bytes",
+      "sha256": "b7019fcba97bc78d14537fe061130a787f58e0d04096d440cf7397780cab9f13"
+    },
+    {
+      "file": "inputs/raw/series-NY.GDP.MKTP.CD.json",
+      "representation": "raw-bytes",
+      "sha256": "918f78304b48789cac8a53465e1305df57f808b7f55efaa044efe1058a0f18fb"
+    },
+    {
+      "file": "inputs/raw/series-NY.GDP.PCAP.CD.json",
+      "representation": "raw-bytes",
+      "sha256": "3aa05daace298a8fd7652d09561904e22cba0b5de681a013971df3c47997819c"
+    },
+    {
+      "file": "inputs/raw/series-SH.MED.BEDS.ZS.json",
+      "representation": "raw-bytes",
+      "sha256": "a6c48716ecd21af3d8240f5330a80caaf441627d542c2d9b11b9126917f72fec"
+    },
+    {
+      "file": "inputs/raw/series-SP.POP.TOTL.json",
+      "representation": "raw-bytes",
+      "sha256": "712962454b5aff094f1c5cdd00980e838d7c97b3d62456b5ae7dd7401b5644d7"
+    },
+    {
+      "file": "inputs/raw/series-SP.URB.TOTL.IN.ZS.json",
+      "representation": "raw-bytes",
+      "sha256": "1538ee14ca3c3c836a65f53ffb130079e024df2c6b29d1d6a841043d5fbb453d"
+    },
+    {
+      "file": "inputs/raw/source-2.json",
+      "representation": "raw-bytes",
+      "sha256": "7196c4bf58e63a75c4576fef063b0fd96cba99c118f9c112dadc4afbbd2a0476"
+    },
+    {
+      "file": "license-review.json",
+      "representation": "canonical-json",
+      "sha256": "95843d1ade36ddae772b23871ea2ae927639288292a14555ddfd83299845706e"
+    }
+  ],
+  "outputs": [
+    {
+      "file": "REPORT.md",
+      "sha256": "8195d23666978e45671ea7c11c00f8922eee9721d6cd2e6d2bd2cf1cd5459882"
+    },
+    {
+      "file": "coverage.csv",
+      "sha256": "22d101cd273d1d1b198c5e4a1ea759c2b692af6e5af9129bb219fe209ba0d81e"
+    },
+    {
+      "file": "coverage.json",
+      "sha256": "8c5beab2c2e0fd8a69bd3d9143f040298f2d6da9d2c498fb7adc0f7f8e3a3482"
+    },
+    {
+      "file": "scenario-baseline-v1.json",
+      "sha256": "1f3c2e2f15a9ca7776ab87ab57ab63d6f81bc26bd74238760f37e282df5ed506"
+    },
+    {
+      "file": "sources.json",
+      "sha256": "cfa4f93c7f68f1de3df49cd3c926b705a6e3b280b900c0c09924b85c411833c8"
+    }
+  ],
+  "schemaVersion": "baseline-manifest-v1"
+}

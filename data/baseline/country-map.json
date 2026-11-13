@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "baseline-country-map-v1",
+  "countries": [
+    {"iso3":"PRT","internalId":"PRT","sourceId":"PRT","name":"Portugal"},
+    {"iso3":"DEU","internalId":"DEU","sourceId":"DEU","name":"Alemanha"},
+    {"iso3":"USA","internalId":"USA","sourceId":"USA","name":"Estados Unidos"},
+    {"iso3":"BRA","internalId":"BRA","sourceId":"BRA","name":"Brasil"},
+    {"iso3":"MWI","internalId":"MWI","sourceId":"MWI","name":"Malawi"}
+  ],
+  "exceptions": [],
+  "scopeNote": "Só estes cinco países soberanos têm correspondência verificada com a Alpha. Agregados, territórios, entidades disputadas, códigos históricos e países adicionais são rejeitados; não foi inventado um dicionário mundial."
+}
