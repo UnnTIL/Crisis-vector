@@ -71,13 +71,19 @@ Por isso, receita fiscal/PIB não representa necessariamente o mesmo perímetro 
 
 Os metadados por série, origem, limitações estatísticas, evidência e atribuições estão em sources.json e license-review.json. A revisão técnica verificou os rótulos de licença e as exceções publicadas; não substitui aconselhamento jurídico nem autoriza outros datasets dos mesmos fornecedores.
 
-Uso comercial dos valores declarados CC BY 4.0 exige cumprir atribuição ao Banco Mundial e fornecedores, identificação de alterações, ligação aos termos e preservação das condições adicionais WB, incluindo mediação/arbitragem e ausência de endosso. Os termos específicos de datasets prevalecem sobre termos gerais em conflito. HTML/assets do site são evidência de desenvolvimento, não recursos licenciados para embutir no jogo. Ver ATTRIBUTION.md e docs/BASELINE_DATA_PIPELINE.md.
+Uso comercial dos valores declarados CC BY 4.0 exige cumprir atribuição ao Banco Mundial e fornecedores, identificação de alterações, ligação aos termos e preservação das condições adicionais WB, incluindo mediação/arbitragem e ausência de endosso. Os termos específicos de datasets prevalecem sobre termos gerais em conflito. A versão atual não distribui páginas HTML integrais: guarda apenas identificação e citações necessárias, sem presumir uma licença geral do website. Ver ATTRIBUTION.md e docs/BASELINE_DATA_PIPELINE.md.
+
+## Evidência web mínima e seus limites
+
+inputs/evidence/terms.json guarda seis excertos curtos (428 caracteres no total); documentation.json guarda identificação e proveniência, sem excertos do corpo. O hash do ficheiro JSON distribuído é distinto do hash da resposta original omitida. A validação offline verifica os registos, os excertos e as referências da revisão; não reconstitui nem autentica independentemente a resposta HTTP a partir do seu hash. Uma nova consulta externa pode devolver uma revisão diferente.
+
+A remoção dos dois HTML no estado atual da branch não elimina os ficheiros dos commits já publicados. Não foi reescrito o histórico nem feita uma promessa de remoção de cópias/cache. Qualquer limpeza histórica exige coordenação própria.
 
 ## Proveniência e reprodução
 
 SHA-256 de scenario-baseline-v1.json: `1f3c2e2f15a9ca7776ab87ab57ab63d6f81bc26bd74238760f37e282df5ed506`.
 
-Aquisição com datas reais em inputs/acquisition.json; URLs finais, tipos de conteúdo e hashes dos bytes congelados constam do manifesto. O corte é 2026-11-13; lastupdated é revisão do dataset, não ano de observação ou data individual de publicação.
+Aquisição com datas reais em inputs/acquisition.json; URLs finais, tipos de conteúdo e hashes constam dos registos e manifesto. Payloads estatísticos preservam bytes originais; documentos web usam minimal-web-evidence-json. O corte é 2026-11-13; lastupdated é revisão do dataset, não ano de observação ou data individual de publicação.
 
 Geração e validação offline: node scripts/data/normalize-baseline.cjs e node scripts/data/validate-baseline.cjs. Usar --base-dir para a edição arquivada. O manifesto não inclui o próprio hash.
 

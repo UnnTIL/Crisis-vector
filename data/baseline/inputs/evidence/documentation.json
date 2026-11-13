@@ -1,0 +1,23 @@
+{
+  "documentKind": "documentation",
+  "excerpts": [],
+  "extraction": {
+    "fullResponseRetained": false,
+    "method": "curated-verbatim-excerpts-v1",
+    "preparedAt": "2026-11-13T18:49:23.869Z"
+  },
+  "schemaVersion": "baseline-web-evidence-v1",
+  "source": {
+    "contentType": "text/html; charset=utf-8",
+    "documentTitle": "About the Indicators API Documentation – World Bank Data Help Desk",
+    "finalUrl": "https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation",
+    "httpStatus": 200,
+    "publisher": "World Bank",
+    "requestedAt": "2026-11-13T18:23:16.276Z",
+    "requestedUrl": "https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation",
+    "responseBytes": 224228,
+    "responseSha256": "c34c67cad7587314991fae0e82aba0921c561af287c2332f6ff7ffe54877c21b",
+    "retrievedAt": "2026-11-13T18:23:16.905Z",
+    "sourceVersion": null
+  }
+}

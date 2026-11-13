@@ -71,7 +71,11 @@ Licença declarada: CC BY-4.0. Referência indicada pela fonte: https://datacata
 
 A concessão diz respeito a estes datasets WDI, não a quaisquer outros dados dos mesmos fornecedores. A revisão das exceções não encontrou proibições específicas nos metadados obtidos; a proveniência completa e as limitações estatísticas permanecem em sources.json e nos inputs congelados.
 
-Ficheiros API JSON de source 2 são inputs dos datasets/metadados analisados. HTML de termos/documentação, em inputs/raw, é evidência de desenvolvimento: não se afirma que os assets ou o HTML do website estejam sob CC BY, nem que sejam autorizados para embutir num jogo comercial. Uma distribuição futura deve separar valores licenciados/atribuições de material de investigação, cumprir os termos e rever a composição do pacote.
+Ficheiros API JSON de source 2 são inputs dos datasets/metadados analisados. Não foi identificada uma autorização clara para redistribuir páginas HTML completas do website, inclusive num repositório público. Os dois HTML foram retirados da versão atual e substituídos por registos mínimos em inputs/evidence: URLs, identificação/datas/MIME, tamanho/hash da resposta original e apenas as citações necessárias. A documentação não inclui excertos do corpo; os termos incluem seis excertos, 428 caracteres no total. A licença dos datasets não é apresentada como autorização geral para citações, títulos, HTML ou assets.
+
+O hash do JSON congelado não é o hash da resposta de origem: ambos são preservados e distinguidos. A validação offline confirma a evidência mínima e os dados, sem reconstruir ou autenticar independentemente o HTML omitido. Uma consulta futura à origem pode devolver uma revisão diferente.
+
+A remoção no estado atual da branch não elimina os documentos dos commits públicos anteriores, clones ou caches. Não houve reescrita do histórico; eventual limpeza histórica exige coordenação separada. Uma distribuição futura deve rever a composição do pacote e manter as atribuições/condições dos dados sem reincorporar páginas completas.
 
 Não foi possível obter as páginas externas de Data Catalog e Creative Commons por restrições de rede nesses domínios. Não se inventou conteúdo dessas páginas: a evidência é a declaração específica de cada série e a concessão expressa nos termos de datasets acessíveis do Banco Mundial.
 

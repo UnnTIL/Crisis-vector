@@ -513,9 +513,12 @@
       "contentType": "text/html; charset=utf-8",
       "errorCode": null,
       "error": null,
-      "file": "raw/terms.html",
-      "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
-      "evidenceRequestId": null
+      "file": "evidence/terms.json",
+      "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a",
+      "evidenceRequestId": null,
+      "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+      "responseBytes": 30219,
+      "representation": "minimal-web-evidence-v1"
     },
     {
       "id": "documentation",
@@ -532,9 +535,12 @@
       "contentType": "text/html; charset=utf-8",
       "errorCode": null,
       "error": null,
-      "file": "raw/documentation.html",
-      "sha256": "c34c67cad7587314991fae0e82aba0921c561af287c2332f6ff7ffe54877c21b",
-      "evidenceRequestId": null
+      "file": "evidence/documentation.json",
+      "sha256": "3789fe4370ab55577f63e7ae692e0643a090be2ea03673d9ae8103e0c9cbcfe8",
+      "evidenceRequestId": null,
+      "responseSha256": "c34c67cad7587314991fae0e82aba0921c561af287c2332f6ff7ffe54877c21b",
+      "responseBytes": 224228,
+      "representation": "minimal-web-evidence-v1"
     },
     {
       "id": "country-metadata",

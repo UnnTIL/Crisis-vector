@@ -15,7 +15,17 @@
     {
       "file": "inputs/acquisition.json",
       "representation": "canonical-json",
-      "sha256": "94b23deecf6bb0d50c291c556814ef4d91ade1180329d86cb938cd4dd1a8ae78"
+      "sha256": "1e4db516d4c2c5dbb53f580e82ce32d0fb27786f5bc6e6c5513a8dc6fbebfbdb"
+    },
+    {
+      "file": "inputs/evidence/documentation.json",
+      "representation": "minimal-web-evidence-json",
+      "sha256": "3789fe4370ab55577f63e7ae692e0643a090be2ea03673d9ae8103e0c9cbcfe8"
+    },
+    {
+      "file": "inputs/evidence/terms.json",
+      "representation": "minimal-web-evidence-json",
+      "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a"
     },
     {
       "file": "inputs/raw/countries.json",
@@ -26,11 +36,6 @@
       "file": "inputs/raw/country-metadata.json",
       "representation": "raw-bytes",
       "sha256": "0b1708798e5e1593393f379d4afc6a18749c9fc51a2e436e4d661724eb61f1cc"
-    },
-    {
-      "file": "inputs/raw/documentation.html",
-      "representation": "raw-bytes",
-      "sha256": "c34c67cad7587314991fae0e82aba0921c561af287c2332f6ff7ffe54877c21b"
     },
     {
       "file": "inputs/raw/metadata-GB.XPD.RSDV.GD.ZS.json",
@@ -158,20 +163,15 @@
       "sha256": "7196c4bf58e63a75c4576fef063b0fd96cba99c118f9c112dadc4afbbd2a0476"
     },
     {
-      "file": "inputs/raw/terms.html",
-      "representation": "raw-bytes",
-      "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008"
-    },
-    {
       "file": "license-review.json",
       "representation": "canonical-json",
-      "sha256": "d67d3636c2b5da376acd3b698c99b329a08dd6315d99e37c2bbbd82c7810e470"
+      "sha256": "95843d1ade36ddae772b23871ea2ae927639288292a14555ddfd83299845706e"
     }
   ],
   "outputs": [
     {
       "file": "REPORT.md",
-      "sha256": "0ce00b42783bcf4867f285f8b7fd385f36adfcfcf8a212d9db4773ace6bce9ba"
+      "sha256": "8195d23666978e45671ea7c11c00f8922eee9721d6cd2e6d2bd2cf1cd5459882"
     },
     {
       "file": "coverage.csv",
@@ -187,7 +187,7 @@
     },
     {
       "file": "sources.json",
-      "sha256": "02fcd5f809be006484217bc378834760c44cddc5dcca79c3a429ac487aa7579b"
+      "sha256": "cfa4f93c7f68f1de3df49cd3c926b705a6e3b280b900c0c09924b85c411833c8"
     }
   ],
   "schemaVersion": "baseline-manifest-v1"

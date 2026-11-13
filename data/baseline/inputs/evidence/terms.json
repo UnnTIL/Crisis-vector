@@ -1,0 +1,60 @@
+{
+  "documentKind": "terms",
+  "excerpts": [
+    {
+      "byteOffset": 15911,
+      "id": "dataset_license",
+      "sha256": "3529e28f7e7b3b9e7b33e01dfe69ea69931aa3368129ef3e3dceaaa6a77b4078",
+      "text": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+    },
+    {
+      "byteOffset": 13719,
+      "id": "dataset_terms_precedence",
+      "sha256": "d1c7e1331a854e7bf283d36d75dbe93efb73c43bcba5f34c1680cc928a7333de",
+      "text": "these Dataset Terms shall prevail."
+    },
+    {
+      "byteOffset": 17949,
+      "id": "attribution",
+      "sha256": "10003d04a287e353b38f417d12fc511ff08854305708d88f68411116f1cc4c33",
+      "text": "You agree to provide attribution to The World Bank and its data providers"
+    },
+    {
+      "byteOffset": 20711,
+      "id": "third_party_data",
+      "sha256": "cef7e76f89be225fc2efdc1acdb04cca09d6632e4489756c5ed595f392fed077",
+      "text": "Some datasets and indicators are provided by third parties"
+    },
+    {
+      "byteOffset": 20950,
+      "id": "third_party_metadata",
+      "sha256": "faf89a0c1eccd2411a4ed431bfb0835cdc2d90ad29fc9c8b9ece3129c930fdae",
+      "text": "Where applicable, these conditions are included in the dataset or indicator metadata."
+    },
+    {
+      "byteOffset": 16336,
+      "id": "additional_binding_terms",
+      "sha256": "4b5df4e53ee114a732b5c3ea9a1e390af740a4e43409d6526b7ceaad7fe6cdf3",
+      "text": "mandatory and binding addition"
+    }
+  ],
+  "extraction": {
+    "fullResponseRetained": false,
+    "method": "curated-verbatim-excerpts-v1",
+    "preparedAt": "2026-11-13T18:49:23.869Z"
+  },
+  "schemaVersion": "baseline-web-evidence-v1",
+  "source": {
+    "contentType": "text/html; charset=utf-8",
+    "documentTitle": "Datasets",
+    "finalUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets",
+    "httpStatus": 200,
+    "publisher": "World Bank",
+    "requestedAt": "2026-11-13T18:23:16.012Z",
+    "requestedUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets",
+    "responseBytes": 30219,
+    "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+    "retrievedAt": "2026-11-13T18:23:16.275Z",
+    "sourceVersion": null
+  }
+}

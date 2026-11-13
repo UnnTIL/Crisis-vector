@@ -216,15 +216,18 @@
       "error": null,
       "errorCode": null,
       "evidenceRequestId": null,
-      "file": "raw/terms.html",
+      "file": "evidence/terms.json",
       "finalUrl": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets",
       "httpStatus": 200,
       "id": "terms",
       "kind": "terms",
       "proxyStatus": null,
+      "representation": "minimal-web-evidence-v1",
       "requestedAt": "2026-11-13T18:23:16.012Z",
+      "responseBytes": 30219,
+      "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
       "series": null,
-      "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+      "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a",
       "status": "ok",
       "url": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets"
     },
@@ -235,15 +238,18 @@
       "error": null,
       "errorCode": null,
       "evidenceRequestId": null,
-      "file": "raw/documentation.html",
+      "file": "evidence/documentation.json",
       "finalUrl": "https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation",
       "httpStatus": 200,
       "id": "documentation",
       "kind": "documentation",
       "proxyStatus": null,
+      "representation": "minimal-web-evidence-v1",
       "requestedAt": "2026-11-13T18:23:16.276Z",
+      "responseBytes": 224228,
+      "responseSha256": "c34c67cad7587314991fae0e82aba0921c561af287c2332f6ff7ffe54877c21b",
       "series": null,
-      "sha256": "c34c67cad7587314991fae0e82aba0921c561af287c2332f6ff7ffe54877c21b",
+      "sha256": "3789fe4370ab55577f63e7ae692e0643a090be2ea03673d9ae8103e0c9cbcfe8",
       "status": "ok",
       "url": "https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation"
     }
@@ -271,8 +277,10 @@
         "evidence": [
           {
             "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)",
+            "excerptId": "dataset_license",
             "queryId": "terms",
-            "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008"
+            "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+            "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a"
           },
           {
             "excerpt": "Population, total",
@@ -397,8 +405,10 @@
         "evidence": [
           {
             "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)",
+            "excerptId": "dataset_license",
             "queryId": "terms",
-            "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008"
+            "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+            "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a"
           },
           {
             "excerpt": "Urban population (% of total population)",
@@ -522,8 +532,10 @@
         "evidence": [
           {
             "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)",
+            "excerptId": "dataset_license",
             "queryId": "terms",
-            "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008"
+            "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+            "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a"
           },
           {
             "excerpt": "GDP (current US$)",
@@ -647,8 +659,10 @@
         "evidence": [
           {
             "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)",
+            "excerptId": "dataset_license",
             "queryId": "terms",
-            "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008"
+            "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+            "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a"
           },
           {
             "excerpt": "GDP per capita (current US$)",
@@ -771,8 +785,10 @@
         "evidence": [
           {
             "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)",
+            "excerptId": "dataset_license",
             "queryId": "terms",
-            "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008"
+            "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+            "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a"
           },
           {
             "excerpt": "Tax revenue (% of GDP)",
@@ -896,8 +912,10 @@
         "evidence": [
           {
             "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)",
+            "excerptId": "dataset_license",
             "queryId": "terms",
-            "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008"
+            "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+            "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a"
           },
           {
             "excerpt": "Hospital beds (per 1,000 people)",
@@ -1021,8 +1039,10 @@
         "evidence": [
           {
             "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)",
+            "excerptId": "dataset_license",
             "queryId": "terms",
-            "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008"
+            "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+            "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a"
           },
           {
             "excerpt": "Research and development expenditure (% of GDP)",
@@ -1146,8 +1166,10 @@
         "evidence": [
           {
             "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)",
+            "excerptId": "dataset_license",
             "queryId": "terms",
-            "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008"
+            "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+            "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a"
           },
           {
             "excerpt": "Trade (% of GDP)",

@@ -6,3 +6,6 @@ coverage/
 # Fresh third-party payloads are quarantined until per-series rights review.
 data/baseline/inputs/raw/
 data/baseline/inputs/**/raw/
+# Full website responses are never repository inputs, including alternate paths.
+data/baseline/**/*.html
+data/baseline/**/*.htm

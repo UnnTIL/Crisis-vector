@@ -9,6 +9,7 @@ const fsSync = require('node:fs');
 const {execFileSync} = require('node:child_process');
 const {acquire, makeQueries, validateTimestamp} = require('../scripts/data/fetch-world-bank.cjs');
 const {stableStringify, sha256, buildBaseline, generateArtifacts, loadBundle} = require('../scripts/data/baseline.cjs');
+const {TERMS_EXCERPTS, createWebEvidence, validateWebEvidence} = require('../scripts/data/web-evidence.cjs');
 const ROOT = path.resolve(__dirname, '..');
 const DATA = path.join(ROOT, 'data/baseline');
 const ARCHIVE = path.join(DATA, 'editions/1.0.0-pilot-2026-11-12');
@@ -23,6 +24,12 @@ const fixtureCatalog = readConfig('catalog.json');
 const fixtureCountries = readConfig('country-map.json');
 const afterFreeze = catalog => new Date(Date.parse(catalog.freezeDate+'T00:00:00.000Z')+86400000).toISOString();
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
+function syntheticWebResponse(query) {
+  const quotes=query.kind==='terms'?TERMS_EXCERPTS.map(v=>`<p>${v.text}</p>`).join(''):'';
+  const body=Buffer.from('<!doctype html><html><head><title>Synthetic World Bank test document</title></head><body>'+quotes+
+    '<div>SYNTHETIC_FULL_PAGE_SENTINEL '+('unretained fixture material '.repeat(400))+'</div></body></html>');
+  return {status:'ok',httpStatus:200,proxyStatus:null,finalUrl:query.url,contentType:'text/html; charset=utf-8',errorCode:null,error:null,body};
+}
 async function temporary(t) {
   const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'crisis-baseline-test-'));
   t.after(()=>fs.rm(directory, {recursive:true, force:true}));
@@ -70,16 +77,35 @@ test('an explicit proxy denial is attempted once per host and preserves unavaila
   assert.deepEqual(saved, acquisition);
 });
 
-test('acquisition freezes exact response bytes and refuses replacement before making requests', async t => {
+test('acquisition freezes exact API bytes but retains only minimal citations for web pages', async t => {
   const outDir = await temporary(t), body = Buffer.from('{"synthetic-fixture":true}\n');
+  const planned=makeQueries(fixtureCatalog,fixtureCountries);
   const acquisition = await acquire({catalog:fixtureCatalog, countryMap:fixtureCountries, outDir, clock:()=>retrievedAt,
-    request:async()=>({status:'ok', httpStatus:200, errorCode:null, error:null, body})});
+    request:async url=>{
+      const query=planned.find(q=>q.url===url);
+      return ['terms','documentation'].includes(query.kind)?syntheticWebResponse(query):{status:'ok',httpStatus:200,errorCode:null,error:null,body};
+    }});
   assert.equal(acquisition.queries.length, makeQueries(fixtureCatalog,fixtureCountries).length);
   for (const query of acquisition.queries) {
     const frozen = await fs.readFile(path.join(outDir, query.file));
-    assert.deepEqual(frozen, body);
-    assert.equal(query.sha256, digest(body));
+    assert.equal(query.sha256, digest(frozen));
+    if(['terms','documentation'].includes(query.kind)) {
+      const original=syntheticWebResponse(query).body, evidence=JSON.parse(frozen);
+      assert.equal(query.file,`evidence/${query.id}.json`);
+      assert.equal(query.representation,'minimal-web-evidence-v1');
+      assert.equal(query.responseSha256,digest(original));
+      assert.equal(query.responseBytes,original.length);
+      assert.equal(evidence.extraction.fullResponseRetained,false);
+      assert.equal(evidence.excerpts.length,query.kind==='terms'?TERMS_EXCERPTS.length:0);
+      assert.ok(!frozen.includes(Buffer.from('SYNTHETIC_FULL_PAGE_SENTINEL')));
+      assert.ok(!frozen.toString().match(/<\/?(?:html|head|body|script)\b/i));
+      validateWebEvidence(evidence,query);
+    } else assert.deepEqual(frozen,body);
   }
+  const collected=[];
+  async function files(directory){for(const e of await fs.readdir(directory,{withFileTypes:true}))e.isDirectory()?await files(path.join(directory,e.name)):collected.push(path.join(directory,e.name));}
+  await files(outDir);
+  assert.ok(!collected.some(file=>/\.html?$/i.test(file)),'full HTML responses are never retained');
   let calls = 0;
   await assert.rejects(()=>acquire({catalog:fixtureCatalog, countryMap:fixtureCountries, outDir, clock:()=>retrievedAt,
     request:async()=>{calls++; throw new Error('must never be requested');}}), {code:'EEXIST'});
@@ -102,7 +128,6 @@ function fixture() {
   const catalog = structuredClone(fixtureCatalog), countryMap = structuredClone(fixtureCountries);
   const licenseReview = readConfig('license-review.json',ARCHIVE), resources = Object.create(null);
   licenseReview.termsUrl=catalog.termsUrl??licenseReview.termsUrl;
-  const evidenceText = 'Synthetic test-only permission evidence; not a real provider license.';
   const acquisition = {
     schemaVersion:'baseline-inputs-v1', freezeDate:catalog.freezeDate,
     startedAt:retrievedAt, completedAt:retrievedAt,
@@ -134,18 +159,24 @@ function fixture() {
         {countryiso3code:c.iso3, indicator:{id:query.series}, date:'2025', value:base+index, obs_status:''},
         {countryiso3code:c.iso3, indicator:{id:query.series}, date:'2023', value:base-1, obs_status:'estimated'}
       ]), {lastupdated:'2026-10-01'});
-    } else payload = evidenceText;
+    } else if(['terms','documentation'].includes(query.kind)) {
+      const response=syntheticWebResponse(query);
+      payload=createWebEvidence({query,response,requestedAt:retrievedAt,retrievedAt,preparedAt:retrievedAt});
+      Object.assign(query,{file:`evidence/${query.id}.json`,representation:'minimal-web-evidence-v1',
+        finalUrl:response.finalUrl,contentType:response.contentType,responseSha256:sha256(response.body),responseBytes:response.body.length});
+    }
     resources[query.id] = Buffer.from(typeof payload==='string'?payload:JSON.stringify(payload));
     query.sha256 = sha256(resources[query.id]);
   }
   const terms = acquisition.queries.find(q=>q.kind==='terms');
+  const termsExcerpt=TERMS_EXCERPTS.find(e=>e.id==='dataset_license');
   for (const [series, review] of Object.entries(licenseReview.series)) {
     const metadata=acquisition.queries.find(q=>q.kind==='indicator-metadata' && q.series===series);
     const detailed=acquisition.queries.find(q=>q.kind==='series-metadata' && q.series===series);
     Object.assign(review, {
       status:'verified', licenseId:'CC-BY-4.0', commercialUse:'allowed',
       thirdPartyExceptionsReviewed:true, reviewedAt:retrievedAt, attribution:'Synthetic test fixture only',
-      evidence:[{queryId:terms.id, sha256:terms.sha256, excerpt:evidenceText},
+      evidence:[{queryId:terms.id,sha256:terms.sha256,excerptId:termsExcerpt.id,excerpt:termsExcerpt.text,responseSha256:terms.responseSha256},
         {queryId:metadata.id, sha256:metadata.sha256, excerpt:'Synthetic '+series},
         {queryId:detailed.id,sha256:detailed.sha256,excerpt:'License_Type'}]
     });
@@ -329,6 +360,7 @@ test('current edition requires an explicit same-series license and an unredirect
   const incomplete=fixture();changePayload(incomplete,'series-metadata', p=>{p.pages=2;});
   assert.throws(()=>buildBaseline(incomplete), /Incomplete/);
   const redirected=fixture();queryOf(redirected,'terms').finalUrl='https://www.worldbank.org/ext/en/legal';
+  changePayload(redirected,'terms', p=>{p.source.finalUrl=queryOf(redirected,'terms').finalUrl;});
   assert.throws(()=>buildBaseline(redirected), /Dataset terms redirected/);
 });
 

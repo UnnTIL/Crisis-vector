@@ -30,8 +30,10 @@
       "evidence": [
         {
           "queryId": "terms",
-          "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
-          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+          "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a",
+          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)",
+          "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+          "excerptId": "dataset_license"
         },
         {
           "queryId": "metadata-SP.POP.TOTL",
@@ -71,8 +73,10 @@
       "evidence": [
         {
           "queryId": "terms",
-          "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
-          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+          "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a",
+          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)",
+          "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+          "excerptId": "dataset_license"
         },
         {
           "queryId": "metadata-SP.URB.TOTL.IN.ZS",
@@ -112,8 +116,10 @@
       "evidence": [
         {
           "queryId": "terms",
-          "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
-          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+          "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a",
+          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)",
+          "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+          "excerptId": "dataset_license"
         },
         {
           "queryId": "metadata-NY.GDP.MKTP.CD",
@@ -153,8 +159,10 @@
       "evidence": [
         {
           "queryId": "terms",
-          "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
-          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+          "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a",
+          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)",
+          "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+          "excerptId": "dataset_license"
         },
         {
           "queryId": "metadata-NY.GDP.PCAP.CD",
@@ -194,8 +202,10 @@
       "evidence": [
         {
           "queryId": "terms",
-          "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
-          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+          "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a",
+          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)",
+          "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+          "excerptId": "dataset_license"
         },
         {
           "queryId": "metadata-GC.TAX.TOTL.GD.ZS",
@@ -235,8 +245,10 @@
       "evidence": [
         {
           "queryId": "terms",
-          "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
-          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+          "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a",
+          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)",
+          "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+          "excerptId": "dataset_license"
         },
         {
           "queryId": "metadata-SH.MED.BEDS.ZS",
@@ -276,8 +288,10 @@
       "evidence": [
         {
           "queryId": "terms",
-          "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
-          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+          "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a",
+          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)",
+          "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+          "excerptId": "dataset_license"
         },
         {
           "queryId": "metadata-GB.XPD.RSDV.GD.ZS",
@@ -317,8 +331,10 @@
       "evidence": [
         {
           "queryId": "terms",
-          "sha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
-          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)"
+          "sha256": "9c1d048f3f2dbe391ef5a60cc3cf55cadc538620113eaa557d4f6a8d2be8736a",
+          "excerpt": "Unless specifically labeled otherwise, these Datasets are provided to you under a Creative Commons Attribution 4.0 International License (CC BY 4.0)",
+          "responseSha256": "59bab5d8c2577d27d52c8a8b96707ad0b510ddc1fbb84916937e22e130d4d008",
+          "excerptId": "dataset_license"
         },
         {
           "queryId": "metadata-NE.TRD.GNFS.ZS",
@@ -332,5 +348,10 @@
         }
       ]
     }
+  },
+  "evidenceRevision": {
+    "version": 2,
+    "preparedAt": "2026-11-13T18:49:23.869Z",
+    "reason": "Replace unlicensed full website responses with bounded citation evidence; statistical sources and original retrieval times unchanged."
   }
 }

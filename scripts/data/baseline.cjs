@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
+const {validateWebEvidence,reviewedExcerpt}=require('./web-evidence.cjs');
 
 const ROOT = path.resolve(__dirname, '../..');
 const PILOT = ['PRT', 'DEU', 'USA', 'BRA', 'MWI'];
@@ -126,6 +127,11 @@ function validateAcquisition(acquisition, resources, catalog) {
       assert.ok(!path.isAbsolute(q.file) && !q.file.split(/[\\/]/).includes('..'), 'Unsafe source path');
       assert.ok(resources[q.id], `Missing frozen input ${q.id}`);
       assert.equal(sha256(resources[q.id]), q.sha256, `Checksum mismatch: ${q.id}`);
+      if(['terms','documentation'].includes(q.kind)) {
+        assert.equal(q.representation,'minimal-web-evidence-v1','Full web pages are not distributable inputs');
+        assert.equal(q.file,`evidence/${q.id}.json`,'Web evidence must use its minimal JSON record');
+        validateWebEvidence(json(resources[q.id]),q);
+      }
       if(q.finalUrl) {
         const final=new URL(q.finalUrl);
         assert.equal(final.protocol,'https:');
@@ -193,10 +199,13 @@ function permitted(review, acquisition, resources, cutoff, series, modern=false)
     const q = acquisition.queries.find(q=>q.id===evidence.queryId);
     assert.ok(q && q.status==='ok' && ['terms','series-metadata','indicator-metadata'].includes(q.kind), 'License evidence not retrieved');
     assert.equal(evidence.sha256,q.sha256);
-    assert.ok(evidence.excerpt && Buffer.from(resources[q.id]).toString('utf8').includes(evidence.excerpt), 'License excerpt not in frozen evidence');
     assert.ok(Date.parse(review.reviewedAt)>=Date.parse(q.completedAt),'License approval predates its evidence');
-    if(q.kind==='terms')termsEvidence=true;
+    if(q.kind==='terms') {
+      reviewedExcerpt(json(resources[q.id]),q,evidence);
+      termsEvidence=true;
+    }
     else {
+      assert.ok(evidence.excerpt && Buffer.from(resources[q.id]).toString('utf8').includes(evidence.excerpt), 'License excerpt not in frozen evidence');
       assert.equal(q.series,series,'License evidence belongs to a different series');
       if(q.kind==='indicator-metadata')seriesEvidence=true;
       if(q.kind==='series-metadata') {
@@ -326,7 +335,7 @@ function buildBaseline({catalog, countryMap, licenseReview, acquisition, resourc
     sourceQuery,countryQuery,series:sourceRecords,otherQueries:acquisition.queries.filter(q=>['terms','documentation'].includes(q.kind)),excludedCandidates:catalog.excludedCandidates};
   if(countryMetadataQuery)Object.assign(sources,{countryMetadataQuery,countryContext});
   const inputIndex=[['catalog.json',stableStringify(catalog),'canonical-json'],['country-map.json',stableStringify(countryMap),'canonical-json'],['license-review.json',stableStringify(licenseReview),'canonical-json'],['inputs/acquisition.json',stableStringify(acquisition),'canonical-json'],
-    ...acquisition.queries.filter(q=>q.status==='ok').map(q=>['inputs/'+q.file,resources[q.id],'raw-bytes'])]
+    ...acquisition.queries.filter(q=>q.status==='ok').map(q=>['inputs/'+q.file,resources[q.id],q.representation==='minimal-web-evidence-v1'?'minimal-web-evidence-json':'raw-bytes'])]
     .map(([file,bytes,representation])=>({file,representation,sha256:sha256(bytes)})).sort((a,b)=>a.file.localeCompare(b.file,'en'));
   return {baseline,coverage,sources,inputIndex};
 }
@@ -384,10 +393,13 @@ function generateArtifacts(bundle) {
       '| Série | Revisão WDI | Licença declarada / revisão |', '| --- | --- | --- |',
       ...sources.series.map(s=>`| ${s.series} | ${s.datasetVersion??'desconhecida'} | ${s.seriesMetadata?.License_Type??'não obtida'} / ${s.license.status} |`), '',
       'Os metadados por série, origem, limitações estatísticas, evidência e atribuições estão em sources.json e license-review.json. A revisão técnica verificou os rótulos de licença e as exceções publicadas; não substitui aconselhamento jurídico nem autoriza outros datasets dos mesmos fornecedores.', '',
-      'Uso comercial dos valores declarados CC BY 4.0 exige cumprir atribuição ao Banco Mundial e fornecedores, identificação de alterações, ligação aos termos e preservação das condições adicionais WB, incluindo mediação/arbitragem e ausência de endosso. Os termos específicos de datasets prevalecem sobre termos gerais em conflito. HTML/assets do site são evidência de desenvolvimento, não recursos licenciados para embutir no jogo. Ver ATTRIBUTION.md e docs/BASELINE_DATA_PIPELINE.md.', '',
+      'Uso comercial dos valores declarados CC BY 4.0 exige cumprir atribuição ao Banco Mundial e fornecedores, identificação de alterações, ligação aos termos e preservação das condições adicionais WB, incluindo mediação/arbitragem e ausência de endosso. Os termos específicos de datasets prevalecem sobre termos gerais em conflito. A versão atual não distribui páginas HTML integrais: guarda apenas identificação e citações necessárias, sem presumir uma licença geral do website. Ver ATTRIBUTION.md e docs/BASELINE_DATA_PIPELINE.md.', '',
+      '## Evidência web mínima e seus limites', '',
+      'inputs/evidence/terms.json guarda seis excertos curtos (428 caracteres no total); documentation.json guarda identificação e proveniência, sem excertos do corpo. O hash do ficheiro JSON distribuído é distinto do hash da resposta original omitida. A validação offline verifica os registos, os excertos e as referências da revisão; não reconstitui nem autentica independentemente a resposta HTTP a partir do seu hash. Uma nova consulta externa pode devolver uma revisão diferente.', '',
+      'A remoção dos dois HTML no estado atual da branch não elimina os ficheiros dos commits já publicados. Não foi reescrito o histórico nem feita uma promessa de remoção de cópias/cache. Qualquer limpeza histórica exige coordenação própria.', '',
       '## Proveniência e reprodução', '',
       `SHA-256 de scenario-baseline-v1.json: \`${sha256(artifacts['scenario-baseline-v1.json'])}\`.`, '',
-      `Aquisição com datas reais em inputs/acquisition.json; URLs finais, tipos de conteúdo e hashes dos bytes congelados constam do manifesto. O corte é ${baseline.freezeDate}; lastupdated é revisão do dataset, não ano de observação ou data individual de publicação.`, '',
+      `Aquisição com datas reais em inputs/acquisition.json; URLs finais, tipos de conteúdo e hashes constam dos registos e manifesto. Payloads estatísticos preservam bytes originais; documentos web usam minimal-web-evidence-json. O corte é ${baseline.freezeDate}; lastupdated é revisão do dataset, não ano de observação ou data individual de publicação.`, '',
       'Geração e validação offline: node scripts/data/normalize-baseline.cjs e node scripts/data/validate-baseline.cjs. Usar --base-dir para a edição arquivada. O manifesto não inclui o próprio hash.', '',
       'Não houve integração D3, alterações ao motor/dados da Alpha, recalibração de regras, campanhas comparativas de 60/120 dias ou merge do PR.');
     if(Object.keys(coverage.missingReasons).length)current.push('', 'Motivos de indisponibilidade:', '', ...Object.entries(coverage.missingReasons).map(([reason,count])=>`- ${reason}: ${count} células.`));

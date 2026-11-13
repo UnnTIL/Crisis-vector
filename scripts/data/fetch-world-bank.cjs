@@ -5,12 +5,11 @@
 // trust; neither certificate verification nor proxy policy is bypassed.
 const fs = require('node:fs/promises');
 const path = require('node:path');
-const os = require('node:os');
 const {execFile} = require('node:child_process');
 const {promisify} = require('node:util');
 const {createHash} = require('node:crypto');
 const assert = require('node:assert/strict');
-const {PILOT, SERIES} = require('./baseline.cjs');
+const {PILOT, SERIES, stableStringify} = require('./baseline.cjs');
 const run = promisify(execFile);
 const ROOT = path.resolve(__dirname, '../..');
 const DEFAULT_BASE = path.join(ROOT, 'data/baseline');
@@ -73,23 +72,25 @@ function validateTimestamp(value) {
 }
 
 async function curlRequest(url) {
-  const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'crisis-wdi-'));
-  const bodyFile = path.join(directory, 'body');
-  try {
-    let stdout = '', stderr = '', exitCode = 0;
+    // Keep the response in memory: web pages are reduced to curated evidence
+    // before anything is frozen. The trailer is separate from original bytes.
+    const marker = Buffer.from('\nCRISIS_VECTOR_TRANSPORT_METADATA\n');
+    let stdout = Buffer.alloc(0), stderr = '', exitCode = 0;
     try {
       const result = await run('curl', [
         '--silent', '--show-error', '--fail-with-body', '--location',
         '--proto', '=https', '--proto-redir', '=https',
         '--connect-timeout', '20', '--max-time', '45', '--max-filesize', '20000000',
-        '--output', bodyFile, '--write-out', '%{json}', url
-      ], {maxBuffer:65536, timeout:50000});
-      stdout = result.stdout; stderr = result.stderr;
+        '--output', '-', '--write-out', `${marker.toString()}%{json}`, url
+      ], {encoding:'buffer', maxBuffer:20100000, timeout:50000});
+      stdout = result.stdout; stderr = result.stderr.toString('utf8');
     } catch (error) {
-      stdout = String(error.stdout || ''); stderr = String(error.stderr || ''); exitCode = error.code || 'unknown';
+      stdout = Buffer.isBuffer(error.stdout) ? error.stdout : Buffer.from(String(error.stdout || ''));
+      stderr = String(error.stderr || ''); exitCode = error.code || 'unknown';
     }
+    const markerIndex = stdout.lastIndexOf(marker);
     let metadata = {};
-    try { metadata = JSON.parse(stdout); } catch { /* Transport failure may have no final response metadata. */ }
+    try { metadata = JSON.parse(stdout.subarray(markerIndex + marker.length).toString('utf8')); } catch { /* Transport failure may have no final response metadata. */ }
     const code = Number.isInteger(metadata.http_code) ? metadata.http_code : 0;
     const httpStatus = code || null;
     let finalUrl = null;
@@ -104,14 +105,11 @@ async function curlRequest(url) {
       return {status:'blocked', httpStatus:null, proxyStatus:403, finalUrl:null, contentType:null,
         errorCode:'proxy_connect_denied', error:'The configured proxy rejected HTTPS CONNECT with HTTP 403.', body:null};
     }
-    if (exitCode || httpStatus !== 200) {
+    if (exitCode || httpStatus !== 200 || markerIndex < 0) {
       return {status:'error', httpStatus, proxyStatus:null, finalUrl, contentType, errorCode:httpStatus ? `http_${httpStatus}` : `curl_${String(exitCode)}`,
         error:httpStatus ? `Source request returned HTTP ${httpStatus}.` : `curl request failed (exit ${String(exitCode)}).`, body:null};
     }
-    return {status:'ok', httpStatus, proxyStatus:null, finalUrl, contentType, errorCode:null, error:null, body:await fs.readFile(bodyFile)};
-  } finally {
-    await fs.rm(directory, {recursive:true, force:true});
-  }
+    return {status:'ok', httpStatus, proxyStatus:null, finalUrl, contentType, errorCode:null, error:null, body:stdout.subarray(0,markerIndex)};
 }
 
 async function acquire({catalog, countryMap, outDir=DEFAULT_INPUTS, replace=false, request=curlRequest, clock=()=>new Date().toISOString()}) {
@@ -160,10 +158,23 @@ async function acquire({catalog, countryMap, outDir=DEFAULT_INPUTS, replace=fals
         if (response.status === 'blocked') blockedHosts.set(host, query.id);
         if (response.status === 'ok') {
           if (!Buffer.isBuffer(response.body)) throw new Error('Successful transport must return exact bytes.');
-          const extension = query.kind === 'terms' || query.kind === 'documentation' ? 'html' : 'json';
-          record.file = `raw/${query.id}.${extension}`;
-          record.sha256 = sha256(response.body);
-          await fs.writeFile(path.join(outDir, record.file), response.body);
+          if (query.kind === 'terms' || query.kind === 'documentation') {
+            const {createWebEvidence} = require('./web-evidence.cjs');
+            const evidence = createWebEvidence({query, response, requestedAt:record.requestedAt,
+              retrievedAt:record.completedAt, preparedAt:timestamp()});
+            const bytes = Buffer.from(stableStringify(evidence));
+            record.file = `evidence/${query.id}.json`;
+            record.representation = 'minimal-web-evidence-v1';
+            record.responseSha256 = sha256(response.body);
+            record.responseBytes = response.body.length;
+            record.sha256 = sha256(bytes);
+            await fs.mkdir(path.join(outDir,'evidence'), {recursive:true});
+            await fs.writeFile(path.join(outDir,record.file), bytes);
+          } else {
+            record.file = `raw/${query.id}.json`;
+            record.sha256 = sha256(response.body);
+            await fs.writeFile(path.join(outDir, record.file), response.body);
+          }
         }
       }
       manifest.queries.push(record);
