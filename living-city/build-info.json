@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "three": "0.181.2",
+  "esbuild": "0.25.12",
+  "bundleBytes": 621187,
+  "bundleSHA256": "1bf2b16119aa572e069bd5205f882917f4cdbbaacd01e50a4dd04d2454683b1c",
+  "externalNetworkRequired": false,
+  "files": [
+    {
+      "path": "living-city/app.mjs",
+      "sha256": "4aea8cade95921fe613581b5d8cb5aca4ba21b6f410776d2bcbf56b445028950"
+    },
+    {
+      "path": "living-city/audio.mjs",
+      "sha256": "5b60778337ff94d6375ff847e82b991e5fcae37b70fbbf66899aaea4d75f6529"
+    },
+    {
+      "path": "living-city/core/config.cjs",
+      "sha256": "109ca542ae439519782098a8715946d1398aafd00e06568508884f57813991b6"
+    },
+    {
+      "path": "living-city/core/health.cjs",
+      "sha256": "6a47bc20c47133e34ea3f229e5d6759df8d2981c75fe2798cd78c6567a9fd64a"
+    },
+    {
+      "path": "living-city/core/helpers.cjs",
+      "sha256": "d498fed800c5347458127398ee14b663a7c5f91d8d9663b57cb21baa394740f2"
+    },
+    {
+      "path": "living-city/core/incidents.cjs",
+      "sha256": "d354ea7df301ebf8f5252174d96ca8f287c40f01f1dbe7673872379786f15440"
+    },
+    {
+      "path": "living-city/core/medical.cjs",
+      "sha256": "f39041cd66c433dc7cbd784182ef657d8f8ffb01f953f1876c0c1e438eb6e4e9"
+    },
+    {
+      "path": "living-city/core/police.cjs",
+      "sha256": "697656579e5826db704c0edca254e5508e9b8cf772ce6c989fccd6a9d8649712"
+    },
+    {
+      "path": "living-city/core/population.cjs",
+      "sha256": "92d35247d46db6f70058838c4b3c4c9839a1deba009347b68f6ef82179482d1d"
+    },
+    {
+      "path": "living-city/core/topology.cjs",
+      "sha256": "ac0becb485ef0c872ad4c07ac4d2fa6680067f4c84b3091de980f12b0f0aa053"
+    },
+    {
+      "path": "living-city/core/world.cjs",
+      "sha256": "32e0978fe166bed93574082c7d386fd81a96cd58cb301ec71216eb06b1bcce6d"
+    },
+    {
+      "path": "living-city/index.html",
+      "sha256": "caa1f6ebf6754dabdc40e2d7d8095ca1e10df9d41b7e8259a917c9e92d7222f7"
+    },
+    {
+      "path": "living-city/renderer.mjs",
+      "sha256": "e845ce5c94f6aa50356bdc8ca3e4d7eda661d0af6ccd26df47352d3d717338a3"
+    },
+    {
+      "path": "living-city/styles.css",
+      "sha256": "e5b4ac9904f917e93366cbd12bad4f84bc5397e7c313543acaa5cc740cfb4f72"
+    }
+  ]
+}

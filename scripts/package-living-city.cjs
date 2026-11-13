@@ -1,0 +1,20 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),{execFileSync}=require('node:child_process');
+const root=path.resolve(__dirname,'..'),destination=path.resolve(process.argv[2]||path.join(root,'artifacts/living-city-v02')),stage=path.join(destination,'package');
+fs.mkdirSync(stage,{recursive:true});
+const html=fs.readFileSync(path.join(root,'living-city/index.html'),'utf8'),css=fs.readFileSync(path.join(root,'living-city/styles.css'),'utf8');
+const js=fs.readFileSync(path.join(root,'living-city/demo.js'),'utf8').replace(/<\/script/gi,'<\\/script');
+if(!/<link rel="stylesheet" href="styles.css">/.test(html)||!/<script src="\.\/demo.js" defer><\/script>/.test(html))throw new Error('Standalone HTML template changed; review packaging.');
+const standalone=html.replace(/<link rel="stylesheet" href="styles.css">/,()=>`<style>${css}</style>`).replace(/<script src="\.\/demo.js" defer><\/script>/,'').replace('</body>',()=>`<script>${js}</script>\n</body>`);
+const files=[];
+function write(name,bytes){const target=path.join(stage,name);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,bytes);files.push(name);}
+write('living-city/index.html',standalone);write('living-city/THREE-LICENSE.txt',fs.readFileSync(path.join(root,'living-city/vendor/THREE-LICENSE.txt')));
+for(const name of ['index.html','styles.css','src/simulation.js','src/game.js','data/world-data.js'])write(name,fs.readFileSync(path.join(root,name)));
+write('urban-spike/index.html',fs.readFileSync(path.join(root,'artifacts/urban-spike/urban-demo.html')));write('urban-spike/THREE-LICENSE.txt',fs.readFileSync(path.join(root,'urban-spike/vendor/THREE-LICENSE.txt')));
+write('LEIA-ME.txt','CRISIS VECTOR — Living City V0.2\n\nExtrair o ZIP. Na pasta que contém living-city/, executar:\n  python3 -m http.server 8000\nNo Windows: py -m http.server 8000\nAbrir http://127.0.0.1:8000/living-city/\n\nA cidade funciona autonomamente. S0: sem surto; S1: doença progressiva; S2: transformação súbita. Selecionar pessoas/viaturas/instalações/ocorrências; Seguir acompanha a entidade. Arrastar move câmara; roda amplia; Espaço pausa. Som opcional ativado pelo utilizador. Valores e regras ficcionais.\n\nO HTML é autónomo e não precisa de APIs/CDN. Abrir diretamente pode ser bloqueado por política do browser; o servidor local é a via validada. A Alpha mundial e a prova urbana anterior também estão incluídas. Licença MIT de Three.js preservada.\n');
+const timestamp=new Date('2026-11-13T00:00:00Z');for(const name of files)fs.utimesSync(path.join(stage,name),timestamp,timestamp);
+files.sort();const zip=path.join(destination,'crisis-vector-living-city-v02.zip');if(fs.existsSync(zip))fs.unlinkSync(zip);execFileSync('zip',['-X','-q',zip,...files],{cwd:stage});
+fs.writeFileSync(path.join(destination,'living-city-v02.html'),standalone);
+const sha=file=>crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+fs.writeFileSync(path.join(destination,'SHA256SUMS.txt'),`${sha(zip)}  crisis-vector-living-city-v02.zip\n${sha(path.join(destination,'living-city-v02.html'))}  living-city-v02.html\n`);
+console.log(JSON.stringify({zip,bytes:fs.statSync(zip).size,sha256:sha(zip)}));
