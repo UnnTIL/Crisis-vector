@@ -1,93 +1,92 @@
-# CRISIS VECTOR — Urban Living City V0.2
+# CRISIS VECTOR — Living City V0.2.1
 
-Cidade pequena, autónoma e fictícia, desenvolvida a partir do [PR #9](https://github.com/UnnTIL/Crisis-vector/pull/9), conforme a [Issue #10](https://github.com/UnnTIL/Crisis-vector/issues/10). O [draft PR #11](https://github.com/UnnTIL/Crisis-vector/pull/11) tem como destino `spike/urban-webgl`. A Alpha mundial, a baseline e a prova tática anterior continuam disponíveis; não há integração da campanha, A1b, economia ou safe zones estratégicas.
+Correções da [Issue #12](https://github.com/UnnTIL/Crisis-vector/issues/12), no [draft PR #15](https://github.com/UnnTIL/Crisis-vector/pull/15): `feat/living-city-v021-ux` → `feat/urban-living-city-v02`. A base é o PR #11; os sistemas médicos e policiais continuam autónomos e as identidades mantêm um estado canónico. Esta iteração não inclui o Laboratório V0.2.2 nem o aprofundamento de infeção/hospital V0.2.3.
 
-## Experimentar
+## Jogar
 
-[ZIP autónomo no GitHub](https://github.com/UnnTIL/Crisis-vector/raw/refs/heads/feat/urban-living-city-v02/artifacts/living-city-v02/crisis-vector-living-city-v02.zip) · [SHA-256](../artifacts/living-city-v02/SHA256SUMS.txt)
+[Descarregar o ZIP V0.2.1](https://github.com/UnnTIL/Crisis-vector/raw/refs/heads/feat/living-city-v021-ux/artifacts/living-city-v021/crisis-vector-living-city-v021.zip) · [Checksums](../artifacts/living-city-v021/SHA256SUMS.txt)
 
-Extrair o ZIP e, na pasta que contém `living-city/`, executar:
+Extrair e executar na pasta que contém `living-city/`:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-No Windows: `py -m http.server 8000`. Abrir `http://127.0.0.1:8000/living-city/`. Com o checkout, o mesmo servidor funciona na raiz sem instalação de dependências: o bundle já contém Three.js, código e estilos locais. O ZIP inclui um HTML urbano autónomo e também as demos anteriores. A execução por servidor estático é a via de teste; a política do Chromium gerido bloqueia abertura direta por `file://`.
+No Windows: `py -m http.server 8000`. Abrir `http://127.0.0.1:8000/living-city/`. O mesmo comando funciona na raiz do checkout sem instalar dependências, pois o bundle está incluído. O pacote contém um HTML autónomo, Three.js e os estilos locais, além das demos mundial e tática anteriores.
 
-A cidade inicia em S0 e funciona sem ordens. Mudar cenário ou reiniciar coloca a simulação em pausa; usar **Iniciar** para continuar. Escolher entre:
+A cidade funciona sem ordens. S0 mantém rotinas e ocorrências médicas normais; S1 inicia doença progressiva num residente existente; S2 transforma rapidamente uma pessoa da mesma população. Mudar cenário/reiniciar coloca em pausa; usar **Iniciar** para continuar. Selecionar no mapa ou pesquisar pessoas, viaturas, instalações e ocorrências; **Seguir** acompanha a entidade e explica se está no interior.
 
-- **S0 — Cidade sem surto:** rotinas e chamadas médicas normais. A ameaça não é criada por calendário.
-- **S1 — Doença progressiva:** um habitante existente adoece; a resposta médica pode anteceder a descoberta da ameaça. A patologia desconhecida não é curada automaticamente pelo hospital.
-- **S2 — Transformação súbita:** um habitante existente morre e reanima rapidamente; testemunhas e patrulhas desencadeiam a resposta.
+| Controlo | Ação |
+| --- | --- |
+| Clique | Selecionar uma entidade |
+| Arrastar / roda | Pan / zoom |
+| Q / E | Rodar 15° em torno do alvo observado |
+| R | Recentrar, terminar seguimento e repor orientação/zoom iniciais |
+| Espaço | Pausa / retoma |
+| +0,1 s em pausa | Executar exatamente um tick lógico |
+| Som / volume / reduzir efeitos | Apresentação opcional, sem alterar resultados |
 
-Selecionar no mapa ou pesquisar na lista. **Seguir** acompanha uma pessoa, viatura, instalação ou ocorrência. Uma pessoa no interior continua no censo; o marcador de seguimento identifica o edifício, sem inventar movimento na rua. Para observar o ciclo médico, escolher S0, acompanhar a primeira ocorrência no diário e selecionar a ambulância atribuída. S1/S2 mostram diferentes escaladas, com recursos finitos.
+Q/E/R são ignorados durante escrita em campos de texto, seleção, conteúdo editável e combinações com modificadores. A volta completa tem 24 passos; rotação, seleção e seguimento não alteram a simulação.
 
-Controlos: clique seleciona; arrastar move a câmara; roda amplia; Espaço pausa; `R` recentra e termina o seguimento; velocidades 1×/2×/4×. O som começa desligado e só é ativado por clique explícito. Volume, mute e redução de flashes não alteram a lógica. O modo **debug** revela informação oculta e está assinalado no ecrã.
+## Escala temporal e fluidez
 
-![Acompanhamento de um habitante durante o transporte médico](../docs/living-city-package-desktop.png)
+| Controlo atual | Segundos simulados por segundo real |
+| --- | ---: |
+| 1× | 2 |
+| 2× | 4 |
+| 4× | 8 |
 
-## O que observar
+**O novo 1× equivale ao antigo 2×.** O tick canónico continua a ter 100 ms simulados; a velocidade só determina quantos ticks são pedidos por tempo real. O botão de passo único avança sempre 0,1 s simulados, independentemente do multiplicador selecionado.
 
-O bairro tem oito quarteirões e 32 edifícios, redes pedonal/viária distintas e entradas ligadas a casas, comércio, trabalho, hospital e esquadra. Por defeito existem 150 residentes, quatro socorristas, seis agentes policiais e quatro profissionais hospitalares: **164 identidades**. Duas ambulâncias e três patrulhas usam pessoas e viaturas distintas.
+O desenho interpola posições visuais imutáveis do tick anterior e atual. Esta interpolação é independente da mudança de ritmo; não altera colisões, tiros, saúde, chegadas, população ou PRNG. Introduz até um tick de atraso visual normal. Pausar, reiniciar, avançar em bloco ou mudar de localização remove a interpolação pendente; não há deslocação fantasma em pausa. Passageiros, seguimento e picking usam a mesma posição desenhada da viatura.
 
-O ciclo é `observação → chamada → central/triagem → despacho → deslocação → avaliação → intervenção → consequência`. Chamadas têm atraso, prioridades e espera; ambulâncias percorrem as estradas e as pessoas percorrem os acessos a pé. Hospitalização, transporte, doença, morte, reanimação e neutralização conservam as mesmas identidades.
+Atrasos excessivos causam pausa explícita, preservando o tempo pedido na fila; não se descartam ticks para melhorar FPS. Ocultar o separador pausa a cidade. Os indicadores de FPS continuam a medir frames reais, sem multiplicação pela velocidade.
 
-A polícia patrulha e responde autonomamente. Disparar exige ameaça hostil observada, alcance, linha de visão, munições e corredor de tiro seguro, incluindo durante aproximação. Um infetado não hostil não é alvo pelo diagnóstico. Não há reposição gratuita de agentes, veículos ou munições.
+## Origens e circulação
 
-A interface apresenta observações e avaliações conhecidas; saúde verdadeira só em debug. Novas chamadas entram no índice após receção ou confirmação profissional. Os eventos verdadeiros, reportados e confirmados são distinguidos no domínio. O motor e o seu RNG não dependem da câmara, som ou frequência de desenho.
+O caso inicial é selecionado pelo PRNG entre residentes existentes, preservando a sua localização, atividade e percurso. Não há deslocação do paciente nem três testemunhas colocadas junto dele. `initialCaseOrigin`, eventos e `incident.origin` permitem distinguir localização inicial, início efetivo e observação posterior.
 
-## Etapas e validação
+S0 usa condições de rotina, atividade percorrida e revisões/risco/cooldowns por seed, com atraso de perceção. Os antigos instantes globais 20/240/450 s não geram as ocorrências normais. Fixtures controladas usadas nos testes mantêm apenas as condições específicas necessárias para exercitar concorrência/indisponibilidade.
 
-- **LC-0:** topologia, população finita, rotinas, localizações e contratos.
-- **LC-1:** ocorrências normais, despacho, ambulância, recolha e hospital.
-- **LC-2:** doença, exposição por duração/distância e transformação da mesma pessoa.
-- **LC-3:** agentes policiais, patrulhas, reconhecimento, intervenção e retirada.
-- **LC-4:** observação, seleção/seguimento, efeitos de eventos, áudio e medições.
+Ambulâncias e patrulhas cedem a pessoas no trajeto e a travessias iminentes, travam e retomam progressivamente. Esperas mútuas podem desencadear desvios ou estacionamento alternativo num nó realmente acessível; a tripulação continua a pé. Uma pessoa a meio de uma aresta é abordada no seu ponto físico, com contacto e linha de visão para avaliação. Não é movida para simplificar a recolha.
 
-Consultar [regras e limites reais da implementação](../docs/LIVING_CITY_RULES.md), [matriz de aceitação](../docs/LIVING_CITY_ACCEPTANCE.md) e [relatório de execução](../docs/LIVING_CITY_VALIDATION.md). As amostras e resultados são guardados separadamente; os números da V0.1 não são apresentados como medições da V0.2.
+`crewIds` identifica afiliação, não autorização para recuperar alguém que já é paciente de outro serviço. Atribuições, embarques e localização são exclusivos; um veículo sem tripulação operacional suspende a resposta. Estes controlos preservam as pessoas e recursos finitos ao variar origens e tempos de deslocação.
+
+## Validação e reprodução
+
+[Relatório técnico V0.2.1](../docs/LIVING_CITY_V021_TECHNICAL_REPORT.md). Os relatórios e ZIP da V0.2 permanecem arquivados nos seus caminhos originais.
 
 ```bash
 npm test
-node scripts/report-living-city.cjs --output /tmp/living-city-report.json
+node scripts/report-living-city-v021.cjs --output /tmp/living-city-v021-report.json
 ```
 
-Os testes incluem fixtures de chamadas concorrentes, hospital lotado, via interrompida, viatura avariada e polícia ocupada. A matriz usa seeds 16927/42/2026 × S0/S1/S2 por 600 segundos simulados, sem ordens, com invariantes a cada tick.
-
-## Construir e empacotar
+A matriz lógica usa S0/S1/S2 e seeds 16927/42/2026, por 600 segundos simulados, com invariantes de pessoas, transporte, camas, atribuições e velocidade a cada tick. Os testes de apresentação e tempo também comparam diferentes frequências de desenho.
 
 ```bash
 npm ci --prefix urban-spike
 node scripts/build-living-city.cjs
-node scripts/package-living-city.cjs /tmp/living-city-package
+node scripts/package-living-city.cjs /tmp/living-city-v021-package
 ```
 
-O build reutiliza Three.js **0.181.2** e esbuild **0.25.12**, fixados no lockfile do protótipo. Não é necessário reinstalá-los se já estiverem disponíveis. A licença MIT de Three.js é preservada. `build-info.json` identifica fontes e bundle por SHA-256. O pacote usa ordem e metadados fixos para permitir reconstrução byte a byte.
+Three.js 0.181.2 e esbuild 0.25.12 permanecem fixados no lockfile existente. A licença MIT é incluída. `build-info.json` identifica versão, escala e fontes/bundle por SHA-256. A ordem e os metadados fixos do ZIP permitem reconstrução byte a byte.
 
-O teste de browser requer Playwright **1.62.1** e Chromium; são ferramentas de desenvolvimento, não dependências da partida. O executor já os fornece. Noutro ambiente, instalar separadamente Playwright e um Chromium compatível, ajustando o executável no script se necessário.
+Com Playwright 1.62.1 e Chromium disponíveis como ferramentas de desenvolvimento:
 
 ```bash
-node scripts/benchmark-living-city.cjs \
-  --url http://127.0.0.1:8000/living-city/ \
-  --output /tmp/living-city-browser.json --warmup-ms 2000 --capture-ms 10000
+node scripts/verify-living-city-v021.cjs --output /tmp/living-city-v021-browser.json
+node scripts/check-living-city-package.cjs /tmp/living-city-v021-package/crisis-vector-living-city-v021.zip /tmp/living-city-v021-package-check.json
 ```
 
-Para o primeiro confronto S2 com áudio e efeitos ativos:
+O verificador de interação usa um relógio RAF controlado para testar câmara, picking, pausa, interpolação e taxas; esses números não são FPS medidos. O benchmark usa o relógio real e identifica os custos e limitações do executor:
 
 ```bash
 node scripts/benchmark-living-city.cjs --url http://127.0.0.1:8000/living-city/ \
-  --output /tmp/living-city-combat.json --scenarios S2 --s2-prime-ticks 470 --audio 1
+  --ux-evidence /tmp/living-city-v021-browser.json --output /tmp/living-city-v021-performance.json
 ```
-
-Para verificar um ZIP, com as mesmas ferramentas de browser:
-
-```bash
-node scripts/check-living-city-package.cjs /tmp/living-city-package/crisis-vector-living-city-v02.zip /tmp/living-city-package-check.json
-```
-
-O benchmark curto cloud não certifica 60 FPS em GPU física. O relatório identifica browser, GPU observada, DPR, populações lógicas/visíveis, tempos de frame/lógica/submissão, memória e omissões.
 
 ## Limites
 
-Não existem interiores detalhados, tráfego civil completo, geografia real, epidemiologia clínica, capacidades militares factuais ou campanha persistente. Contactos e letalidade são regras ficcionais calibráveis. O hospital trata as ocorrências normais da fixture; não descobre uma cura para o agente patogénico. A crise pode sobrecarregar os serviços finitos.
+O tráfego é um modelo simples de cedência/desvio, sem vias detalhadas, semáforos ou física completa. Obstáculos persistentes e serviços incapacitados podem tornar uma resposta impossível; a espera não autoriza atravessar pessoas. Interiores e patologia continuam com as aproximações da V0.2, a aprofundar na V0.2.3. Parâmetros são ficcionais e o equilíbrio não está validado.
 
-A preview online só será apresentada como funcional após teste real do URL. O domínio GitHub Pages continua bloqueado pela política de rede deste executor; o pacote obtido do GitHub e executado localmente é a alternativa verificável. Não é necessário alterar as configurações do ambiente para jogar com o ZIP.
+Não existe laboratório de parâmetros, presets, importação/exportação na UI ou sincronização GitHub. Mundo, baseline factual, A1b, economia e safe zones permanecem fora deste recorte. Uma preview web só é apresentada como funcional após teste real; se a política do executor bloquear Pages, a entrega usa o ZIP descarregado e executado localmente. A execução direta `file://` pode ser bloqueada pela política do browser; usar o servidor estático.

@@ -10,3 +10,5 @@ docs/living-city-browser.json linguist-generated=true
 docs/living-city-report.json linguist-generated=true
 docs/living-city-smoke.json linguist-generated=true
 docs/living-city-combat-browser.json linguist-generated=true
+artifacts/living-city-v021/living-city-v021.html linguist-generated=true -whitespace
+docs/living-city-v021-*.json linguist-generated=true

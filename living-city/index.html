@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111b22">
   <link rel="icon" href="data:,">
-  <title>CRISIS VECTOR · Cidade viva</title>
+  <title>CRISIS VECTOR · Cidade viva V0.2.1</title>
   <link rel="stylesheet" href="styles.css">
   <script src="./demo.js" defer></script>
 </head>
 <body>
   <div class="app-shell">
     <header class="masthead">
-      <a class="brand" href="../index.html" aria-label="CRISIS VECTOR — demonstração mundial"><span class="brand-mark" aria-hidden="true"><i></i></span><span>CRISIS <b>VECTOR</b><small>CIDADE VIVA / V0.2</small></span></a>
+      <a class="brand" href="../index.html" aria-label="CRISIS VECTOR — demonstração mundial"><span class="brand-mark" aria-hidden="true"><i></i></span><span>CRISIS <b>VECTOR</b><small>CIDADE VIVA / V0.2.1</small></span></a>
       <div class="page-title"><span class="eyebrow">OBSERVAR · COMPREENDER · RESPONDER</span><h1>A cidade antes da crise.</h1></div>
       <div class="header-status"><i class="status-dot" aria-hidden="true"></i><span>RESPOSTA AUTÓNOMA</span><span class="version-tag">LIVING CITY</span></div>
     </header>
@@ -27,7 +27,7 @@
 
     <main class="city-layout">
       <section class="theatre" aria-label="Observação da cidade">
-        <div class="theatre-toolbar"><div class="theatre-title"><svg class="city-symbol" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 21V9h6v12M8 21V3h8v18m0 0V12h6v9M0 21h24M11 7h2m-2 4h2m-2 4h2M4 13h2m-2 4h2m12-1h2"/></svg><div><strong>BAIRRO DA RIBEIRA</strong><span>Quotidiano urbano · terreno sintético</span></div></div><div class="time-controls" role="group" aria-label="Controlo do tempo"><button id="pause-button" title="Pausar ou retomar a simulação · Espaço" aria-pressed="false">PAUSAR</button><div class="speed-controls"><button data-speed="1" class="active" aria-pressed="true">1×</button><button data-speed="2" aria-pressed="false">2×</button><button data-speed="4" aria-pressed="false">4×</button></div></div></div>
+        <div class="theatre-toolbar"><div class="theatre-title"><svg class="city-symbol" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 21V9h6v12M8 21V3h8v18m0 0V12h6v9M0 21h24M11 7h2m-2 4h2m-2 4h2M4 13h2m-2 4h2m12-1h2"/></svg><div><strong>BAIRRO DA RIBEIRA</strong><span>Quotidiano urbano · terreno sintético</span></div></div><div class="time-control-block"><div class="time-controls" role="group" aria-label="Controlo do tempo"><button id="pause-button" title="Pausar ou retomar a simulação · Espaço" aria-pressed="false">PAUSAR</button><button id="step-button" class="step-button" title="Avançar um tick lógico com a cidade em pausa" disabled>+0,1 s</button><div class="speed-controls"><button data-speed="1" class="active" aria-pressed="true" title="1×: 2 segundos simulados por segundo real">1×</button><button data-speed="2" aria-pressed="false" title="2×: 4 segundos simulados por segundo real">2×</button><button data-speed="4" aria-pressed="false" title="4×: 8 segundos simulados por segundo real">4×</button></div></div><p id="time-scale-note" class="time-scale-note">1× = 2 s simulados / segundo real</p></div></div>
         <div id="scene" class="scene">
           <canvas id="livingCanvas" aria-label="Cidade interativa. Clica numa pessoa, viatura, edifício ou ocorrência para consultar a informação conhecida." tabindex="0"></canvas>
           <div class="map-overline"><span><i class="status-dot"></i> ROTINAS E SERVIÇOS</span><span>VISTA ORTOGRÁFICA &nbsp; / &nbsp; N ↑</span></div>
@@ -37,7 +37,7 @@
           <div id="renderer-status" class="renderer-status" role="status">A preparar a cidade…</div>
           <div class="scene-corner corner-tl"></div><div class="scene-corner corner-tr"></div><div class="scene-corner corner-bl"></div><div class="scene-corner corner-br"></div>
         </div>
-        <div class="map-instructions"><span><kbd>CLIQUE</kbd> observar entidade</span><span><kbd>ARRASTAR</kbd> mover câmara</span><span><kbd>RODA</kbd> zoom</span><span><kbd>ESPAÇO</kbd> pausa</span><span class="observe-note">Sem ordens obrigatórias</span></div>
+        <div class="map-instructions"><span><kbd>CLIQUE</kbd> observar entidade</span><span><kbd>ARRASTAR</kbd> mover câmara</span><span><kbd>RODA</kbd> zoom</span><span><kbd>Q / E</kbd> rodar</span><span><kbd>R</kbd> recentrar</span><span><kbd>ESPAÇO</kbd> pausa</span><span class="observe-note">Sem ordens obrigatórias</span></div>
       </section>
 
       <aside class="observation-panel" aria-label="Informação e acompanhamento">
@@ -78,7 +78,7 @@
       </aside>
     </main>
 
-    <footer class="footer"><span>CRISIS VECTOR <i>/</i> CIDADE VIVA V0.2</span><span>Cidade e capacidades fictícias · população finita · prova isolada</span><nav aria-label="Outras demonstrações"><a href="../urban-spike/">Prova tática <span aria-hidden="true">↗</span></a><a href="../index.html">Mundo <span aria-hidden="true">↗</span></a></nav></footer>
+    <footer class="footer"><span>CRISIS VECTOR <i>/</i> CIDADE VIVA V0.2.1</span><span>Cidade e capacidades fictícias · população finita · prova isolada</span><nav aria-label="Outras demonstrações"><a href="../urban-spike/">Prova tática <span aria-hidden="true">↗</span></a><a href="../index.html">Mundo <span aria-hidden="true">↗</span></a></nav></footer>
   </div>
   <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 </body>

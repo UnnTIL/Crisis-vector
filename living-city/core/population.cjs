@@ -6,6 +6,7 @@ function personRecord(id,name,role,building,node,extra={}){
 }
 function initializePopulation(ctx){
   const {state:s}=ctx,homes=s.city.buildings.filter(b=>b.type==='residential'),destinations=s.city.buildings.filter(b=>b.type==='office'||b.type==='shop');
+  const publicWalkingNodes=s.city.pedestrianGraph.nodes.filter(node=>!node.roadNodeId);
   const ped=id=>s.city.pedestrianGraph.nodes.find(n=>n.id===id),road=id=>s.city.vehicleGraph.nodes.find(n=>n.id===id);
   const hospital=s.city.buildings.find(b=>b.type==='hospital'),station=s.city.buildings.find(b=>b.type==='station');
   hospital.capacity=s.config.hospitalCapacity;
@@ -13,23 +14,22 @@ function initializePopulation(ctx){
   for(let i=0;i<s.config.residents;i++){
     const home=homes[i%homes.length],work=destinations[(i*3+Math.floor(ctx.random()*destinations.length))%destinations.length];
     const p=personRecord(`resident-${String(i+1).padStart(3,'0')}`,`Habitante ${i+1}`,'resident',home,ped(home.entranceNodeIds[0]),{
-      workBuildingId:work.id,nextRoutineTick:20+Math.floor(ctx.random()*700),routineIndex:i%3,routineTrips:0,walkSpeed:.9+ctx.random()*.4
+      workBuildingId:work.id,nextRoutineTick:20+Math.floor(ctx.random()*700),routineIndex:i%3,routineTrips:0,distanceWalked:0,walkSpeed:.9+ctx.random()*.4
     });
     s.people.push(p);
     if(i%4===0){
-      const node=s.city.pedestrianGraph.nodes[(i*7)%s.city.pedestrianGraph.nodes.length];p.location={kind:'street',nodeId:node.id};p.nodeId=node.id;p.x=node.x;p.z=node.z;
+      const node=publicWalkingNodes[(i*7)%publicWalkingNodes.length];p.location={kind:'street',nodeId:node.id};p.nodeId=node.id;p.x=node.x;p.z=node.z;
       p.destinationBuildingId=work.id;p.activity='walking';ctx.routePerson(p,work.entranceNodeIds[0]);
     }
   }
-  const patient=s.config.initialPersonId?s.people.find(p=>p.id===s.config.initialPersonId):s.people[s.seed%s.config.residents];
+  // Choosing an initial case never stages a location, pauses a routine or adds
+  // witnesses. Consume the same draw when explicitly selecting a resident.
+  const selectedIndex=Math.floor(ctx.random()*s.config.residents);
+  const patient=s.config.initialPersonId?s.people.find(p=>p.id===s.config.initialPersonId):s.people[selectedIndex];
   if(!patient||patient.role!=='resident')throw new TypeError('Initial person must identify an existing resident.');
   s.initialPersonId=patient.id;
-  const block=1+(Math.floor(s.seed/32)%8),publicNode=s.city.pedestrianGraph.nodes.find(n=>n.id===`block-${block}-walk-1`);
-  patient.location={kind:'street',nodeId:publicNode.id};patient.nodeId=publicNode.id;patient.x=publicNode.x;patient.z=publicNode.z;patient.path=[];patient.activity='resting';patient.nextRoutineTick=800;
-  const witnesses=s.people.filter(p=>p.id!==patient.id).slice(0,3);
-  for(let i=0;i<witnesses.length;i++){
-    const witness=witnesses[i];witness.location={kind:'street',nodeId:publicNode.id};witness.nodeId=publicNode.id;witness.x=publicNode.x+(i-1)*.25;witness.z=publicNode.z;witness.path=[];witness.activity='resting';witness.nextRoutineTick=600+i*40;
-  }
+  s.initialCaseOrigin={personId:patient.id,tick:0,position:ctx.position(patient),location:{...patient.location},activity:patient.activity,
+    path:patient.path.slice(),destinationBuildingId:patient.destinationBuildingId,nextRoutineTick:patient.nextRoutineTick};
   for(let i=0;i<s.config.ambulances;i++){
     const at=road(hospital.vehicleNodeId),id=`ambulance-${i+1}`,crewIds=[];
     for(let j=0;j<2;j++){
@@ -56,7 +56,9 @@ function updateRoutines(ctx){
   for(const person of s.people){
     if(person.role!=='resident'||person.lifeState!=='alive'||person.taskId||person.healthState==='symptomatic'||person.healthState==='critical'||person.location.kind==='vehicle'||person.location.kind==='hospital')continue;
     if(person.activity==='walking'){
-      if(ctx.movePerson(person,person.walkSpeed*person.mobility)){
+      const before=ctx.position(person),arrived=ctx.movePerson(person,person.walkSpeed*person.mobility),after=ctx.position(person);
+      person.distanceWalked+=Math.hypot(after.x-before.x,after.z-before.z);
+      if(arrived){
         const building=s.city.buildings.find(b=>b.id===person.destinationBuildingId);
         if(building){person.location={kind:'building',buildingId:building.id};person.activity=building.id===person.homeBuildingId?'atHome':'atService';person.nextRoutineTick=s.tick+120+Math.floor(ctx.random()*600);person.routineTrips++;}
       }

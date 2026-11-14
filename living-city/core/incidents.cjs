@@ -21,6 +21,8 @@ function reportIncident(ctx,person,type,severity,knownFact,reporterId){
   incident={id,type,personId:person.id,...position,nodeId:ctx.nearestPedNode(position),severity,observedAt:s.tick,reportedAt:null,reporterId,
     knownFacts:knownFact?[knownFact]:[],confirmedFacts:[],status:'calling',assignedAmbulanceId:null,assignedPatrolId:null,priority:severity,waitReason:null,
     witnessIds:reporterId?[reporterId]:[],requiresPolice:type==='violence',policeStatus:type==='violence'?'waiting':null,eventIds:[]};
+  incident.origin={position:{...position},location:{...person.location},activity:person.activity,
+    routineActivity:person.medicalEpisode?.origin.activity||person.activity,episodeId:person.medicalEpisode?.id||null};
   s.incidents.push(incident);
   const observed=ctx.emit('IncidentObserved','Uma ocorrência foi observada por uma pessoa presente.',{entityIds:[person.id,reporterId,id].filter(Boolean),position,visibility:'reported',incidentId:id,knownFact});incident.eventIds.push(observed.eventId);
   const call={id:`call-${++s.callSequence}`,incidentId:id,callerId:reporterId,createdAt:s.tick,receivedAt:null,receiveTick:s.tick+Math.max(1,Math.round(s.config.parameters.callDelaySeconds*10)),status:'calling'};
@@ -33,6 +35,7 @@ function setWait(ctx,incident,reason){
 }
 function initializeIncidents(ctx){
   const s=ctx.state,fixture=s.config.fixture;
+  s.normalEpisodes={sequence:0,records:[],nextReviewTick:80+Math.floor(ctx.random()*120),refractoryUntil:0};
   if(fixture==='brokenVehicle'){
     const vehicle=s.vehicles.find(v=>v.type==='ambulance');if(vehicle){vehicle.broken=true;vehicle.status='blocked';vehicle.waitReason='Viatura avariada; indisponível para despacho.';}
   }
@@ -48,20 +51,48 @@ function initializeIncidents(ctx){
     }
   }
 }
-function normalIncident(ctx,person,severity){
+function normalIncident(ctx,person,severity,condition='controlled-case'){
   if(!person||person.lifeState!=='alive'||person.taskId||person.location.kind==='hospital'||person.location.kind==='vehicle')return;
+  const s=ctx.state,origin={position:ctx.position(person),location:{...person.location},activity:person.activity,
+    path:person.path.slice(),destinationBuildingId:person.destinationBuildingId,distanceWalked:person.distanceWalked,routineTrips:person.routineTrips};
+  const episode={id:`normal-episode-${++s.normalEpisodes.sequence}`,personId:person.id,onsetTick:s.tick,condition,origin};
+  s.normalEpisodes.records.push(episode);person.medicalEpisode=episode;
+  person.normalNoticeTick=s.tick+(s.config.fixture==='default'?20+Math.floor(ctx.random()*50):0);
+  person.lastNormalEpisodeTick=s.tick;
   person.medicalCondition='injury';person.medicalSeverity=severity;
   if(person.healthState==='healthy')person.healthState='symptomatic';
   if(!person.symptoms.includes('pain'))person.symptoms.push('pain');
-  person.path=[];person.activity='awaitingHelp';
-  ctx.emit('MedicalConditionBegan','Uma pessoa apresenta dor e necessita de avaliação.',{entityIds:[person.id],position:ctx.position(person),visibility:'truth'});
+  // Freeze the task, not its physical origin/occupied segment. Helpers retain
+  // the route so responders can approach a patient who stopped mid-edge.
+  person.activity='awaitingHelp';
+  ctx.emit('MedicalConditionBegan','Uma pessoa apresenta dor e necessita de avaliação.',{entityIds:[person.id],position:ctx.position(person),visibility:'truth',episodeId:episode.id,condition,origin});
+}
+function updateNormalEpisodes(ctx){
+  const s=ctx.state,scheduler=s.normalEpisodes;
+  if(s.scenario!=='S0'||s.config.fixture!=='default'||s.tick<scheduler.nextReviewTick)return;
+  scheduler.nextReviewTick=s.tick+30+Math.floor(ctx.random()*70);
+  if(s.tick<scheduler.refractoryUntil||s.incidents.filter(i=>i.type==='medical'&&!CLOSED.has(i.status)).length>=2)return;
+  const candidates=s.people.filter(p=>p.role==='resident'&&p.lifeState==='alive'&&p.healthState==='healthy'&&!p.taskId&&
+    !['vehicle','hospital'].includes(p.location.kind)&&s.tick-(p.lastNormalEpisodeTick??-10000)>=1800&&
+    (p.activity==='walking'&&p.distanceWalked>=3||['atHome','atService'].includes(p.activity)&&p.routineTrips>0));
+  if(!candidates.length)return;
+  const weights=candidates.map(p=>(p.activity==='walking'?1.5:1)+Math.min(.75,p.distanceWalked/150));
+  const total=weights.reduce((sum,value)=>sum+value,0);
+  // A small seeded hazard is evaluated only for people whose actual routines
+  // meet the conditions; a scheduled review alone does not create an episode.
+  if(ctx.random()>=.13)return;
+  let draw=ctx.random()*total,index=0;
+  while(index<weights.length-1&&draw>=weights[index])draw-=weights[index++];
+  const person=candidates[index],condition=person.activity==='walking'?'discomfort-after-walking':'discomfort-during-service-or-rest';
+  normalIncident(ctx,person,ctx.random()<.2?3:2,condition);
+  scheduler.refractoryUntil=s.tick+300+Math.floor(ctx.random()*500);
 }
 function detect(ctx){
   const s=ctx.state;
   for(const person of s.people){
     if(person.lifeState==='neutralized'||person.lifeState==='dead')continue;
     const signs=person.symptoms||[],violent=person.hostile&&person.lifeState==='reanimated';
-    if(!signs.length&&!violent)continue;
+    if(!signs.length&&!violent||person.normalNoticeTick&&s.tick<person.normalNoticeTick&&!violent)continue;
     if(!violent&&(person.location.kind==='hospital'||person.taskId==='hospital-care'))continue;
     let observer=null;
     const conscious=person.lifeState==='alive'&&!signs.includes('collapse');
@@ -81,17 +112,14 @@ function detect(ctx){
 }
 function updateIncidents(ctx){
   const s=ctx.state;
-  if(s.tick===200){
+  if(s.tick===200&&s.config.fixture!=='default'){
     if(s.scenario==='S0')normalIncident(ctx,s.people.find(p=>p.id===s.initialPersonId),2);
     if(s.config.fixture==='concurrentCalls'){
       normalIncident(ctx,s.people.find(p=>p.id===s.initialPersonId),2);
       const other=s.people.find(p=>p.role==='resident'&&p.id!==s.initialPersonId&&p.location.kind==='street');normalIncident(ctx,other,5);
     }
   }
-  if(s.scenario==='S0'&&(s.tick===2400||s.tick===4500)){
-    const eligible=s.people.filter(p=>p.role==='resident'&&p.lifeState==='alive'&&!p.taskId&&p.healthState==='healthy');
-    if(eligible.length)normalIncident(ctx,eligible[Math.floor(ctx.random()*eligible.length)],2);
-  }
+  updateNormalEpisodes(ctx);
   if(s.tick%5===0)detect(ctx);
   for(const call of s.calls){
     const incident=s.incidents.find(i=>i.id===call.incidentId);

@@ -1,0 +1,346 @@
+{
+  "schemaVersion": "living-city-package-check-v021",
+  "engineVersion": "0.2.1",
+  "status": "passed",
+  "generatedAt": "2026-11-13T23:57:10.827Z",
+  "browser": "156.0.8078.79",
+  "zipSHA256": "b6f6a19084396291ed759a51e690290974356fc0f6e6d7a3bb15177fffe686e9",
+  "archiveEntries": [
+    "LEIA-ME.txt",
+    "data/world-data.js",
+    "index.html",
+    "living-city/THREE-LICENSE.txt",
+    "living-city/index.html",
+    "src/game.js",
+    "src/simulation.js",
+    "styles.css",
+    "urban-spike/THREE-LICENSE.txt",
+    "urban-spike/index.html"
+  ],
+  "standaloneRequestCount": 1,
+  "offlineAfterLoad": true,
+  "scenarios": [
+    {
+      "scenario": "S0",
+      "tick": 1800,
+      "total": 164,
+      "counters": {
+        "living": 164,
+        "dead": 0,
+        "activeReanimated": 0,
+        "neutralized": 0,
+        "reanimatedHistorical": 0,
+        "knownCases": 2,
+        "activeIncidents": 1,
+        "availableAmbulances": 0,
+        "availablePatrols": 3,
+        "hospitalOccupancy": 1
+      },
+      "patient": {
+        "id": "resident-110",
+        "name": "Habitante 110",
+        "role": "resident",
+        "homeBuildingId": "building-25",
+        "workBuildingId": "building-06",
+        "location": {
+          "kind": "hospital",
+          "buildingId": "building-03"
+        },
+        "x": 13.416,
+        "z": 27.41,
+        "nodeId": "building-03-entrance",
+        "path": [],
+        "destinationBuildingId": "building-28",
+        "activity": "hospitalized",
+        "lifeState": "alive",
+        "healthState": "symptomatic",
+        "hostile": false,
+        "symptoms": [
+          "pain"
+        ],
+        "observedSymptoms": [
+          "pain"
+        ],
+        "knownThreats": [],
+        "fear": 0,
+        "mobility": 1,
+        "taskId": "hospital-care",
+        "hp": 100,
+        "nextRoutineTick": 690,
+        "routineIndex": 2,
+        "routineTrips": 1,
+        "distanceWalked": 45.519812960262016,
+        "walkSpeed": 0.9864966318942607,
+        "exposureSeconds": 0,
+        "exposureTicks": 0,
+        "exposedBy": [],
+        "destinationNodeId": "building-03-entrance",
+        "finalApproach": null,
+        "destinationPoint": null,
+        "lastMovementSpeed": 0.9,
+        "trafficWaitSince": null,
+        "trafficWaitReason": null,
+        "travelEdge": null,
+        "routeBlocked": false,
+        "medicalEpisode": {
+          "id": "normal-episode-1",
+          "personId": "resident-110",
+          "onsetTick": 552,
+          "condition": "discomfort-during-service-or-rest",
+          "origin": {
+            "position": {
+              "x": 61.928000000000004,
+              "z": 54.452
+            },
+            "location": {
+              "kind": "building",
+              "buildingId": "building-28"
+            },
+            "activity": "atService",
+            "path": [],
+            "destinationBuildingId": "building-28",
+            "distanceWalked": 45.519812960262016,
+            "routineTrips": 1
+          }
+        },
+        "normalNoticeTick": 617,
+        "lastNormalEpisodeTick": 552,
+        "medicalCondition": "injury",
+        "medicalSeverity": 3,
+        "medicalRouteBlocked": false,
+        "medicalDischargeTick": 2444
+      },
+      "origin": {
+        "position": {
+          "x": 61.928000000000004,
+          "z": 54.452
+        },
+        "location": {
+          "kind": "building",
+          "buildingId": "building-28"
+        },
+        "activity": "awaitingHelp",
+        "routineActivity": "atService",
+        "episodeId": "normal-episode-1"
+      },
+      "admitted": [
+        "resident-110"
+      ],
+      "assessed": true,
+      "shots": 0,
+      "webgl2": true,
+      "timeScale": {
+        "baseSimulationRate": 2,
+        "fixedTickMs": 100,
+        "speed": 1,
+        "paused": true,
+        "accumulatorMs": 0,
+        "alpha": 1,
+        "logicalSecondsPerRealSecond": 2,
+        "tick": 1800
+      }
+    },
+    {
+      "scenario": "S1",
+      "tick": 550,
+      "total": 164,
+      "counters": {
+        "living": 164,
+        "dead": 0,
+        "activeReanimated": 0,
+        "neutralized": 0,
+        "reanimatedHistorical": 0,
+        "knownCases": 1,
+        "activeIncidents": 1,
+        "availableAmbulances": 1,
+        "availablePatrols": 3,
+        "hospitalOccupancy": 0
+      },
+      "patient": {
+        "id": "resident-144",
+        "name": "Habitante 144",
+        "role": "resident",
+        "homeBuildingId": "building-09",
+        "workBuildingId": "building-14",
+        "location": {
+          "kind": "building",
+          "buildingId": "building-09"
+        },
+        "x": 56.696,
+        "z": 12.437999999999999,
+        "nodeId": "building-09-entrance",
+        "path": [],
+        "destinationBuildingId": null,
+        "activity": "awaitingAmbulance",
+        "lifeState": "alive",
+        "healthState": "symptomatic",
+        "hostile": false,
+        "symptoms": [
+          "fever"
+        ],
+        "observedSymptoms": [
+          "fever"
+        ],
+        "knownThreats": [],
+        "fear": 0,
+        "mobility": 1,
+        "taskId": "incident-1",
+        "hp": 100,
+        "nextRoutineTick": 385,
+        "routineIndex": 2,
+        "routineTrips": 0,
+        "distanceWalked": 0,
+        "walkSpeed": 0.9467706634663046,
+        "exposureSeconds": 0,
+        "exposureTicks": 0,
+        "exposedBy": [],
+        "hasPathogen": true,
+        "infectedAt": 0,
+        "symptomTick": 200,
+        "criticalTick": 1400,
+        "scheduledDeathTick": 2300
+      },
+      "origin": {
+        "position": {
+          "x": 56.696,
+          "z": 15.387999999999998
+        },
+        "location": {
+          "kind": "building",
+          "buildingId": "building-09"
+        },
+        "activity": "atHome",
+        "routineActivity": "atHome",
+        "episodeId": null
+      },
+      "admitted": [],
+      "assessed": true,
+      "shots": 0,
+      "webgl2": true,
+      "timeScale": {
+        "baseSimulationRate": 2,
+        "fixedTickMs": 100,
+        "speed": 1,
+        "paused": true,
+        "accumulatorMs": 0,
+        "alpha": 1,
+        "logicalSecondsPerRealSecond": 2,
+        "tick": 550
+      }
+    },
+    {
+      "scenario": "S2",
+      "tick": 400,
+      "total": 164,
+      "counters": {
+        "living": 163,
+        "dead": 1,
+        "activeReanimated": 0,
+        "neutralized": 1,
+        "reanimatedHistorical": 1,
+        "knownCases": 1,
+        "activeIncidents": 1,
+        "availableAmbulances": 2,
+        "availablePatrols": 2,
+        "hospitalOccupancy": 0
+      },
+      "patient": {
+        "id": "resident-144",
+        "name": "Habitante 144",
+        "role": "resident",
+        "homeBuildingId": "building-09",
+        "workBuildingId": "building-14",
+        "location": {
+          "kind": "street",
+          "nodeId": "building-09-sidewalk"
+        },
+        "x": 56.696,
+        "z": 9.899999999999999,
+        "nodeId": "building-09-sidewalk",
+        "path": [],
+        "destinationBuildingId": null,
+        "activity": "neutralized",
+        "lifeState": "neutralized",
+        "healthState": "deceased",
+        "hostile": false,
+        "symptoms": [],
+        "observedSymptoms": [
+          "aggressive"
+        ],
+        "knownThreats": [],
+        "fear": 0,
+        "mobility": 1,
+        "taskId": null,
+        "hp": 0,
+        "nextRoutineTick": 385,
+        "routineIndex": 2,
+        "routineTrips": 0,
+        "distanceWalked": 0,
+        "walkSpeed": 0.9467706634663046,
+        "exposureSeconds": 0,
+        "exposureTicks": 0,
+        "exposedBy": [],
+        "hasPathogen": true,
+        "deathTick": 300,
+        "targetPersonId": null,
+        "willReanimate": true,
+        "reanimateTick": 320,
+        "reanimatedAt": 320,
+        "nextAttackTick": 388,
+        "destinationNodeId": "building-09-sidewalk",
+        "finalApproach": null,
+        "destinationPoint": null,
+        "nextChaseTick": 396,
+        "lastMovementSpeed": 1.15,
+        "trafficWaitSince": null,
+        "trafficWaitReason": null,
+        "travelEdge": null,
+        "routeBlocked": false,
+        "neutralizedAt": 386
+      },
+      "origin": {
+        "personId": "resident-144",
+        "tick": 0,
+        "position": {
+          "x": 56.696,
+          "z": 15.387999999999998
+        },
+        "location": {
+          "kind": "building",
+          "buildingId": "building-09"
+        },
+        "activity": "atHome",
+        "path": [],
+        "destinationBuildingId": null,
+        "nextRoutineTick": 385
+      },
+      "admitted": [],
+      "assessed": false,
+      "shots": 2,
+      "webgl2": true,
+      "timeScale": {
+        "baseSimulationRate": 2,
+        "fixedTickMs": 100,
+        "speed": 1,
+        "paused": true,
+        "accumulatorMs": 0,
+        "alpha": 1,
+        "logicalSecondsPerRealSecond": 2,
+        "tick": 400
+      }
+    }
+  ],
+  "mobile": {
+    "width": 390,
+    "documentWidth": 390
+  },
+  "errors": [],
+  "directFile": {
+    "status": "unverified",
+    "reason": "page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at file:///tmp/living-city-package-BdofZh/living-city/index.html"
+  },
+  "screenshots": {
+    "desktop": "/workspace/Crisis-vector/docs/living-city-v021-package-desktop.png",
+    "mobile": "/workspace/Crisis-vector/docs/living-city-v021-package-mobile.png"
+  }
+}
